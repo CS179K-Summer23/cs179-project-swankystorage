@@ -1,0 +1,23 @@
+Account Creation
+
+-Create Account page loads
+    -Page displays a form with email, username, and password fields and a submit button
+-User enters invalid invalid email
+    -Login page shows email error message 
+-User enters invalid invalid username
+    -Login page shows error message with username restrictions
+-User sumbits account creation form with invalid data
+    -Submission cancels and shows error
+-User sumbits account creation form with valid data
+    -Submission creates account and shows successs message
+
+Login
+
+-Login page loads
+    -Page displays a form with username and password fields and a submit button
+-User submits invalid username or password
+    -Login cancels and shows error message
+-User submits valid username and password
+    -Login assigns user to their account and redirects to home page
+-User selects 'Forgot Password'
+    -Login redirects to Forgot Password page
