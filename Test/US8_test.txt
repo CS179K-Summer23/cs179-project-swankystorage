@@ -1,0 +1,43 @@
+Favorited/Liked/Saved Listings
+
+-User has successfully created an account and logged in.
+-User has access to the Favorited/Liked/Saved Listings feature.
+
+
+Test Steps:
+
+- Verify that the user has no favorited/liked/saved listings initially:
+    - Navigate to the user's profile or dashboard.
+    - Look for the section displaying favorited/liked/saved listings.
+    - Ensure that no listings are displayed in this section.
+
+- Add a listing to the Favorited/Liked/Saved Listings:
+    - Go to the main listings page or search for a specific listing.
+    - Click on the "Favorite" or "Like" or "Save" button associated with the listing.
+    - Verify that the listing is added to the user's favorited/liked/saved listings section.
+    - Check that the button's state changes to reflect the listing's saved status.
+
+- Check the favorited/liked/saved listings count:
+    - Note down the number of listings currently present in the favorited/liked/saved listings section.
+    - Add one or more additional listings to the favorited/liked/saved listings.
+    - Verify that the count of favorited/liked/saved listings increases accordingly.
+
+-Remove a listing from the Favorited/Liked/Saved Listings:
+    -Go to the user's profile or dashboard.
+    -Locate the favorited/liked/saved listings section.
+    -Click on the "Remove" or "Unlike" or "Unsave" button associated with a specific listing.
+    -Verify that the listing is removed from the user's favorited/liked/saved listings section.
+    -Check that the button's state changes back to its original state (e.g., "Favorite" or "Like" or "Save").
+
+-Interact with a favorited/liked/saved listing:
+    -Click on a specific listing in the favorited/liked/saved listings section.
+    -Ensure that the user is redirected to the details page of the selected listing.
+    -Verify that the listing details match the one previously favorited/liked/saved.
+
+-Test the error handling:
+    -Try to add a listing to the favorited/liked/saved listings that no longer exists or is unavailable.
+    -Verify that an appropriate error message is displayed, explaining the issue to the user.
+    
+-Verify persistence of data:
+    -Log out of the user's account.
+    -Log back in using the same credentials.
