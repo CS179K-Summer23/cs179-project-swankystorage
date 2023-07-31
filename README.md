@@ -9,25 +9,25 @@ Craigslist style app where users can post listings of objects and find listings 
 - Dale Eman: deman001
 - Abdullah Chaudhry: ChauAbdul786
 ## Technologies
-JavaScript\
-HTML/CSS\
-React \
-React-Bootstrap\
-Mongoose/MongoDB\
+- JavaScript
+- HTML/CSS
+- React 
+- React-Bootstrap
+- Mongoose/MongoDB
 ## Major Features
-Account Sign Up/Log In\
-Create Listings
+- Account Sign Up/Log In
+- Create Listings
   - Item
   - Price
   - Location
   - Pictures
   - Description
-  - Favorite/Like/Save Button\
-Display Listings\
-Categorizing Listings\
-Chat\
-Search\
-Removing Listings\
-Favorited/Liked/Saved Listings \
-Remote Hosting\
-Light/Dark/High Contrast Mode\
+  - Favorite/Like/Save Button
+- Display Listings
+- Categorizing Listings
+- Chat
+- Search
+- Removing Listings
+- Favorited/Liked/Saved Listings 
+- Remote Hosting
+- Light/Dark/High Contrast Mode
