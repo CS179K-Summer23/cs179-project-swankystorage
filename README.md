@@ -23,7 +23,7 @@ Craigslist style app where users can post listings of objects and find listings 
   - Description
   - Favorite/Like/Save Button
 - Display Listings: *40 Story Points*
-- Categorizing Listings: *40 Story Points*
+- Filtering Listings: *40 Story Points*
 - Chat: *40 Story Points*
 - Search: *40 Story Points*
 - Removing Listings: *20 Story Points*
