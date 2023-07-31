@@ -1,0 +1,5 @@
+Categorzing Listings
+  -A user adds a category to each listing
+    -Display a "not found message" if the category is not found
+  -A user searches by cagtegory and all listings that fall under that category are displayed
+  
