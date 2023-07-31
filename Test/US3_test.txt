@@ -1,0 +1,6 @@
+Display Listings
+-Listings load onto the home page
+  -Each listing that is displayed has a name, price, location, pictures
+   a description and a button to favor the listing.
+-(Once Search is implemented)
+  -Each listing that is displayed matches the name of the search.
