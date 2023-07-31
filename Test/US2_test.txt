@@ -1,0 +1,16 @@
+Create Listings
+
+-Create Listings page loads and user is not logged in
+    -Page redirects to Login page
+-Create Listings page loads and user is logged in
+    -Page displays form to upload picture
+    -Page displays form with fields for name, price, Location, and description
+    -Page displays submit button
+-User selects "Upload Picture"
+    -Page prompts user to select a png or jpeg from their hard drive
+-User submits and not all fields are filled out
+    -Error instructs user to fill out all fields
+-User submits and picture is too large
+    -Error instructs user to add a smaller picture
+-User submits and any field has too much text
+    -Error instructs user to keep the relevent field within the character limit
