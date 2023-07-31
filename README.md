@@ -14,19 +14,19 @@ Craigslist style app where users can post listings of objects and find listings 
 - React-Bootstrap
 - Mongoose/MongoDB
 ## Major Features
-- Account Sign Up/Log In
-- Create Listings
+- Account Sign Up/Log In: 40 Story Points
+- Create Listings: 40 Story Points
   - Item
   - Price
   - Location
   - Pictures
   - Description
   - Favorite/Like/Save Button
-- Display Listings
-- Categorizing Listings
-- Chat
-- Search
-- Removing Listings
-- Favorited/Liked/Saved Listings 
-- Remote Hosting
-- Light/Dark/High Contrast Mode
+- Display Listings: 40 Story Points
+- Categorizing Listings: 40 Story Points
+- Chat: 40 Story Points
+- Search: 40 Story Points
+- Removing Listings: 20 Story Points
+- Favorited/Liked/Saved Listings : 40 Story Points
+- Remote Hosting - If time permits
+- Light/Dark/High Contrast Mode - If time permits
