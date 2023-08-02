@@ -7,29 +7,26 @@ app.use(express.urlencoded({extended: true}))
 const Schema = mongoose.Schema;
 
 const user = new Schema({
-    email: String,
-    userName: String,
-    password: String,
+    email: {type:String, required:true},
+    userName: {type:String, required:true},
+    password: {type:String, required:true},
 
 });
 
 const userModel = mongoose.model("user", user);
 
 const listing = new Schema({
-    nameOfItem: String,
-    price: Number,
-    location: String,
-    picture1: String,
-    picture2: String,
-    picture3: String,
-    description: String,
-
-
+    nameOfItem: {type:String, required:true},
+    price: {type:Number, required:true},
+    location: {type:String, required:true},
+    picture: {type:String, required:true},
+    description: {type:String, required:true},
 });
+
 const listingModel = mongoose.model("listing", listing)
 
 //remember to change to actual routes. 
-app.post("/new-user", async (req, res)=> {
+app.post("/signup", async (req, res)=> {
 
     try {
         const newUser = new userModel({
@@ -39,7 +36,7 @@ app.post("/new-user", async (req, res)=> {
         });
     
         await newUser.save()
-        console.log("Saved to Mongo")
+        console.log("User Saved to Mongo")
         res.status(200).json({message: "User successfully registered"})      
     } catch (error) {
         console.log("error saving data to MongoDB: ", error);
@@ -53,13 +50,11 @@ app.post("/new-listing", async (req, res)=> {
             nameOfItem: req.body.nameOfItem,
             price: req.body.price,
             location: req.body.location,
-            picture1: req.body.picture1,
-            picture2: req.body.picture2,
-            picture3: req.body.picture3,
+            picture: req.body.picture,
             description: req.body.description,
         });
         await newListing.save()
-        console.log("Saved to Mongo")
+        console.log("Listing Saved to Mongo")
         res.status(200).json({message: "Listing successfully created"})
     }
     catch(error){
