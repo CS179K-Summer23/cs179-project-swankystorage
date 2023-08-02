@@ -18,5 +18,3 @@ Search
     -The advanced search form should load, and the user should be able to enter more specific search criteria.
 -User tries to use advanced search without filling in required fields
     -An error message should be displayed indicating the required fields for advanced search.
--User uses various combinations of uppercase and lowercase letters in the search query
-    -The search should be case-insensitive and return results regardless of the letter case.
