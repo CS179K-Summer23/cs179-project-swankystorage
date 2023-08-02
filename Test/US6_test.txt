@@ -1,0 +1,22 @@
+Search
+
+-Search bar loads on the home page
+    -The search bar should be displayed and accessible to the user.
+-User enters a valid search query and clicks submit
+    -The search results page should be displayed with relevant results for the query.
+-User enters an empty search query and clicks submit
+    -An error message should be displayed indicating that the search query cannot be empty.
+-User enters a search query that returns no results and clicks submit
+    -A message should be displayed indicating that there are no results for the given query.
+-User enters a search query and clicks submit, but there is a server error
+    -An error message should be displayed indicating that there was an issue with the search functionality.
+-User enters a search query, but the system detects potentially harmful content (e.g., SQL injection)
+    -An error message should be displayed indicating that the search query contains invalid characters.
+-User modifies the search query after getting results and clicks submit again
+    -The search results should be updated based on the modified query.
+-User uses the "Advanced Search" option if available
+    -The advanced search form should load, and the user should be able to enter more specific search criteria.
+-User tries to use advanced search without filling in required fields
+    -An error message should be displayed indicating the required fields for advanced search.
+-User uses various combinations of uppercase and lowercase letters in the search query
+    -The search should be case-insensitive and return results regardless of the letter case.
