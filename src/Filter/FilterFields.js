@@ -1,17 +1,20 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 export function TextField(args) {
-    let [value, setValue] = useState(args.defaultText)
+    let [value, setValue] = useState("")
     function update(e) {
         setValue(e.target.value)
     }
     function submit(e) {
         if (e.key === "Enter") {
-            console.log(value)
-            args.submit(value);
+            //console.log(value)
+            args.submit(value)
         }
     }
     return (
-        <input type='text' onKeyDown={submit} onChange={update} value={value}/>
+        <>
+            {args.defaultText}: 
+            <input type={args.type} onKeyDown={submit} onChange={update} value={value} min='0'/>
+        </>
     )
 }
