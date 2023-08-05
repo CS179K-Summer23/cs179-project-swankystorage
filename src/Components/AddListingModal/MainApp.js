@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, Row, Col, Card } from 'react-bootstrap';
-import AddListingModal from './AddListModal';
+import AddListingModal from './AddListingModal';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { MdLocationOn } from 'react-icons/md';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -138,7 +138,7 @@ const ListingCard = ({ item }) => {
             {/* Display item details */}
             <Card.Img variant="top" src={item.picture} alt={item.itemName} />
             <Card.Body>
-                <Card.Title>{item.itemName}</Card.Title>
+                <Card.Title>{item.nameOfItem}</Card.Title>
                 <Card.Text>Price: ${item.price}</Card.Text>
                 {/* Create a new row for the location icon and favorite button */}
                 <Row className="align-items-between">
