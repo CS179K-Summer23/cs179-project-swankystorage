@@ -1,6 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 import {FilterBar} from './Filter/FilterBar'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Container from 'react-bootstrap/esm/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/esm/Col'
 
 const properties = [
   {key: 0, label: "Product Name", prop: "name", type: "text"},
@@ -17,13 +22,22 @@ function requestToMongoQuery(request) {
   }
   if (!mongoQuery.price.$gte) mongoQuery.price.$gte = 0
   if (!mongoQuery.price.$lte) mongoQuery.price.$lte = 2e10;
+  if (mongoQuery.description) mongoQuery.description = {$regex: "/" + request.description + "/"}
   return mongoQuery
 }
 
 function App() {
+  let [query, updateQuery] = useState({})
   return (
     <div className="App">
-      <FilterBar properties={properties} getQuery={(query) => console.log(requestToMongoQuery(query))} />
+      <Container fluid><Row>
+        <Col sm="3">
+          <FilterBar properties={properties} getQuery={(request) => updateQuery(requestToMongoQuery(request))} />
+        </Col>
+        <Col>
+          <h1>{JSON.stringify(query)}</h1>
+        </Col>
+      </Row></Container>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
