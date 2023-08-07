@@ -98,7 +98,7 @@ app.post("/new-listing", async (req, res)=> {
 
 //replace username and password 
 mongoose.connect("mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",{
-    useNewUrlParser:true, useUnifiedTopology:true, 
+    useNewUrlParser:true, useUnifiedTopology:true 
 })
 app.listen(3001,()=>{
     console.log("on port 3001")
