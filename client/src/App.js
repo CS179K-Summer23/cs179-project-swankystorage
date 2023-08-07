@@ -1,7 +1,12 @@
+import Signup from "./components/signup"
+import Login from "./components/login"
+import HomeScreen from "./components/HomeScreen/HomeScreen.js"
+import { FilterBar } from "./components/FilterBar"
+import { useState } from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import logo from './logo.svg';
 import './App.css';
-import { useState } from 'react';
-import {FilterBar} from './Filter/FilterBar'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Container from 'react-bootstrap/esm/Container'
 import Row from 'react-bootstrap/Row'
@@ -29,6 +34,15 @@ function requestToMongoQuery(request) {
 function App() {
   let [query, updateQuery] = useState({})
   return (
+    <>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomeScreen />}></Route>
+        <Route path="/filter" element={<FilterBar properties={properties} getQuery={(query) => console.log(requestToMongoQuery(query))} />}></Route>
+        <Route path="/register" element={<Signup />}></Route>
+        <Route path="/login" element={<Login />}></Route>
+      </Routes>
+    </BrowserRouter>
     <div className="App">
       <Container fluid><Row>
         <Col sm="3">
@@ -53,6 +67,7 @@ function App() {
         </a>
       </header>
     </div>
+  </>
   );
 }
 
