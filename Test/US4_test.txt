@@ -5,4 +5,5 @@ Categorzing Listings
   -A user filters their search by other properties of the listing
     -Name, Description, Price Range, Location
     -The results are filtered based on the specified information
-  
+  -A user submits a query with no additional properties
+    -The results include listiings from all categories
