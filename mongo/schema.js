@@ -28,7 +28,7 @@ const listing = new Schema({
 const listingModel = mongoose.model("listing", listing)
 
 //remember to change to actual routes. 
-app.post("/signup", async (req, res)=> {
+app.post("/register", async (req, res)=> {
 
     try {
         const newUser = new userModel({
