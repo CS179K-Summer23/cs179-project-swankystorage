@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { TextField } from "./FilterFields"
+import CustomNavbar from "./CustomNavbar/CustomNavbar";
 
 export function FilterBar(args) {
     let [request, updateRequest] = useState({});
@@ -9,6 +10,7 @@ export function FilterBar(args) {
     }
     return (
         <>
+            <CustomNavbar/>
             <h1>Filter Bar</h1>
             { args.properties.map((item) => 
                 request[item.prop] && <p key={item.key}>Product Name: {request[item.prop]}</p>

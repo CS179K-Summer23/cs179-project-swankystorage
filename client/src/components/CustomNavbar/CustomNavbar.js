@@ -3,11 +3,11 @@ import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button'
 
-//import './CustomNavbar.css'
+import './CustomNavbar.css'
 
 function CustomNavbar(){
     return (
-        <Navbar className="bg-body-tertiary navbar" sticky="top">
+        <Navbar className="bg-body-tertiary navbar border-bottom" sticky="top">
             <Container fluid className="navBarMainContainer">
                 <Container fluid>
                 <Navbar.Brand href="/">
@@ -20,13 +20,13 @@ function CustomNavbar(){
                 </Navbar.Brand>
                 </Container>
                     <Nav className="ml-auto">
-                        <Button variant="primary" className="customNavbarButton" href="login">Log In</Button>{' '}
+                        <Button variant="primary" className="btn btn-success customNavbarButton" href="login">Log In</Button>{' '}
                     </Nav>
                     <Nav className="ml-auto">
-                        <Button variant="primary"className="customNavbarButton" href="register">Sign Up</Button>{' '}
+                        <Button variant="primary"className="btn btn-success customNavbarButton" href="register">Register</Button>{' '}
                     </Nav>
                     <Nav className="ml-auto">
-                        <Button variant="primary" className="customNavbarButton" href="filter">Filter</Button>{' '}
+                        <Button variant="primary" className="btn btn-success customNavbarButton" href="filter">Filter</Button>{' '}
                     </Nav>
             </Container>
         </Navbar>

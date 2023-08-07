@@ -1,6 +1,6 @@
 import Signup from "./components/signup"
 import Login from "./components/login"
-import HomeScreen from "./components/HomeScreen"
+import HomeScreen from "./components/HomeScreen/HomeScreen.js"
 import { FilterBar } from "./components/FilterBar"
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'

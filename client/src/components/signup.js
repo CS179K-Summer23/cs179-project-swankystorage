@@ -2,6 +2,7 @@ import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
 import {Link, useNavigate} from 'react-router-dom'
+import CustomNavbar from "./CustomNavbar/CustomNavbar";
 
 function Signup() {
     const [name, setName] = useState()
@@ -18,6 +19,8 @@ function Signup() {
     }
 
   return (
+    <>
+    <CustomNavbar/>
     <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
       <div className="bg-white p-3 rounded w-25">
         <h2>Register</h2>
@@ -72,6 +75,7 @@ function Signup() {
         
       </div>
     </div>
+    </>
   );
 }
 
