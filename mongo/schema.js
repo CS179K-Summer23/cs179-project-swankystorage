@@ -46,6 +46,36 @@ app.post("/signup", async (req, res)=> {
     }
 });
 
+app.post("/login", async(req,res)=> {
+    try{
+        const userToFind = {
+            email: req.body.email,
+            password:req.body.password,
+        }
+        const existingUser = await userModel.findOne({
+            email: userToFind.email,
+            password: userToFind.password
+        });
+        if(existingUser){
+            console.log("User exists")
+            res.status(200).json({message: "User exists"})
+        }
+        else{
+            console.log("user does not exist")
+            res.status(404).json({message: "user does not exist"})
+        }   
+
+    }catch(error){
+        console.log("error: ", error);
+        res.status(500).json({error:"Login error"});
+    }
+
+});
+
+
+
+
+
 app.post("/new-listing", async (req, res)=> {
     try{
         const newListing = new listingModel({
@@ -68,7 +98,7 @@ app.post("/new-listing", async (req, res)=> {
 
 //replace username and password 
 mongoose.connect("mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",{
-    useNewUrlParser:true, useUnifiedTopology:true
+    useNewUrlParser:true, useUnifiedTopology:true, 
 })
 app.listen(3001,()=>{
     console.log("on port 3001")
