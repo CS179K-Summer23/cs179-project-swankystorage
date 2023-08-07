@@ -1,0 +1,8 @@
+Categorzing Listings
+  -A user adds a category to each listing
+    -Display a "not found message" if the category is not found
+  -A user searches by cagtegory and all listings that fall under that category are displayed
+  -A user filters their search by other properties of the listing
+    -Name, Description, Price Range, Location
+    -The results are filtered based on the specified information
+  

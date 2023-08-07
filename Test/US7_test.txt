@@ -1,0 +1,17 @@
+Removing Listings
+
+-User removes a listing from their account
+
+Test Case:
+
+-The user must be logged into their account.
+
+-The user should have at least one listing associated with their account.
+    -User logs into their account.
+    -User navigates to the "My Listings" or "Manage Listings" section of their account.
+    -User locates the listing they want to remove.
+    -User clicks on the "Remove" button for that listing.
+
+-Verify persistence of data:
+    -Log out of the user's account.
+    -Log back in
