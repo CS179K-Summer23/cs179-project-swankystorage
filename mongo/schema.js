@@ -46,6 +46,16 @@ app.post("/signup", async (req, res)=> {
     }
 });
 
+app.get('/new-listing', async (req, res) => {
+    try{
+        const listings = await listingModel.find({});
+        res.json(listings)
+    } catch (error) {
+        console.log("error getting data to MongoDB: ", error);
+        res.status(500).json({error: "Error getting listing information"})
+    }
+})
+
 app.post("/new-listing", async (req, res)=> {
     try{
         const newListing = new listingModel({
