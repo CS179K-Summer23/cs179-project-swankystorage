@@ -25,9 +25,6 @@ function CustomNavbar(){
                     <Nav className="ml-auto">
                         <Button variant="primary"className="btn btn-success customNavbarButton" href="register">Register</Button>{' '}
                     </Nav>
-                    <Nav className="ml-auto">
-                        <Button variant="primary" className="btn btn-success customNavbarButton" href="filter">Filter</Button>{' '}
-                    </Nav>
             </Container>
         </Navbar>
     )

@@ -2,7 +2,7 @@ import { useState } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
 import {Link, useNavigate} from 'react-router-dom'
-import CustomNavbar from "./CustomNavbar/CustomNavbar";
+import CustomNavbar from "./CustomNavbar/CustomNavbar.js";
 
 function Signup() {
     const [name, setName] = useState()
