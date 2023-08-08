@@ -6,6 +6,8 @@ import { MdLocationOn } from 'react-icons/md';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
 
+import './MainApp.css'
+
 const properties = [
     {key: 0, label: "Product Name", prop: "name", type: "text"},
     {key: 1, label: "Product Description", prop: "description", type: "text"},
@@ -51,10 +53,10 @@ const MainApp = () => {
 
     return (
         <>
-        <Container>
+        <Container className="mainContainer">
             <Row className="mt-3">
                 <Col>
-                    <Button onClick={handleShowModal} variant="primary">
+                    <Button onClick={handleShowModal} variant="primary" className="btn-success">
                         Add Listing
                     </Button>
                 </Col>
