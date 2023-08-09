@@ -108,6 +108,19 @@ app.post("/new-listing", async (req, res)=> {
     
 });
 
+app.get("/filter-listings", async (req, res) => {
+    try {
+        const filterCriteria = req.query.query
+        const listings = await listingModel.find(filterCriteria);
+        console.log("Filtered by ", JSON.stringify(req.query.query));
+        //console.log(listings)
+        res.status(200).json(listings);
+    } catch (error) {
+        console.log("error getting filtered listings: ", error);
+        res.status(500).json({ error: "Error getting filtered listings" });
+    }
+});
+
 //replace username and password 
 mongoose.connect("mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",{
     useNewUrlParser:true, useUnifiedTopology:true 
