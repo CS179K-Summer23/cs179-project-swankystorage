@@ -1,5 +1,5 @@
 import {Nav} from "react-bootstrap";
-import {Container, Row, Col} from "react-bootstrap";
+import axios from "axios";
 
 import "./Sidebar.css"
 import { FilterBar } from "../Filter/FilterBar.js";
@@ -24,7 +24,17 @@ const properties = [
   }
   
 
-function Sidebar(){
+function Sidebar(args){
+    const getQueryResult = (query) => {
+        console.log("query: ", query)
+        axios.get(
+            'http://localhost:3001/filter-listings',
+            {params: {query}}
+        ).then((response) => {
+            //console.log("Filtered: ", response)
+            args.load(response.data)
+        })
+    };
     return (
             <Nav className="col d-none d-md-block bg-light sidebar"
             activeKey="/home"
@@ -32,7 +42,7 @@ function Sidebar(){
             >
                 <div className="sidebar-sticky"></div>
                 <Nav.Item>
-                    <FilterBar properties={properties} getQuery={(query) => console.log(requestToMongoQuery(query))} />
+                    <FilterBar properties={properties} getQuery={(query) => getQueryResult(requestToMongoQuery(query))} />
                 </Nav.Item>
             </Nav>
     )
