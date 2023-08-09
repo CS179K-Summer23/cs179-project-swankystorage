@@ -3,6 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Sidebar from '../Sidebar/Sidebar';
+import MainApp from '../AddListingModal/MainApp';
 
 import './HomeScreen.css';
 
@@ -17,7 +18,7 @@ function HomeScreen(){
                         <Sidebar className="bufferedSidebar"/>
                     </Col>
                     <Col id="page-content-wrapper">
-                        <h1>This is the homepage ahhhhh</h1>
+                        <MainApp/>
                     </Col> 
                 </Row>
             </Container>

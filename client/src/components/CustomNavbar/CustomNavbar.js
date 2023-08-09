@@ -20,13 +20,10 @@ function CustomNavbar(){
                 </Navbar.Brand>
                 </Container>
                     <Nav className="ml-auto">
-                        <Button variant="primary" className="btn btn-success customNavbarButton" href="login">Log In</Button>{' '}
+                        <Button variant="primary" className="btn customNavbarButton" href="login">Log In</Button>{' '}
                     </Nav>
                     <Nav className="ml-auto">
-                        <Button variant="primary"className="btn btn-success customNavbarButton" href="register">Register</Button>{' '}
-                    </Nav>
-                    <Nav className="ml-auto">
-                        <Button variant="primary" className="btn btn-success customNavbarButton" href="filter">Filter</Button>{' '}
+                        <Button variant="primary"className="btn customNavbarButton" href="register">Register</Button>{' '}
                     </Nav>
             </Container>
         </Navbar>

@@ -4,6 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Accordion from 'react-bootstrap/Accordion'
 import Card from 'react-bootstrap/Card'
 
+import './FilterBar.css'
+
 export function FilterBar(args) {
     let [request, updateRequest] = useState({});
     useEffect(() => {args.getQuery(request);}, [request])
@@ -12,7 +14,7 @@ export function FilterBar(args) {
     }
     return (
         <>
-            <h1>Filter Results</h1>
+            <h1 className="filterBarTitle">Filter Results</h1>
             { args.properties.map((item) => 
                 request[item.prop] && (<Card onClick={() => changeRequest({[item.prop]: undefined})} key={item.key}>
                     <Card.Title>{item.label}</Card.Title>

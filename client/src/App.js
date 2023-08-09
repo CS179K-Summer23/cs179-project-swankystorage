@@ -1,11 +1,10 @@
-import Signup from "./components/signup"
-import Login from "./components/login"
-import HomeScreen from "./components/HomeScreen/HomeScreen.js"
-import { FilterBar } from "./components/FilterBar"
+import Signup from "./Components/signup"
+import Login from "./Components/login"
+import HomeScreen from "./Components/HomeScreen/HomeScreen.js"
+import { FilterBar } from "./Components/FilterBar"
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Container from 'react-bootstrap/esm/Container'
@@ -43,7 +42,7 @@ function App() {
         <Route path="/login" element={<Login />}></Route>
       </Routes>
     </BrowserRouter>
-    <div className="App">
+    {/* <div className="App">
       <Container fluid><Row>
         <Col sm="3">
           <FilterBar properties={properties} getQuery={(request) => updateQuery(requestToMongoQuery(request))} />
@@ -66,7 +65,7 @@ function App() {
           Learn React
         </a>
       </header>
-    </div>
+    </div> */}
   </>
   );
 }
