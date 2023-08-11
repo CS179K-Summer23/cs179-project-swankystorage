@@ -35,7 +35,7 @@ const MainApp = () => {
     axios.get(
         'http://localhost:3001/new-listing'
     ).then((response) => {
-        console.log(response);
+        //console.log(response);
         setListings(response.data)
     });
 

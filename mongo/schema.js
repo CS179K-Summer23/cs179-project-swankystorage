@@ -73,7 +73,25 @@ app.post("/login", async(req,res)=> {
 
 });
 
-
+app.get('/user-information', async(req, res) => {
+    try{
+        const userToFind = {
+            userName: req.body.userName,
+            email: req.body.email,
+            password: req.body.password
+        }
+        const existingUser = await userModel.findOne({
+            userName: userToFind.userName,
+            email: userToFind.email,
+            password: userToFind.password
+        })
+        if(existingUser){
+            console.log(res.json);
+        }
+    }catch(error){
+        console.log("Error: " + error);
+    }
+});
 
 
 
