@@ -31,3 +31,5 @@ export function FilterBar(args) {
         </>
     )
 }
+
+export default FilterBar

@@ -5,42 +5,23 @@ import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { MdLocationOn } from 'react-icons/md';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from "axios";
+import FilterBar from '../Filter/FilterBar';
 
 import './MainApp.css'
-
-const properties = [
-    {key: 0, label: "Product Name", prop: "name", type: "text"},
-    {key: 1, label: "Product Description", prop: "description", type: "text"},
-    {key: 2, label: "Minimum Price", prop: "minPrice", type: "number"},
-    {key: 3, label: "Maximum Price", prop: "maxPrice", type: "number"},
-    {key: 4, label: "Location", prop: "location", type: "text"}
-  ]
-  
-  function requestToMongoQuery(request) {
-    let mongoQuery = {nameOfItem: request.name, price: {$gte: Number(request.minPrice), $lte: Number(request.maxPrice)}, location: request.location, description: request.description}
-    for (let key in mongoQuery) {
-        if (!mongoQuery[key]) delete mongoQuery[key]
-    }
-    if (!mongoQuery.price.$gte) mongoQuery.price.$gte = 0
-    if (!mongoQuery.price.$lte) mongoQuery.price.$lte = 2e10;
-    if (mongoQuery.description) mongoQuery.description = {$regex: "/" + request.description + "/"}
-    return mongoQuery
-  }
   
 
-const MainApp = () => {
+const MainApp = (args) => {
     const [showModal, setShowModal] = useState(false);
-    const [listings, setListings] = useState([]);
 
-    axios.get(
-        'http://localhost:3001/new-listing'
-    ).then((response) => {
-        //console.log(response);
-        setListings(response.data)
-    });
+    //axios.get(
+    //    'http://localhost:3001/new-listing'
+    //).then((response) => {
+    //    console.log(response);
+    //    setListings(response.data)
+    //});
 
     const handleAddListing = (newListing) => {
-        setListings([...listings, newListing]);
+        args.update([...args.listings, newListing])
     };
 
     const handleShowModal = () => {
@@ -63,7 +44,7 @@ const MainApp = () => {
             </Row>
             <Row className="mt-3">
                 {/* Map through the "listings" array and display each item in a ListingCard */}
-                {listings.map((item, index) => (
+                {args.listings.map((item, index) => (
                     <Col key={index} md={3} sm={2}>
                         <ListingCard item={item} />
                     </Col>

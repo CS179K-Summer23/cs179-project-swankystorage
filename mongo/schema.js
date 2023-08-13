@@ -1,4 +1,6 @@
 const express = require('express')
+const session = require('express-session')
+const crypto = require('crypto')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -6,6 +8,16 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(bodyParser.urlencoded({extended: true}))
+const key = crypto.randomBytes(64).toString('hex')
+
+//session details
+//cookie session false since we are only on localhost
+app.use(session({
+    secret:key,
+    resave:false,
+    saveUninitialized:true,
+    cookie: {secure:false},
+}))
 
 const Schema = mongoose.Schema;
 
@@ -28,7 +40,7 @@ const listing = new Schema({
 
 const listingModel = mongoose.model("listing", listing)
 
-//remember to change to actual routes. 
+//to create new user
 app.post("/register", async (req, res)=> {
 
     try {
@@ -47,6 +59,7 @@ app.post("/register", async (req, res)=> {
     }
 });
 
+//to login user
 app.post("/login", async(req,res)=> {
     try{
         const userToFind = {
@@ -59,11 +72,14 @@ app.post("/login", async(req,res)=> {
         });
         if(existingUser){
             console.log("User exists")
-            res.status(200).json({message: "User exists"})
+            req.session.user = existingUser;
+            const userStatus = existingUser.role === "admin" ? "admin" : "user";
+            res.status(200).json({status: "Success", role: userStatus})
         }
         else{
             console.log("user does not exist")
-            res.status(404).json({message: "user does not exist"})
+            // res.redirect("/register")
+            res.status(401).json({error: "User is not a registered user"})
         }   
 
     }catch(error){
@@ -73,28 +89,31 @@ app.post("/login", async(req,res)=> {
 
 });
 
-app.get('/user-information', async(req, res) => {
-    try{
-        const userToFind = {
-            userName: req.body.userName,
-            email: req.body.email,
-            password: req.body.password
-        }
-        const existingUser = await userModel.findOne({
-            userName: userToFind.userName,
-            email: userToFind.email,
-            password: userToFind.password
-        })
-        if(existingUser){
-            console.log(res.json);
-        }
-    }catch(error){
-        console.log("Error: " + error);
+
+//get user info for profile page
+//uncomment res.status(401) whenever testing is done so that the
+//redirect works properly
+app.get('/profilePage', async(req,res)=>{
+    const user = req.session.user;
+    if(user){
+        res.status(200).json(user)
     }
-});
+    else{
+        res.status(401).json({message:"User is not logged in"})
+        // res.redirect('/login')
+    }
+})
 
 
+//to handle logouts
+// app.get('/logout', async(req,res)=>{
+//     req.session.destroy()
+//     console.log("logged out")
+//     res.status(200).json({message:"User has been logged out"})
+    
+// })
 
+//fetches all listings
 app.get('/new-listing', async (req, res) => {
     try{
         const listings = await listingModel.find({});
@@ -105,7 +124,7 @@ app.get('/new-listing', async (req, res) => {
     }
 })
 
-
+//creates new listing
 app.post("/new-listing", async (req, res)=> {
     try{
         const newListing = new listingModel({
@@ -125,8 +144,21 @@ app.post("/new-listing", async (req, res)=> {
     }
     
 });
+//for filter
+app.get("/filter-listings", async (req, res) => {
+    try {
+        const filterCriteria = req.query.query
+        const listings = await listingModel.find(filterCriteria);
+        console.log("Filtered by ", JSON.stringify(req.query.query));
+        //console.log(listings)
+        res.status(200).json(listings);
+    } catch (error) {
+        console.log("error getting filtered listings: ", error);
+        res.status(500).json({ error: "Error getting filtered listings" });
+    }
+});
 
-//replace username and password 
+
 mongoose.connect("mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",{
     useNewUrlParser:true, useUnifiedTopology:true 
 })
