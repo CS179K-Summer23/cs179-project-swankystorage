@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import AddListingModal from "./AddListingModal";
 import FilterBar from "../Filter/FilterBar";
+import { Link } from "react-router-dom";
 
 import "./MainApp.css";
 
@@ -153,7 +154,9 @@ const ListingCard = ({ item, handleDelete }) => {
     <Card className="listing-card">
       <Card.Img variant="top" src={item.picture} alt={item.itemName} />
       <Card.Body>
-        <Card.Title>{item.nameOfItem}</Card.Title>
+        <Link to={`/product/${encodeURIComponent(item._id)}`}>
+          <Card.Title>{item.nameOfItem}</Card.Title>
+        </Link>
         <Card.Text>Price: ${item.price}</Card.Text>
         <Row className="align-items-center">
           <Col xs={3}>
