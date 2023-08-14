@@ -19,24 +19,25 @@ app.use(session({
     cookie: {secure:false},
 }))
 
+
 const Schema = mongoose.Schema;
 
 const user = new Schema({
-    email: {type:String, required:true},
-    userName: {type:String, required:true},
-    password: {type:String, required:true},
-
+  email: { type: String, required: true },
+  userName: { type: String, required: true },
+  password: { type: String, required: true },
 });
 
 const userModel = mongoose.model("user", user);
 
 const listing = new Schema({
-    nameOfItem: {type:String, required:true},
-    price: {type:Number, required:true},
-    location: {type:String, required:true},
-    picture: {type:String, required:true},
-    description: {type:String, required:true},
+  nameOfItem: { type: String, required: true },
+  price: { type: Number, required: true },
+  location: { type: String, required: true },
+  picture: { type: String, required: true },
+  description: { type: String, required: true },
 });
+
 
 const listingModel = mongoose.model("listing", listing)
 
@@ -85,8 +86,17 @@ app.post("/login", async(req,res)=> {
     }catch(error){
         console.log("error: ", error);
         res.status(500).json({error:"Login error"});
-    }
+  }
+});
 
+app.get("/new-listing", async (req, res) => {
+  try {
+    const listings = await listingModel.find({});
+    res.json(listings);
+  } catch (error) {
+    console.log("error getting data to MongoDB: ", error);
+    res.status(500).json({ error: "Error getting listing information" });
+  }
 });
 
 
@@ -143,25 +153,42 @@ app.post("/new-listing", async (req, res)=> {
         res.status(500).json({error: "Error saving listing information"})
     }
     
+
 });
 //for filter
 app.get("/filter-listings", async (req, res) => {
-    try {
-        const filterCriteria = req.query.query
-        const listings = await listingModel.find(filterCriteria);
-        console.log("Filtered by ", JSON.stringify(req.query.query));
-        //console.log(listings)
-        res.status(200).json(listings);
-    } catch (error) {
-        console.log("error getting filtered listings: ", error);
-        res.status(500).json({ error: "Error getting filtered listings" });
-    }
+  try {
+    const filterCriteria = req.query.query;
+    const listings = await listingModel.find(filterCriteria);
+    console.log("Filtered by ", JSON.stringify(req.query.query));
+    //console.log(listings)
+    res.status(200).json(listings);
+  } catch (error) {
+    console.log("error getting filtered listings: ", error);
+    res.status(500).json({ error: "Error getting filtered listings" });
+  }
+});
+
+app.get("/listing/:id", async (req, res) => {
+  try {
+    const listings = await listingModel.findOne({ _id: req.params.id });
+    res.json(listings);
+  } catch (error) {
+    console.log("error getting data to MongoDB: ", error);
+    res.status(500).json({ error: "Error getting listing information" });
+  }
 });
 
 
-mongoose.connect("mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",{
-    useNewUrlParser:true, useUnifiedTopology:true 
-})
-app.listen(3001,()=>{
-    console.log("on port 3001")
-})
+
+mongoose.connect(
+  "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
+app.listen(3001, () => {
+  console.log("on port 3001");
+});
+
