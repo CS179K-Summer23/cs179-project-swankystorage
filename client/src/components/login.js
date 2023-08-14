@@ -15,18 +15,14 @@ function Login() {
         e.preventDefault()
         axios.post('http://localhost:3001/login', {email, password})
         .then(res => {
-            console.log("this is the status:", res.status)
-            if(res.status === 200) {
-                if(res.data.role === "user") {
-                    navigate('/')
-                } else {
+            console.log("login: " + res.data);
+            if(res.data.Status === "Success") {
+                if(res.data.role === "admin") {
                     navigate('/dashboard')
+                } else {
+                    navigate('/')
                 }
             }
-            //does not work idk why
-            // else if(res.status === 401){
-            //   navigate('/register')
-            // }
         }).catch(err => console.log(err))
     }
 
