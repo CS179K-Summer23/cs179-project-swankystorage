@@ -47,6 +47,8 @@ Craigslist style app where users can post listings of objects and find listings 
   - As a buyer I want to be able to search for the specific item that I want.
 - Removing listings
   - As a seller I want to remove my listings when my product has sold.
+- Favorited Listings
+  - As a buyer I want to save listings so I can come back to them later.
 - Optional / Out of Scope
   - Hosting
   - Light / Dark / High Contrast Mode
