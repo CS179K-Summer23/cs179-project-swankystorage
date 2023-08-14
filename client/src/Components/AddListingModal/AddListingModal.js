@@ -2,12 +2,71 @@ import React, { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
 
+
+const categories = [
+    "Antiques",
+    "Appliances",
+    "Arts+Crafts",
+    "ATV/UTV/SNO",
+    "Auto parts",
+    "Aviation",
+    "Baby+Kid",
+    "Barter",
+    "Beauty+Hlth",
+    "Bike parts",
+    "Bikes",
+    "Boat parts",
+    "Boats",
+    "Books",
+    "Business",
+    "Cars+Trucks",
+    "CDs/DVD/VHS",
+    "Cell phones",
+    "Clothes+Acc",
+    "Collectibles",
+    "Computer parts",
+    "Computers",
+    "Electronics",
+    "Farm+Garden",
+    "Free",
+    "Furniture",
+    "Garage sale",
+    "General",
+    "Heavy equip",
+    "Household",
+    "Jewelry",
+    "Materials",
+    "Motorcycle parts",
+    "Motorcycles",
+    "Music instr",
+    "Photo+Video",
+    "RVs+Camp",
+    "Sporting",
+    "Tickets",
+    "Tools",
+    "Toys+Games",
+    "Trailers",
+    "Video gaming",
+    "Wanted",
+    "Wheels+Tires"
+  ];
+
 const AddListingModal = ({ show, handleClose, handleAddListing }) => {
     const [itemName, setItemName] = useState("");
     const [price, setPrice] = useState("");
     const [location, setLocation] = useState("");
     const [description, setDescription] = useState("");
-    const [pictures, setPictures] = useState(null); // Store the uploaded pictures
+    const [pictures, setPictures] = useState(null);
+    const [selectedCategories, setSelectedCategories] = useState([]);
+
+    const handleCategoryChange = (category) => {
+        if (selectedCategories.includes(category)) {
+          setSelectedCategories(selectedCategories.filter(cat => cat !== category));
+        } else {
+          setSelectedCategories([...selectedCategories, category]);
+        }
+      };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -19,6 +78,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing }) => {
             location,
             description,
             pictures,
+            categories: selectedCategories
         });
 
         axios.post("http://localhost:3001/new-listing", {
@@ -26,7 +86,8 @@ const AddListingModal = ({ show, handleClose, handleAddListing }) => {
             price: price,
             location: location,
             picture: pictures,
-            description: description
+            description: description,
+            categories: selectedCategories
         }).then((response) => {
             console.log(response);
         });
@@ -37,6 +98,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing }) => {
         setLocation("");
         setDescription("");
         setPictures(null);
+        setSelectedCategories([]);
 
         // Close the modal
         handleClose();
@@ -91,6 +153,18 @@ const AddListingModal = ({ show, handleClose, handleAddListing }) => {
                             accept="image/*"
                         />
                     </Form.Group>
+                    <Form.Group controlId="formCategories">
+            <Form.Label>Categories</Form.Label>
+            {categories.map(category => (
+              <Form.Check
+                key={category}
+                type="checkbox"
+                label={category}
+                checked={selectedCategories.includes(category)}
+                onChange={() => handleCategoryChange(category)}
+              />
+            ))}
+          </Form.Group>
                     <Form.Group controlId="formDescription">
                         <Form.Label>Description</Form.Label>
                         <Form.Control

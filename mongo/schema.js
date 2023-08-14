@@ -1,3 +1,4 @@
+
 const express = require('express')
 const session = require('express-session')
 const crypto = require('crypto')
@@ -11,6 +12,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}))
 const key = crypto.randomBytes(64).toString('hex')
+
 
 //session details
 //cookie session false since we are only on localhost
@@ -38,10 +40,32 @@ const listing = new Schema({
   location: { type: String, required: true },
   picture: { type: String, required: true },
   description: { type: String, required: true },
-});
+  categories: [{ type: String, required: true }],
+}, { timestamps: true });
+
 
 
 const listingModel = mongoose.model("listing", listing)
+
+
+//remember to change to actual routes.
+app.post("/register", async (req, res) => {
+  try {
+    const newUser = new userModel({
+      email: req.body.email,
+      userName: req.body.userName,
+      password: req.body.password,
+    });
+
+    await newUser.save();
+    console.log("User Saved to Mongo");
+    res.status(200).json({ message: "User successfully registered" });
+  } catch (error) {
+    console.log("error saving data to MongoDB: ", error);
+    res.status(500).json({ error: "Error saving user information" });
+  }
+});
+
 
 //to create new user
 app.post("/register", async (req, res)=> {
@@ -101,6 +125,30 @@ app.get("/new-listing", async (req, res) => {
   } catch (error) {
     console.log("error getting data to MongoDB: ", error);
     res.status(500).json({ error: "Error getting listing information" });
+  }
+});
+
+
+app.post("/new-listing", async (req, res) => {
+  try {
+    const newListing = new listingModel({
+      nameOfItem: req.body.nameOfItem,
+      price: req.body.price,
+      location: req.body.location,
+      picture: req.body.picture,
+      description: req.body.description,
+      categories: req.body.categories
+    });
+
+    newListing.createdAt = new Date();
+    newListing.updatedAt = new Date();
+
+    await newListing.save();
+    console.log("Listing Saved to Mongo");
+    res.status(200).json({ message: "Listing successfully created" });
+  } catch (error) {
+    console.log("error saving data to MongoDB: ", error);
+    res.status(500).json({ error: "Error saving listing information" });
   }
 });
 
