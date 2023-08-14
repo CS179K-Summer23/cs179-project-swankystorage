@@ -37,7 +37,11 @@ const ProductLandingPage = ({ item }) => {
   }, [id]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="d-flex justify-content-center align-items-center vh-100">
+    <div className="spinner-border text-primary" role="status">
+      <span className="sr-only"></span>
+    </div>
+  </div>;
   }
 
   if (error) {
