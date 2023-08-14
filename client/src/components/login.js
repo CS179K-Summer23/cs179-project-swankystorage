@@ -9,7 +9,6 @@ function Login() {
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const navigate = useNavigate()
-
     //axios.defaults.withCredentials = true;
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -17,8 +16,9 @@ function Login() {
         .then(res => {
             console.log("this is the status:", res.status)
             if(res.status === 200) {
+                window.user = {favorites: res.data.favorites, name: res.data.userName}
                 if(res.data.role === "user") {
-                    navigate('/')
+                    navigate('/dashboard')
                 } else {
                     navigate('/dashboard')
                 }

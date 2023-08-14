@@ -3,6 +3,7 @@ import { TextField } from "./FilterFields"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Accordion from 'react-bootstrap/Accordion'
 import Card from 'react-bootstrap/Card'
+import Form from "react-bootstrap/Form"
 
 import './FilterBar.css'
 
@@ -22,11 +23,13 @@ export function FilterBar(args) {
                 </Card>)
             ) }
             <Accordion>
+                <Form>
                 { args.properties.map((item) => 
                     <Accordion.Item eventKey={item.key} key={item.key}>
                         <TextField key={item.key} defaultText={item.label} type={item.type} submit={(value) => changeRequest({[item.prop]: value})}/>
                     </Accordion.Item>
                 ) }
+                </Form>
             </Accordion>
         </>
     )

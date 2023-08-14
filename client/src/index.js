@@ -5,12 +5,15 @@ import "./index.css";
 import MainApp from "./Components/AddListingModal/MainApp";
 import reportWebVitals from "./reportWebVitals";
 import HomeScreen from "./Components/HomeScreen/HomeScreen.js";
+import Dashboard from "./Components/Dashboard/Dashboard";
 import { FilterBar } from "./Components/FilterBar";
 import Signup from "./Components/signup";
 import Login from "./Components/login";
 import ProductLandingPage from "./Components/AddListingModal/ProductLandingPage";
 import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+window.user = null
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,6 +24,7 @@ root.render(
         <Route path="/register" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/product/:id" element={<ProductLandingPage />}></Route>
+        <Route path="/dashboard" element={<Dashboard />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
