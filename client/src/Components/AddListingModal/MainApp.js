@@ -8,6 +8,7 @@ import AddListingModal from "./AddListingModal";
 import FilterBar from "../Filter/FilterBar";
 import { Link } from "react-router-dom";
 
+
 import "./MainApp.css";
 
 const MainApp = (args) => {

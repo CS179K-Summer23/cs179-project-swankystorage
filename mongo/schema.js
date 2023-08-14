@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "10mb" }));
 
 const Schema = mongoose.Schema;
 
@@ -23,9 +24,11 @@ const listing = new Schema({
   location: { type: String, required: true },
   picture: { type: String, required: true },
   description: { type: String, required: true },
-});
+  categories: [{ type: String, required: true }],
+}, { timestamps: true });
 
 const listingModel = mongoose.model("listing", listing);
+
 
 //remember to change to actual routes.
 app.post("/register", async (req, res) => {
@@ -86,7 +89,12 @@ app.post("/new-listing", async (req, res) => {
       location: req.body.location,
       picture: req.body.picture,
       description: req.body.description,
+      categories: req.body.categories
     });
+
+    newListing.createdAt = new Date();
+    newListing.updatedAt = new Date();
+
     await newListing.save();
     console.log("Listing Saved to Mongo");
     res.status(200).json({ message: "Listing successfully created" });
