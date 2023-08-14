@@ -87,7 +87,15 @@ const ProductLandingPage = ({ item }) => {
       </div>
       <div className="div6">post id: {data._id}</div>
       <div className="div7">posted: about an hour ago</div>
-      <div className="div8">Location: {data.location}</div>
+      <div className="div8">
+        <iframe
+          title="California Map"
+          id="map-iframe"
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d998917.166994401!2d-120.67364818456007!3d36.778261015833336!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ac6c3e38f3859%3A0x4e8e9992e03d3e0!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sus!4v1631168552723!5m2!1sen!2sus"
+          allowfullscreen
+        ></iframe>
+      </div>
+
     </div>
   );
 };
