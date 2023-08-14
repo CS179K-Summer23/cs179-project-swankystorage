@@ -35,8 +35,8 @@ Craigslist style app where users can post listings of objects and find listings 
   - As a seller I want to create listings where I can describe my product.
 - Display listings
   - As a buyer I want to view lists of listings to find products I want.
-- Account Recovery
-  - As a user I want to reset my password over Email.
+- Favorited Listings
+  - As a buyer I want to save listings so I can come back to them later.
 - Sign up
   - As a user I want to create an account so only I can manage my listings.
 - Adding/removing categories by listing
@@ -47,9 +47,9 @@ Craigslist style app where users can post listings of objects and find listings 
   - As a buyer I want to be able to search for the specific item that I want.
 - Removing listings
   - As a seller I want to remove my listings when my product has sold.
-- Favorited Listings
-  - As a buyer I want to save listings so I can come back to them later.
 - Optional / Out of Scope
+  - Account Recovery
+    - As a user I want to reset my password over Email.
   - Hosting
   - Light / Dark / High Contrast Mode
 
