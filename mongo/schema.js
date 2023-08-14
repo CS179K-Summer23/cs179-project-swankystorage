@@ -16,7 +16,7 @@ app.use(session({
     secret:key,
     resave:false,
     saveUninitialized:true,
-    cookie: {secure:false},
+    cookie: {secure:true},
 }))
 
 const Schema = mongoose.Schema;
@@ -74,6 +74,8 @@ app.post("/login", async(req,res)=> {
             console.log("User exists")
             req.session.user = existingUser;
             const userStatus = existingUser.role === "admin" ? "admin" : "user";
+            req.session.save();
+            console.log(req.session.user);
             res.status(200).json({status: "Success", role: userStatus})
         }
         else{
@@ -95,6 +97,7 @@ app.post("/login", async(req,res)=> {
 //redirect works properly
 app.get('/profilePage', async(req,res)=>{
     const user = req.session.user;
+    console.log(req.session.user)
     if(user){
         res.status(200).json(user)
     }
