@@ -122,6 +122,7 @@ app.get("/new-listing", async (req, res) => {
   }
 });
 
+//creates new listing
 app.post("/new-listing", async (req, res) => {
   try {
     const newListing = new listingModel({
@@ -174,29 +175,6 @@ app.get('/logout', async(req,res)=>{
     
 })
 
-
-
-//creates new listing
-app.post("/new-listing", async (req, res)=> {
-    try{
-        const newListing = new listingModel({
-            nameOfItem: req.body.nameOfItem,
-            price: req.body.price,
-            location: req.body.location,
-            picture: req.body.picture,
-            description: req.body.description,
-        });
-        await newListing.save()
-        console.log("Listing Saved to Mongo")
-        res.status(200).json({message: "Listing successfully created"})
-    }
-    catch(error){
-        console.log("error saving data to MongoDB: ", error);
-        res.status(500).json({error: "Error saving listing information"})
-    }
-    
-
-});
 //for filter
 app.get("/filter-listings", async (req, res) => {
   try {
