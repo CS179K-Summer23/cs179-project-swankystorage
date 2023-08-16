@@ -3,12 +3,13 @@ const session = require('express-session')
 const crypto = require('crypto')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const app = express()
 app.use(cors())
 app.use(express.json())
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json({ limit: "10mb" }));
+app.use(cookieParser())
+app.use(bodyParser.urlencoded({extended: true}))
 const key = crypto.randomBytes(64).toString('hex')
 
 //session details
@@ -20,6 +21,7 @@ app.use(session({
     cookie: {secure:false},
 }))
 
+var currentSession
 const Schema = mongoose.Schema;
 
 const user = new Schema({
@@ -40,9 +42,7 @@ const listing = new Schema({
   categories: [{ type: String, required: true }],
 }, { timestamps: true });
 
-
 const listingModel = mongoose.model("listing", listing)
-
 //remember to change to actual routes.
 app.post("/register", async (req, res) => {
   try {
@@ -95,6 +95,9 @@ app.post("/login", async(req,res)=> {
             console.log("User exists")
             req.session.user = existingUser;
             const userStatus = existingUser.role === "admin" ? "admin" : "user";
+            req.session.save()
+            currentSession = req.session
+            console.log(req.session.user)
             res.status(200).json({status: "Success", role: userStatus, favorites: existingUser.favorites, userName: existingUser.userName})
         }
         else{
@@ -146,7 +149,8 @@ app.post("/new-listing", async (req, res) => {
 //uncomment res.status(401) whenever testing is done so that the
 //redirect works properly
 app.get('/profilePage', async(req,res)=>{
-    const user = req.session.user;
+    const user = currentSession;
+    console.log(user)
     if(user){
         res.status(200).json(user)
     }
@@ -158,12 +162,17 @@ app.get('/profilePage', async(req,res)=>{
 
 
 //to handle logouts
-// app.get('/logout', async(req,res)=>{
-//     req.session.destroy()
-//     console.log("logged out")
-//     res.status(200).json({message:"User has been logged out"})
+app.get('/logout', async(req,res)=>{
+    try{
+      req.session.destroy();
+      console.log("user has been logged out")
+      res.status(200).json({message: "User has been sucessfully logged out"})
+    }catch(error){
+      console.log("something went wrong with logging out")
+      res.status(500).json({error})
+    }
     
-// })
+})
 
 
 

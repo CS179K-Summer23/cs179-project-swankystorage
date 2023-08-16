@@ -12,9 +12,7 @@ import Login from "./Components/login";
 import ProductLandingPage from "./Components/AddListingModal/ProductLandingPage";
 import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-window.user = null
-
+import LogoutButton from "./Components/logout.js"
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
@@ -25,6 +23,7 @@ root.render(
         <Route path="/login" element={<Login />}></Route>
         <Route path="/product/:id" element={<ProductLandingPage />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
+        <Route path="/logout" element={<LogoutButton/>}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
