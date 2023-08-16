@@ -12,56 +12,63 @@ import { Link } from "react-router-dom";
 import "./MainApp.css";
 
 const MainApp = (args) => {
-  const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
-  const handleAddListing = (newListing) => {
-    args.update([...args.listings, newListing]);
-  };
+    const handleShowListings = (listingsToShow) => {
+        /* Map through the "listings" array and display each item in a ListingCard */
+        console.log(listingsToShow);
+        if(listingsToShow.length > 0){
+            return <>
+                {args.listings.map((item, index) => (
+                    <Col key={index} md={3} sm={2}>
+                        <ListingCard item={item} />
+                    </Col>
+                ))}
+            </>
+        }else{
+            return<h1>Hmmm.. There's nothing here...</h1>
+        }
+    }
 
-  const handleShowModal = () => {
-    setShowModal(true);
-  };
+    //axios.get(
+    //    'http://localhost:3001/new-listing'
+    //).then((response) => {
+    //    console.log(response);
+    //    setListings(response.data)
+    //});
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+    const handleAddListing = (newListing) => {
+        args.update([...args.listings, newListing])
+    };
 
-  return (
-    <>
-      <Container className="mainContainer">
-        <Row className="mt-3">
-          <Col>
-            <Button
-              onClick={handleShowModal}
-              variant="primary"
-              className="btn-success"
-            >
-              Add Listing
-            </Button>
-          </Col>
-        </Row>
-        <Row className="mt-3">
-          {args.listings && args.listings.map((item, index) => (
-            <Col key={index} md={3} sm={2}>
-              <ListingCard
-                item={item}
-                handleDelete={() => {
-                  const updatedListings = args.listings.filter(
-                    (_, i) => i !== index
-                  );
-                  args.update(updatedListings);
-                }}
-              />
-            </Col>
-          ))}
-        </Row>
-        <AddListingModal
-          show={showModal}
-          handleClose={handleCloseModal}
-          handleAddListing={handleAddListing}
-        />
-        <style>
-          {`
+    const handleShowModal = () => {
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
+    return (
+        <>
+        <Container className="mainContainer">
+            <Row className="mt-3">
+                <Col>
+                    <Button onClick={handleShowModal} variant="primary" className="btn-success">
+                        Add Listing
+                    </Button>
+                </Col>
+            </Row>
+            <Row className="mt-3">
+                {handleShowListings(args.listings)}
+            </Row>
+            <AddListingModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                handleAddListing={handleAddListing}
+            />
+            <style>
+                {`
           /* Custom style for the listing cards */
           .listing-card {
             border: 1px solid #ccc;

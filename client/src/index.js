@@ -11,8 +11,8 @@ import Signup from "./Components/signup";
 import Login from "./Components/login";
 import ProductLandingPage from "./Components/AddListingModal/ProductLandingPage";
 import App from "./App";
+import ProfilePage from './Components/ProfilePage/ProfilePage.js'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LogoutButton from "./Components/logout.js"
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
@@ -21,9 +21,9 @@ root.render(
         <Route path="/" element={<HomeScreen />}></Route>
         <Route path="/register" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="/profilePage" element={<ProfilePage/>}></Route>
         <Route path="/product/:id" element={<ProductLandingPage />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
-        <Route path="/logout" element={<LogoutButton/>}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

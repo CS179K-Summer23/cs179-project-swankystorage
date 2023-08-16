@@ -3,12 +3,19 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import CustomNavbar from './CustomNavbar/CustomNavbar';
+import {Button, Modal} from 'react-bootstrap'
 
 
 function Login() {
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const navigate = useNavigate()
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+  
     //axios.defaults.withCredentials = true;
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -27,7 +34,9 @@ function Login() {
             // else if(res.status === 401){
             //   navigate('/register')
             // }
-        }).catch(err => console.log(err))
+        }).catch(error => {
+          handleShow();
+        });
     }
 
     return(
@@ -35,6 +44,17 @@ function Login() {
       <CustomNavbar/>
         <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
         <div className="bg-white p-3 rounded w-25">
+        <Modal show={show} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Log in failed</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Double check your email and password!</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
           <h2>Login</h2>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">

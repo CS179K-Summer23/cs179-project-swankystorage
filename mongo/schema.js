@@ -21,7 +21,9 @@ app.use(session({
     cookie: {secure:false},
 }))
 
-var currentSession
+var currentSession;
+var loggedIn = false;
+
 const Schema = mongoose.Schema;
 
 const user = new Schema({
@@ -95,9 +97,10 @@ app.post("/login", async(req,res)=> {
             console.log("User exists")
             req.session.user = existingUser;
             const userStatus = existingUser.role === "admin" ? "admin" : "user";
-            req.session.save()
-            currentSession = req.session
-            console.log(req.session.user)
+            req.session.save();
+            currentSession = req.session;
+            loggedIn = true;
+            console.log(currentSession.user);
             res.status(200).json({status: "Success", role: userStatus, favorites: existingUser.favorites, userName: existingUser.userName})
         }
         else{
@@ -150,20 +153,30 @@ app.post("/new-listing", async (req, res) => {
 //uncomment res.status(401) whenever testing is done so that the
 //redirect works properly
 app.get('/profilePage', async(req,res)=>{
-    const user = currentSession;
-    console.log(user)
-    if(user){
+    if(loggedIn){
+        const user = currentSession.user;
+        //console.log(currentSession.user)
         res.status(200).json(user)
     }
     else{
         res.status(401).json({message:"User is not logged in"})
-        // res.redirect('/login')
+        //res.redirect('/login')
     }
 })
 
 
 //to handle logouts
 app.get('/logout', async(req,res)=>{
+    req.session.destroy()
+    currentSession = req.session;
+    loggedIn = false;
+    console.log("logged out")
+    res.status(200).json({message:"User has been logged out"})
+    
+})
+
+//fetches all listings
+app.get('/new-listing', async (req, res) => {
     try{
       req.session.destroy();
       console.log("user has been logged out")
