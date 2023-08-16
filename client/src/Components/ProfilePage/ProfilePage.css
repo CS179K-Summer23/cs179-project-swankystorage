@@ -6,6 +6,10 @@
     font-size: 32px;
 }
 
+.userNameText, .emailText, .passwordText{
+    font-size: 32px;
+}
+
 .customProfilePageButton{
     width: 150px;
     height: 50px;

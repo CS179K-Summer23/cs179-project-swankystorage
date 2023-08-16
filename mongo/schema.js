@@ -22,6 +22,7 @@ app.use(session({
 }))
 
 var currentSession;
+var loggedIn = false;
 
 const Schema = mongoose.Schema;
 
@@ -80,6 +81,7 @@ app.post("/login", async(req,res)=> {
             const userStatus = existingUser.role === "admin" ? "admin" : "user";
             req.session.save();
             currentSession = req.session;
+            loggedIn = true;
             console.log(currentSession.user);
             res.status(200).json({status: "Success", role: userStatus})
         }
@@ -101,14 +103,14 @@ app.post("/login", async(req,res)=> {
 //uncomment res.status(401) whenever testing is done so that the
 //redirect works properly
 app.get('/profilePage', async(req,res)=>{
-    const user = currentSession.user;
-    console.log(currentSession.user)
-    if(user){
+    if(loggedIn){
+        const user = currentSession.user;
+        console.log(currentSession.user)
         res.status(200).json(user)
     }
     else{
         res.status(401).json({message:"User is not logged in"})
-        res.redirect('/login')
+        //res.redirect('/login')
     }
 })
 

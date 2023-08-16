@@ -76,7 +76,6 @@ function ProfilePage(args){
                 </div>
                 <h1>Your Listings</h1>
                 <MainApp listings={listings} update={(data) => {setListings(data)}}/>
-                <FilterFields/>
             </Container>
             
         </>
