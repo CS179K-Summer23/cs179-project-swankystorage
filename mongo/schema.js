@@ -118,8 +118,8 @@ app.get('/profilePage', async(req,res)=>{
 //to handle logouts
 app.get('/logout', async(req,res)=>{
     req.session.destroy()
-    req.session.save();
     currentSession = req.session;
+    loggedIn = false;
     console.log("logged out")
     res.status(200).json({message:"User has been logged out"})
     

@@ -3,12 +3,14 @@ import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button'
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
 import './CustomNavbar.css'
 
 function CustomNavbar(){
     let[loggedIn, setLoggedIn] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         axios.get('http://localhost:3001/profilePage')
@@ -17,9 +19,21 @@ function CustomNavbar(){
             })
             .catch(error => {
                 setLoggedIn(false);
-                console.log("User not loggedin")
+                console.log("User not logged in")
             });
     }, []);
+
+    const handleLogout = () => {
+        axios.get('http://localhost:3001/logout')
+        .then(response => {
+            setLoggedIn(false);
+            navigate("/");
+        })
+        .catch(error => {
+            setLoggedIn(true);
+            console.log("Something went wrong")
+        });
+    }
 
     let buttons;
     if(!loggedIn){
@@ -37,7 +51,7 @@ function CustomNavbar(){
                         <Button variant="primary" className="btn customNavbarButton" href="profilePage">Profile</Button>
                     </Nav>
                     <Nav className="ml-auto">
-                        <Button variant="danger" className="btn customNavbarButton" href="logout">Logout</Button>
+                        <Button variant="danger" className="btn customNavbarButton" onClick={handleLogout}>Logout</Button>
                     </Nav>
         </>
     }
