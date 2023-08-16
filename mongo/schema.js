@@ -3,12 +3,12 @@ const session = require('express-session')
 const crypto = require('crypto')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const cookieParser = require("cookie-parser");
+const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const app = express()
 app.use(cors())
 app.use(express.json())
-app.use(cookieParser());
+app.use(cookieParser())
 app.use(bodyParser.urlencoded({extended: true}))
 const key = crypto.randomBytes(64).toString('hex')
 
@@ -27,23 +27,41 @@ var loggedIn = false;
 const Schema = mongoose.Schema;
 
 const user = new Schema({
-    email: {type:String, required:true},
-    userName: {type:String, required:true},
-    password: {type:String, required:true},
-
+  email: { type: String, required: true },
+  userName: { type: String, required: true },
+  password: { type: String, required: true },
+  favorites: { type: Array, required: true },
 });
 
 const userModel = mongoose.model("user", user);
 
 const listing = new Schema({
-    nameOfItem: {type:String, required:true},
-    price: {type:Number, required:true},
-    location: {type:String, required:true},
-    picture: {type:String, required:true},
-    description: {type:String, required:true},
-});
+  nameOfItem: { type: String, required: true },
+  price: { type: Number, required: true },
+  location: { type: String, required: true },
+  picture: { type: String, required: true },
+  description: { type: String, required: true },
+  categories: [{ type: String, required: true }],
+}, { timestamps: true });
 
 const listingModel = mongoose.model("listing", listing)
+//remember to change to actual routes.
+app.post("/register", async (req, res) => {
+  try {
+    const newUser = new userModel({
+      email: req.body.email,
+      userName: req.body.userName,
+      password: req.body.password,
+    });
+
+    await newUser.save();
+    console.log("User Saved to Mongo");
+    res.status(200).json({ message: "User successfully registered" });
+  } catch (error) {
+    console.log("error saving data to MongoDB: ", error);
+    res.status(500).json({ error: "Error saving user information" });
+  }
+});
 
 //to create new user
 app.post("/register", async (req, res)=> {
@@ -83,7 +101,7 @@ app.post("/login", async(req,res)=> {
             currentSession = req.session;
             loggedIn = true;
             console.log(currentSession.user);
-            res.status(200).json({status: "Success", role: userStatus})
+            res.status(200).json({status: "Success", role: userStatus, favorites: existingUser.favorites, userName: existingUser.userName})
         }
         else{
             console.log("user does not exist")
@@ -94,10 +112,42 @@ app.post("/login", async(req,res)=> {
     }catch(error){
         console.log("error: ", error);
         res.status(500).json({error:"Login error"});
-    }
-
+  }
 });
 
+app.get("/new-listing", async (req, res) => {
+  try {
+    const listings = await listingModel.find({});
+    res.json(listings);
+  } catch (error) {
+    console.log("error getting data to MongoDB: ", error);
+    res.status(500).json({ error: "Error getting listing information" });
+  }
+});
+
+//creates new listing
+app.post("/new-listing", async (req, res) => {
+  try {
+    const newListing = new listingModel({
+      nameOfItem: req.body.nameOfItem,
+      price: req.body.price,
+      location: req.body.location,
+      picture: req.body.picture,
+      description: req.body.description,
+      categories: req.body.categories
+    });
+
+    newListing.createdAt = new Date();
+    newListing.updatedAt = new Date();
+
+    await newListing.save();
+    console.log("Listing Saved to Mongo");
+    res.status(200).json({ message: "Listing successfully created" });
+  } catch (error) {
+    console.log("error saving data to MongoDB: ", error);
+    res.status(500).json({ error: "Error saving listing information" });
+  }
+});
 
 //get user info for profile page
 //uncomment res.status(401) whenever testing is done so that the
@@ -128,52 +178,63 @@ app.get('/logout', async(req,res)=>{
 //fetches all listings
 app.get('/new-listing', async (req, res) => {
     try{
-        const listings = await listingModel.find({});
-        res.json(listings)
-    } catch (error) {
-        console.log("error getting data to MongoDB: ", error);
-        res.status(500).json({error: "Error getting listing information"})
-    }
-})
-
-//creates new listing
-app.post("/new-listing", async (req, res)=> {
-    try{
-        const newListing = new listingModel({
-            nameOfItem: req.body.nameOfItem,
-            price: req.body.price,
-            location: req.body.location,
-            picture: req.body.picture,
-            description: req.body.description,
-        });
-        await newListing.save()
-        console.log("Listing Saved to Mongo")
-        res.status(200).json({message: "Listing successfully created"})
-    }
-    catch(error){
-        console.log("error saving data to MongoDB: ", error);
-        res.status(500).json({error: "Error saving listing information"})
+      req.session.destroy();
+      console.log("user has been logged out")
+      res.status(200).json({message: "User has been sucessfully logged out"})
+    }catch(error){
+      console.log("something went wrong with logging out")
+      res.status(500).json({error})
     }
     
-});
+})
+
 //for filter
 app.get("/filter-listings", async (req, res) => {
+  try {
+    const filterCriteria = req.query.query;
+    const listings = await listingModel.find(filterCriteria);
+    console.log("Filtered by ", JSON.stringify(req.query.query));
+    //console.log(listings)
+    res.status(200).json(listings);
+  } catch (error) {
+    console.log("error getting filtered listings: ", error);
+    res.status(500).json({ error: "Error getting filtered listings" });
+  }
+});
+
+app.get("/listing/:id", async (req, res) => {
+  try {
+    const listings = await listingModel.findOne({ _id: req.params.id });
+    res.json(listings);
+  } catch (error) {
+    console.log("error getting data to MongoDB: ", error);
+    res.status(500).json({ error: "Error getting listing information" });
+  }
+});
+
+app.post("/update-favorites", async (req, res) => {
     try {
-        const filterCriteria = req.query.query
-        const listings = await listingModel.find(filterCriteria);
-        console.log("Filtered by ", JSON.stringify(req.query.query));
-        //console.log(listings)
-        res.status(200).json(listings);
+        console.log("Changing favorites to ", req.body.favorites)
+        console.log("For user ", req.body.name)
+        const response = await userModel.updateOne( 
+                {userName: req.body.name},
+                {$set: {favorites: req.body.favorites}}
+        )
+        res.status(200).json({ message: "Success" })
     } catch (error) {
-        console.log("error getting filtered listings: ", error);
-        res.status(500).json({ error: "Error getting filtered listings" });
+        console.log("error updating favorites: ", error)
+        res.status(500).json({ message: "error updating favorites" })
     }
 });
 
+mongoose.connect(
+  "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
+app.listen(3001, () => {
+  console.log("on port 3001");
+});
 
-mongoose.connect("mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",{
-    useNewUrlParser:true, useUnifiedTopology:true 
-})
-app.listen(3001,()=>{
-    console.log("on port 3001")
-})

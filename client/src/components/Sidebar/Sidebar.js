@@ -1,6 +1,6 @@
 import {Nav} from "react-bootstrap";
 import axios from "axios";
-
+import { useState } from "react";
 import "./Sidebar.css"
 import { FilterBar } from "../Filter/FilterBar.js";
 
@@ -19,7 +19,7 @@ const properties = [
     }
     if (!mongoQuery.price.$gte) mongoQuery.price.$gte = 0
     if (!mongoQuery.price.$lte) mongoQuery.price.$lte = 2e10;
-    if (mongoQuery.description) mongoQuery.description = {$regex: "/" + request.description + "/"}
+    if (mongoQuery.description) mongoQuery.description = {$regex: ".*" + request.description + ".*"}
     return mongoQuery
   }
   

@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Button, Container, Row, Col, Card } from 'react-bootstrap';
-import AddListingModal from './AddListingModal';
-import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
-import { MdLocationOn } from 'react-icons/md';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import React, { useState, useEffect } from "react";
+import { Button, Container, Row, Col, Card } from "react-bootstrap";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { MdLocationOn, MdDelete } from "react-icons/md";
+import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
-import FilterBar from '../Filter/FilterBar';
+import AddListingModal from "./AddListingModal";
+import FilterBar from "../Filter/FilterBar";
+import { Link } from "react-router-dom";
 
-import './MainApp.css'
-  
+
+import "./MainApp.css";
 
 const MainApp = (args) => {
     const [showModal, setShowModal] = useState(false);
@@ -116,65 +117,100 @@ const MainApp = (args) => {
           .listing-card .favorite-icon {
             margin-right: 8px;
           }
+
+          .listing-card .delete-icon {
+            margin-left: 8px;
+            cursor: pointer;
+            color: red;
+          }
         `}
-            </style>
-        </Container>
-        </>
-    );
+        </style>
+      </Container>
+    </>
+  );
 };
 
 function FavoriteButton({ isFavorite, handleFavoriteClick }) {
-    return (
-        <div
-            className="favorite-button"
-            onClick={handleFavoriteClick}
-        >
-            {isFavorite ? (
-                <>
-                    <AiFillHeart className="favorite-icon" />
-                </>
-            ) : (
-                <>
-                    <AiOutlineHeart className="favorite-icon" />
-                </>
-            )}
-        </div>
-    );
+  return (
+    <div className="favorite-button" onClick={handleFavoriteClick}>
+      {isFavorite ? (
+        <AiFillHeart className="favorite-icon" />
+      ) : (
+        <AiOutlineHeart className="favorite-icon" />
+      )}
+    </div>
+  );
 }
 
-const ListingCard = ({ item }) => {
-    const [isFavorite, setIsFavorite] = useState(false);
+const ListingCard = ({ item, handleDelete }) => {
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
-    const handleFavoriteClick = () => {
-        setIsFavorite((prevIsFavorite) => !prevIsFavorite);
-    };
+  useEffect(() => {
+    if (!window.user) return
+    if (window.user.favorites.find(element => element === item._id)) {
+      setIsFavorite(true)
+    }
+  }, [])
 
-    return (
-        <Card className="listing-card">
-            {/* Display item details */}
-            <Card.Img variant="top" src={item.picture} alt={item.itemName} />
-            <Card.Body>
-                <Card.Title>{item.nameOfItem}</Card.Title>
-                <Card.Text>Price: ${item.price}</Card.Text>
-                {/* Create a new row for the location icon and favorite button */}
-                <Row className="align-items-between">
-                    <Col xs={6}>
-                        {/*location icon */}
-                        <MdLocationOn style={{ marginRight: '8px' }} />
-                        {item.location}
-                    </Col>
-                    <Col xs={3} className="align-content-center">
-                        <FavoriteButton
-                            isFavorite={isFavorite}
-                            handleFavoriteClick={handleFavoriteClick}
-                            className=""
-                        />
-                    </Col>
-                </Row>
-                {/*<Card.Text>Description: {item.description}</Card.Text>*/}
-            </Card.Body>
-        </Card>
-    );
+  const handleFavoriteClick = () => {
+    if (isFavorite) {
+      console.log("removing ", item._id)
+      //let itemIndex = window.user.favorites.findIndex(element => element === item._id)
+      window.user.favorites = window.user.favorites.filter(element => element !== item._id)
+      console.log("now ", window.user.favorites)
+    } else {
+      console.log("adding ", item._id)
+      window.user.favorites.push(item._id)
+      console.log("now ", window.user.favorites)
+    }
+    axios.post('http://localhost:3001/update-favorites', {name: window.user.name, favorites: window.user.favorites})
+      .then(res => {
+          console.log("this is the status:", res.status)
+          if(res.status === 200) {
+            setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+          }
+      }).catch(err => console.log(err))
+  };
+
+  const handleHideClick = () => {
+    setIsHidden(true);
+  };
+
+  if (isHidden) {
+    return null;
+  }
+
+  return (
+    <Card className="listing-card">
+      <Card.Img variant="top" src={item.picture} alt={item.itemName} />
+      <Card.Body>
+        <Link to={`/product/${encodeURIComponent(item._id)}`}>
+          <Card.Title>{item.nameOfItem}</Card.Title>
+        </Link>
+        <Card.Text>Price: ${item.price}</Card.Text>
+        <Row className="align-items-center">
+          <Col xs={3}>
+            {window.user != null && <FavoriteButton
+              isFavorite={isFavorite}
+              handleFavoriteClick={handleFavoriteClick}
+            />}
+          </Col>
+          <Col xs={6}>
+            <MdLocationOn style={{ marginRight: "8px" }} />
+            {item.location}
+          </Col>
+          <Col xs={3}>
+            <MdDelete
+              className="delete-icon"
+              onClick={handleHideClick}
+              alt="Hide Post"
+            />
+          </Col>
+        </Row>
+      </Card.Body>
+    </Card>
+  );
 };
 
 export default MainApp;

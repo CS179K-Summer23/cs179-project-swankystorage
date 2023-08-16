@@ -1,18 +1,19 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
 //import App from './App';
-import MainApp from './Components/AddListingModal/MainApp'
-import reportWebVitals from './reportWebVitals';
-import HomeScreen from './Components/HomeScreen/HomeScreen.js'
-import { FilterBar } from './Components/FilterBar';
-import Signup from './Components/signup';
-import Login from './Components/login';
+import MainApp from "./Components/AddListingModal/MainApp";
+import reportWebVitals from "./reportWebVitals";
+import HomeScreen from "./Components/HomeScreen/HomeScreen.js";
+import Dashboard from "./Components/Dashboard/Dashboard";
+import { FilterBar } from "./Components/FilterBar";
+import Signup from "./Components/signup";
+import Login from "./Components/login";
+import ProductLandingPage from "./Components/AddListingModal/ProductLandingPage";
+import App from "./App";
 import ProfilePage from './Components/ProfilePage/ProfilePage.js'
-import App from './App';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -21,6 +22,8 @@ root.render(
         <Route path="/register" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/profilePage" element={<ProfilePage/>}></Route>
+        <Route path="/product/:id" element={<ProductLandingPage />}></Route>
+        <Route path="/dashboard" element={<Dashboard />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

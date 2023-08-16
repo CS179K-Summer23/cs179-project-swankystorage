@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
-
 import './CustomNavbar.css'
 
 function CustomNavbar(){
@@ -63,6 +62,7 @@ function CustomNavbar(){
         </>
     }
 
+    const navigate = useNavigate()
     return (
         <Navbar className="bg-body-tertiary navbar border-bottom" sticky="top">
             <Modal show={show} onHide={handleClose}>
@@ -83,7 +83,7 @@ function CustomNavbar(){
             </Modal>
             <Container fluid className="navBarMainContainer">
                 <Container fluid>
-                <Navbar.Brand href="/">
+                <Navbar.Brand onClick={() => navigate('/')}>
                     <img
                     alt=""
                     src="https://www.dropbox.com/s/58algfockihugwq/Logo_Gradient.png?raw=1"
@@ -93,6 +93,15 @@ function CustomNavbar(){
                 </Navbar.Brand>
                 </Container>
                     {buttons}
+                    { !window.user && <Nav className="ml-auto">
+                        <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate("/login")}>Log In</Button>{' '}
+                    </Nav> }
+                    { !window.user && <Nav className="ml-auto">
+                        <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/register")}>Register</Button>{' '}
+                    </Nav> }
+                    { window.user && <Nav className="ml-auto">
+                        <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/dashboard")}>Dashboard</Button>{' '}
+                    </Nav> }
             </Container>
         </Navbar>
     )
