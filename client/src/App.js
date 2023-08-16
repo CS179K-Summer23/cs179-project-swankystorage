@@ -2,6 +2,7 @@ import Signup from "./Components/signup"
 import Login from "./Components/login"
 import HomeScreen from "./Components/HomeScreen/HomeScreen.js"
 import { FilterBar } from "./Components/FilterBar"
+import Chat from "./Components/Chat/Chat"
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -40,6 +41,7 @@ function App() {
         <Route path="/filter" element={<FilterBar properties={properties} getQuery={(query) => console.log(requestToMongoQuery(query))} />}></Route>
         <Route path="/register" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="/chat" element={<Chat />}></Route>
       </Routes>
     </BrowserRouter>
     {/* <div className="App">

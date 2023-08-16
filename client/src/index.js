@@ -9,6 +9,7 @@ import { FilterBar } from "./Components/FilterBar";
 import Signup from "./Components/signup";
 import Login from "./Components/login";
 import ProductLandingPage from "./Components/AddListingModal/ProductLandingPage";
+import Chat from "./Components/Chat/Chat"
 import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -21,6 +22,7 @@ root.render(
         <Route path="/register" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/product/:id" element={<ProductLandingPage />}></Route>
+        <Route path="/chat" element={<Chat />}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>
