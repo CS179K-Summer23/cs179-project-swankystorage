@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Container, Row, Col, Card } from "react-bootstrap";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { MdLocationOn, MdDelete } from "react-icons/md";
@@ -41,7 +41,7 @@ const MainApp = (args) => {
           </Col>
         </Row>
         <Row className="mt-3">
-          {args.listings.map((item, index) => (
+          {args.listings && args.listings.map((item, index) => (
             <Col key={index} md={3} sm={2}>
               <ListingCard
                 item={item}
@@ -139,8 +139,31 @@ const ListingCard = ({ item, handleDelete }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
 
+  useEffect(() => {
+    if (!window.user) return
+    if (window.user.favorites.find(element => element === item._id)) {
+      setIsFavorite(true)
+    }
+  }, [])
+
   const handleFavoriteClick = () => {
-    setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+    if (isFavorite) {
+      console.log("removing ", item._id)
+      //let itemIndex = window.user.favorites.findIndex(element => element === item._id)
+      window.user.favorites = window.user.favorites.filter(element => element !== item._id)
+      console.log("now ", window.user.favorites)
+    } else {
+      console.log("adding ", item._id)
+      window.user.favorites.push(item._id)
+      console.log("now ", window.user.favorites)
+    }
+    axios.post('http://localhost:3001/update-favorites', {name: window.user.name, favorites: window.user.favorites})
+      .then(res => {
+          console.log("this is the status:", res.status)
+          if(res.status === 200) {
+            setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+          }
+      }).catch(err => console.log(err))
   };
 
   const handleHideClick = () => {
@@ -161,10 +184,10 @@ const ListingCard = ({ item, handleDelete }) => {
         <Card.Text>Price: ${item.price}</Card.Text>
         <Row className="align-items-center">
           <Col xs={3}>
-            <FavoriteButton
+            {window.user != null && <FavoriteButton
               isFavorite={isFavorite}
               handleFavoriteClick={handleFavoriteClick}
-            />
+            />}
           </Col>
           <Col xs={6}>
             <MdLocationOn style={{ marginRight: "8px" }} />

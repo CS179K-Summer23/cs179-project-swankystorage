@@ -5,6 +5,7 @@ import "./index.css";
 import MainApp from "./Components/AddListingModal/MainApp";
 import reportWebVitals from "./reportWebVitals";
 import HomeScreen from "./Components/HomeScreen/HomeScreen.js";
+import Dashboard from "./Components/Dashboard/Dashboard";
 import { FilterBar } from "./Components/FilterBar";
 import Signup from "./Components/signup";
 import Login from "./Components/login";
@@ -21,6 +22,7 @@ root.render(
         <Route path="/register" element={<Signup />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/product/:id" element={<ProductLandingPage />}></Route>
+        <Route path="/dashboard" element={<Dashboard />}></Route>
         <Route path="/logout" element={<LogoutButton/>}></Route>
       </Routes>
     </BrowserRouter>

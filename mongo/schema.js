@@ -28,6 +28,7 @@ const user = new Schema({
   email: { type: String, required: true },
   userName: { type: String, required: true },
   password: { type: String, required: true },
+  favorites: { type: Array, required: true },
 });
 
 const userModel = mongoose.model("user", user);
@@ -40,7 +41,6 @@ const listing = new Schema({
   description: { type: String, required: true },
   categories: [{ type: String, required: true }],
 }, { timestamps: true });
-
 
 const listingModel = mongoose.model("listing", listing)
 //remember to change to actual routes.
@@ -98,7 +98,7 @@ app.post("/login", async(req,res)=> {
             req.session.save()
             currentSession = req.session
             console.log(req.session.user)
-            res.status(200).json({status: "Success", role: userStatus})
+            res.status(200).json({status: "Success", role: userStatus, favorites: existingUser.favorites, userName: existingUser.userName})
         }
         else{
             console.log("user does not exist")
@@ -221,7 +221,20 @@ app.get("/listing/:id", async (req, res) => {
   }
 });
 
-
+app.post("/update-favorites", async (req, res) => {
+    try {
+        console.log("Changing favorites to ", req.body.favorites)
+        console.log("For user ", req.body.name)
+        const response = await userModel.updateOne( 
+                {userName: req.body.name},
+                {$set: {favorites: req.body.favorites}}
+        )
+        res.status(200).json({ message: "Success" })
+    } catch (error) {
+        console.log("error updating favorites: ", error)
+        res.status(500).json({ message: "error updating favorites" })
+    }
+});
 
 mongoose.connect(
   "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
@@ -233,5 +246,4 @@ mongoose.connect(
 app.listen(3001, () => {
   console.log("on port 3001");
 });
-
 
