@@ -13,6 +13,24 @@ import './MainApp.css'
 const MainApp = (args) => {
     const [showModal, setShowModal] = useState(false);
 
+    const handleShowListings = (listingsToShow) => {
+        /* Map through the "listings" array and display each item in a ListingCard */
+        console.log(listingsToShow);
+        if(listingsToShow.length > 0){
+            console.log("Ahh");
+            return <>
+                {args.listings.map((item, index) => (
+                    <Col key={index} md={3} sm={2}>
+                        <ListingCard item={item} />
+                    </Col>
+                ))}
+            </>
+        }else{
+            console.log("eee");
+            return<h1>Hmmm.. There's nothing here</h1>
+        }
+    }
+
     //axios.get(
     //    'http://localhost:3001/new-listing'
     //).then((response) => {
@@ -43,12 +61,7 @@ const MainApp = (args) => {
                 </Col>
             </Row>
             <Row className="mt-3">
-                {/* Map through the "listings" array and display each item in a ListingCard */}
-                {args.listings.map((item, index) => (
-                    <Col key={index} md={3} sm={2}>
-                        <ListingCard item={item} />
-                    </Col>
-                ))}
+                {handleShowListings(args.listings)}
             </Row>
             <AddListingModal
                 show={showModal}
