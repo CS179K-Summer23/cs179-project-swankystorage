@@ -20,6 +20,12 @@
     font-size: 20px;
 }
 
+.showPasswordButton{
+    width: 150px;
+    height: 50px;
+    margin: 5px;
+}
+
 .informationContainer{
     padding-top: 20px;
     padding-bottom: 20px;

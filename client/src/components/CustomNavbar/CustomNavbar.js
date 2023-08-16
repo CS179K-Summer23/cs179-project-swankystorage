@@ -16,6 +16,7 @@ function CustomNavbar(){
                 setLoggedIn(true);
             })
             .catch(error => {
+                setLoggedIn(false);
                 console.log("User not loggedin")
             });
     }, []);

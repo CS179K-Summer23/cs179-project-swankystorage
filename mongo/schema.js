@@ -105,7 +105,7 @@ app.post("/login", async(req,res)=> {
 app.get('/profilePage', async(req,res)=>{
     if(loggedIn){
         const user = currentSession.user;
-        console.log(currentSession.user)
+        //console.log(currentSession.user)
         res.status(200).json(user)
     }
     else{
@@ -116,12 +116,14 @@ app.get('/profilePage', async(req,res)=>{
 
 
 //to handle logouts
-// app.get('/logout', async(req,res)=>{
-//     req.session.destroy()
-//     console.log("logged out")
-//     res.status(200).json({message:"User has been logged out"})
+app.get('/logout', async(req,res)=>{
+    req.session.destroy()
+    req.session.save();
+    currentSession = req.session;
+    console.log("logged out")
+    res.status(200).json({message:"User has been logged out"})
     
-// })
+})
 
 //fetches all listings
 app.get('/new-listing', async (req, res) => {

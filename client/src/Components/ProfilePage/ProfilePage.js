@@ -1,5 +1,5 @@
 import CustomNavbar from '../CustomNavbar/CustomNavbar';
-import { Button, Container, Row, Col } from 'react-bootstrap';
+import { Button, Container, Card } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import MainApp from '../AddListingModal/MainApp';
 import FilterBar from '../Filter/FilterBar';
@@ -7,6 +7,7 @@ import axios from "axios";
 import FilterFields from '../FilterFields'
 
 import './ProfilePage.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const properties = [
     {key: 0, label: "Product Name", prop: "name", type: "text"},
@@ -35,6 +36,7 @@ function ProfilePage(args){
     let [email, setEmail] = useState("");
     let [userName, setUserName] = useState("");
     let [password, setPassword] = useState("");
+    let [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
     useEffect(() => {
         axios.get('http://localhost:3001/profilePage')
@@ -50,6 +52,22 @@ function ProfilePage(args){
                 setError(error);
             });
     }, []);
+
+    const passWordVisibilityButtonClicked = () => {
+        setIsPasswordVisible(!isPasswordVisible)
+    }
+
+    const passwordToDisplay = (display) => {
+        if(display){
+            return password;
+        }else{
+            var obfuscatedPassword = "";
+            for(let i = 0; i < password.length; i++){
+                obfuscatedPassword += "*";
+            }
+            return obfuscatedPassword;
+        }
+    }
 
     const getQueryResult = (query) => {
         console.log("query: ", query)
@@ -67,12 +85,13 @@ function ProfilePage(args){
             <CustomNavbar/>
             <Container fluid className='mainContainer'>
                 <div className="informationContainer">
-                    <Col xs={7} className='textFieldsContainer'>
+                    <Card style={{padding: "10px"}}>
                         <p><span className="userNameTitle"><b>User Name: </b></span><span className="userNameText">{userName}</span></p>
                         <p><span className="emailTitle"><b>Email: </b></span><span className="emailText">{email}</span></p>
-                        <p><span className="passwordTitle"><b>Password: </b></span><span className="passwordText">{password}</span></p>
+                        <p><span className="passwordTitle"><b>Password: </b></span><span className="passwordText">{passwordToDisplay(isPasswordVisible)}</span></p>
+                        <Button variant='primary' className='showPasswordButton' onClick={passWordVisibilityButtonClicked}>Show Password</Button>
                         <Button variant='primary' className='customProfilePageButton'>Messages</Button>
-                    </Col>
+                    </Card>
                 </div>
                 <h1>Your Listings</h1>
                 <MainApp listings={listings} update={(data) => {setListings(data)}}/>
