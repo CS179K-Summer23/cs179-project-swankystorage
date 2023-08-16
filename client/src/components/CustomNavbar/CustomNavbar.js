@@ -1,6 +1,7 @@
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container';
+import { Modal } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button'
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
@@ -12,6 +13,11 @@ import './CustomNavbar.css'
 function CustomNavbar(){
     let[loggedIn, setLoggedIn] = useState(false);
     const navigate = useNavigate();
+
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         axios.get('http://localhost:3001/profilePage')
@@ -52,13 +58,29 @@ function CustomNavbar(){
                         <Button variant="primary" className="btn customNavbarButton" href="profilePage">Profile</Button>
                     </Nav>
                     <Nav className="ml-auto">
-                        <Button variant="danger" className="btn customNavbarButton" onClick={handleLogout}>Logout</Button>
+                        <Button variant="danger" className="btn customNavbarButton" onClick={handleShow}>Logout</Button>
                     </Nav>
         </>
     }
 
     return (
         <Navbar className="bg-body-tertiary navbar border-bottom" sticky="top">
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Are you sure you want to log out?</Modal.Title>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                    Cancel
+                    </Button>
+                    <Button variant="danger" onClick={ () => {
+                        handleClose();
+                        handleLogout();
+                        }}>
+                    Logout
+                    </Button>
+                </Modal.Footer>
+            </Modal>
             <Container fluid className="navBarMainContainer">
                 <Container fluid>
                 <Navbar.Brand href="/">
