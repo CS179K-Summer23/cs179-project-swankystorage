@@ -17,7 +17,6 @@ const MainApp = (args) => {
         /* Map through the "listings" array and display each item in a ListingCard */
         console.log(listingsToShow);
         if(listingsToShow.length > 0){
-            console.log("Ahh");
             return <>
                 {args.listings.map((item, index) => (
                     <Col key={index} md={3} sm={2}>
@@ -26,8 +25,7 @@ const MainApp = (args) => {
                 ))}
             </>
         }else{
-            console.log("eee");
-            return<h1>Hmmm.. There's nothing here</h1>
+            return<h1>Hmmm.. There's nothing here...</h1>
         }
     }
 
