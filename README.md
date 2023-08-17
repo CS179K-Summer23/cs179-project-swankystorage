@@ -54,7 +54,15 @@ Craigslist style app where users can post listings of objects and find listings 
   - Light / Dark / High Contrast Mode
 
 ## To Run Locally
-- run *npm install*
-- run *npm install react-bootstrap bootstrap*
-- run *npm install react-router-dom localforage match-sorter sort-by*
-- run *npm start*
+Open two terminals. Inside the first: 
+```sh
+cd client
+npm i
+npm start
+```
+Inside the second: 
+```sh
+cd mongo
+npm i
+node schema.js
+```
