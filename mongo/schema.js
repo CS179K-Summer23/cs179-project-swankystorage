@@ -41,7 +41,7 @@ const listing = new Schema({
   location: { type: String, required: true },
   picture: { type: String, required: true },
   description: { type: String, required: true },
-  categories: [{ type: String, required: true }],
+  categories: [{ type: Array, required: true }],
 }, { timestamps: true });
 
 const listingModel = mongoose.model("listing", listing)
