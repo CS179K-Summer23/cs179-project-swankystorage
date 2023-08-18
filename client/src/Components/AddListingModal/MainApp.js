@@ -195,6 +195,13 @@ const ListingCard = ({ item, handleDelete }) => {
     return null;
   }
   const handleDeleteClick = () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this listing?"
+    );
+
+    if (!isConfirmed) {
+      return;
+    }
     axios
       .delete(`http://localhost:3001/listing/${item._id}`)
       .then((response) => {
