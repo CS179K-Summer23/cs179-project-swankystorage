@@ -1,104 +1,140 @@
-import CustomNavbar from '../CustomNavbar/CustomNavbar';
-import { Button, Container, Card } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
-import MainApp from '../AddListingModal/MainApp';
-import FilterBar from '../Filter/FilterBar';
+import CustomNavbar from "../CustomNavbar/CustomNavbar";
+import { Button, Container, Card } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import MainApp from "../AddListingModal/MainApp";
+import FilterBar from "../Filter/FilterBar";
 import axios from "axios";
-import FilterFields from '../FilterFields'
+import FilterFields from "../FilterFields";
 
-import './ProfilePage.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "./ProfilePage.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const properties = [
-    {key: 0, label: "Product Name", prop: "name", type: "text"},
-    {key: 1, label: "Product Description", prop: "description", type: "text"},
-    {key: 2, label: "Minimum Price", prop: "minPrice", type: "number"},
-    {key: 3, label: "Maximum Price", prop: "maxPrice", type: "number"},
-    {key: 4, label: "Location", prop: "location", type: "text"}
-  ]
-  
-  function requestToMongoQuery(request) {
-    let mongoQuery = {nameOfItem: request.name, price: {$gte: Number(request.minPrice), $lte: Number(request.maxPrice)}, location: request.location, description: request.description}
-    for (let key in mongoQuery) {
-        if (!mongoQuery[key]) delete mongoQuery[key]
-    }
-    if (!mongoQuery.price.$gte) mongoQuery.price.$gte = 0
-    if (!mongoQuery.price.$lte) mongoQuery.price.$lte = 2e10;
-    if (mongoQuery.description) mongoQuery.description = {$regex: "/" + request.description + "/"}
-    return mongoQuery
+  { key: 0, label: "Product Name", prop: "name", type: "text" },
+  { key: 1, label: "Product Description", prop: "description", type: "text" },
+  { key: 2, label: "Minimum Price", prop: "minPrice", type: "number" },
+  { key: 3, label: "Maximum Price", prop: "maxPrice", type: "number" },
+  { key: 4, label: "Location", prop: "location", type: "text" },
+];
+
+function requestToMongoQuery(request) {
+  let mongoQuery = {
+    nameOfItem: request.name,
+    price: { $gte: Number(request.minPrice), $lte: Number(request.maxPrice) },
+    location: request.location,
+    description: request.description,
+  };
+  for (let key in mongoQuery) {
+    if (!mongoQuery[key]) delete mongoQuery[key];
   }
-
-function ProfilePage(args){
-    let [listings, setListings] = useState([])
-    const [user, setUser] = useState(null);
-    const [error, setError] = useState(null);
-
-    let [email, setEmail] = useState("");
-    let [userName, setUserName] = useState("");
-    let [password, setPassword] = useState("");
-    let [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
-    useEffect(() => {
-        axios.get('http://localhost:3001/profilePage')
-            .then(response => {
-                setUser(response.data);
-                console.log(user);
-
-                setEmail(response.data.email);
-                setUserName(response.data.userName);
-                setPassword(response.data.password);
-            })
-            .catch(error => {
-                setError(error);
-            });
-    }, []);
-
-    const passWordVisibilityButtonClicked = () => {
-        setIsPasswordVisible(!isPasswordVisible)
-    }
-
-    const passwordToDisplay = (display) => {
-        if(display){
-            return password;
-        }else{
-            var obfuscatedPassword = "";
-            for(let i = 0; i < password.length; i++){
-                obfuscatedPassword += "*";
-            }
-            return obfuscatedPassword;
-        }
-    }
-
-    const getQueryResult = (query) => {
-        console.log("query: ", query)
-        axios.get(
-            'http://localhost:3001/filter-listings',
-            {params: {query}}
-        ).then((response) => {
-            //console.log("Filtered: ", response)
-            args.load(response.data)
-        })
-    };
-
-    return (
-        <>
-            <CustomNavbar/>
-            <Container fluid className='mainContainer'>
-                <div className="informationContainer">
-                    <Card style={{padding: "10px"}}>
-                        <p><span className="userNameTitle"><b>User Name: </b></span><span className="userNameText">{userName}</span></p>
-                        <p><span className="emailTitle"><b>Email: </b></span><span className="emailText">{email}</span></p>
-                        <p><span className="passwordTitle"><b>Password: </b></span><span className="passwordText">{passwordToDisplay(isPasswordVisible)}</span></p>
-                        <Button variant='primary' className='showPasswordButton' onClick={passWordVisibilityButtonClicked}>Show Password</Button>
-                        <Button variant='primary' className='customProfilePageButton'>Messages</Button>
-                    </Card>
-                </div>
-                <h1>Your Listings</h1>
-                <MainApp listings={listings} update={(data) => {setListings(data)}}/>
-            </Container>
-            
-        </>
-    )
+  if (!mongoQuery.price.$gte) mongoQuery.price.$gte = 0;
+  if (!mongoQuery.price.$lte) mongoQuery.price.$lte = 2e10;
+  if (mongoQuery.description)
+    mongoQuery.description = { $regex: "/" + request.description + "/" };
+  return mongoQuery;
 }
 
-export default ProfilePage
+function ProfilePage(args) {
+  let [listings, setListings] = useState([]);
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
+
+  let [email, setEmail] = useState("");
+  let [userName, setUserName] = useState("");
+  let [password, setPassword] = useState("");
+  let [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setUser(response.data.user);
+        console.log(response.data);
+
+        setEmail(response.data.user.email);
+        setUserName(response.data.user.userName);
+        setPassword(response.data.user.password);
+        setListings(response.data.listings);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+  }, []);
+
+  const passWordVisibilityButtonClicked = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+
+  const passwordToDisplay = (display) => {
+    if (display) {
+      return password;
+    } else {
+      var obfuscatedPassword = "";
+      for (let i = 0; i < password.length; i++) {
+        obfuscatedPassword += "*";
+      }
+      return obfuscatedPassword;
+    }
+  };
+
+  const getQueryResult = (query) => {
+    console.log("query: ", query);
+    axios
+      .get("http://localhost:3001/filter-listings", { params: { query } })
+      .then((response) => {
+        //console.log("Filtered: ", response)
+        args.load(response.data);
+      });
+  };
+
+  return (
+    <>
+      <CustomNavbar />
+      <Container fluid className="mainContainer">
+        <div className="informationContainer">
+          <Card style={{ padding: "10px" }}>
+            <p>
+              <span className="userNameTitle">
+                <b>User Name: </b>
+              </span>
+              <span className="userNameText">{userName}</span>
+            </p>
+            <p>
+              <span className="emailTitle">
+                <b>Email: </b>
+              </span>
+              <span className="emailText">{email}</span>
+            </p>
+            <p>
+              <span className="passwordTitle">
+                <b>Password: </b>
+              </span>
+              <span className="passwordText">
+                {passwordToDisplay(isPasswordVisible)}
+              </span>
+            </p>
+            <Button
+              variant="primary"
+              className="showPasswordButton"
+              onClick={passWordVisibilityButtonClicked}
+            >
+              Show Password
+            </Button>
+            <Button variant="primary" className="customProfilePageButton">
+              Messages
+            </Button>
+          </Card>
+        </div>
+        <h1>My Listings</h1>
+        <MainApp
+          listings={listings}
+          update={(data) => {
+            setListings(data);
+          }}
+        />
+      </Container>
+    </>
+  );
+}
+
+export default ProfilePage;
