@@ -62,7 +62,6 @@ function CustomNavbar(){
         </>
     }
 
-    const navigate = useNavigate()
     return (
         <Navbar className="bg-body-tertiary navbar border-bottom" sticky="top">
             <Modal show={show} onHide={handleClose}>
@@ -93,15 +92,6 @@ function CustomNavbar(){
                 </Navbar.Brand>
                 </Container>
                     {buttons}
-                    { !window.user && <Nav className="ml-auto">
-                        <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate("/login")}>Log In</Button>{' '}
-                    </Nav> }
-                    { !window.user && <Nav className="ml-auto">
-                        <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/register")}>Register</Button>{' '}
-                    </Nav> }
-                    { window.user && <Nav className="ml-auto">
-                        <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/dashboard")}>Dashboard</Button>{' '}
-                    </Nav> }
             </Container>
         </Navbar>
     )
