@@ -20,12 +20,6 @@ function HomeScreen(){
                         <Sidebar className="bufferedSidebar" load={(data) => {setListings(data)}}/>
                     </Col>
                     <Col id="page-content-wrapper">
-                        {listings.length === 0 && 
-                            <>
-                              <h2>No Results</h2>
-                              <p>Reduce your search terms to see more!</p>
-                            </>
-                        }
                         <MainApp listings={listings} update={(data) => {setListings(data)}}/>
                     </Col> 
                 </Row>

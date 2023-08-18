@@ -26,7 +26,9 @@ const MainApp = (args) => {
                 ))}
             </>
         }else{
-            return<h1>Hmmm.. There's nothing here...</h1>
+            return <>
+                    <h1>No Results</h1>
+                   </>
         }
     }
 
