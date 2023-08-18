@@ -238,6 +238,22 @@ app.post("/update-favorites", async (req, res) => {
   }
 });
 
+app.delete("/listing/:id", async (req, res) => {
+  try {
+    const listingId = req.params.id;
+    const result = await listingModel.findByIdAndDelete(listingId);
+
+    if (!result) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing successfully deleted" });
+  } catch (error) {
+    console.log("Error deleting the listing: ", error);
+    res.status(500).json({ error: "Error deleting the listing" });
+  }
+});
+
 mongoose.connect(
   "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
   {

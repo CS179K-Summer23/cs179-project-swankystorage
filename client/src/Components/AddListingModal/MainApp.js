@@ -194,6 +194,19 @@ const ListingCard = ({ item, handleDelete }) => {
   if (isHidden) {
     return null;
   }
+  const handleDeleteClick = () => {
+    axios
+      .delete(`http://localhost:3001/listing/${item._id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Listing deleted successfully");
+          handleHideClick(); // Hide the listing from the UI
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting the listing:", error);
+      });
+  };
 
   return (
     <Card className="listing-card">
@@ -230,7 +243,9 @@ const ListingCard = ({ item, handleDelete }) => {
               <Button variant="primary">Update</Button>
             </Col>
             <Col>
-              <Button variant="danger">Delete</Button>
+              <Button variant="danger" onClick={handleDeleteClick}>
+                Delete
+              </Button>
             </Col>
           </Row>
         )}
