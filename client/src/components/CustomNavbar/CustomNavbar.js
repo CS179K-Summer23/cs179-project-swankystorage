@@ -17,13 +17,19 @@ function CustomNavbar(){
     const handleCloseLogoutButton = () => setShowLogoutButton(false);
     const handleShowLogoutButton = () => setShowLogoutButton(true);
 
-    const [showLogoutConfirmationFailure, setShowLogoutConfirmationFailure] = useState(false);
-    const handleCloseLogoutConfirmationFailure = () => setShowLogoutConfirmationFailure(false);
-    const handleShowLogoutConfirmationFailure = () => setShowLogoutConfirmationFailure(true);
-
+    
     const [showLogoutConfirmationSuccess, setShowLogoutConfirmationSuccess] = useState(false);
-    const handleCloseLogoutConfirmationSuccess = () => setShowLogoutConfirmationSuccess(false);
+    const handleCloseLogoutConfirmationSuccess = () => {
+        setShowLogoutConfirmationSuccess(false);
+        window.location.reload();
+    }
     const handleShowLogoutConfirmationSuccess = () => setShowLogoutConfirmationSuccess(true);
+
+    const [showLogoutConfirmationFailure, setShowLogoutConfirmationFailure] = useState(false);
+    const handleCloseLogoutConfirmationFailure = () => {
+        setShowLogoutConfirmationFailure(false);
+    }
+    const handleShowLogoutConfirmationFailure = () => setShowLogoutConfirmationFailure(true);
 
     useEffect(() => {
         axios.get('http://localhost:3001/profilePage')
