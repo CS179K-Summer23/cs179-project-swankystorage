@@ -254,6 +254,28 @@ app.delete("/listing/:id", async (req, res) => {
   }
 });
 
+app.put("/listing/:id", async (req, res) => {
+  try {
+    const listingId = req.params.id;
+    const updatedData = req.body;
+
+    const updatedListing = await listingModel.findByIdAndUpdate(listingId, updatedData, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json({ message: "Listing successfully updated", updatedListing });
+
+  } catch (error) {
+    console.log("Error updating the listing: ", error);
+    res.status(500).json({ error: "Error updating the listing" });
+  }
+});
+
 mongoose.connect(
   "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
   {
