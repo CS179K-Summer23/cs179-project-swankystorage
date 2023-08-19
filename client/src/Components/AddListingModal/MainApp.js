@@ -6,69 +6,72 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import AddListingModal from "./AddListingModal";
 import FilterBar from "../Filter/FilterBar";
-import { Link } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
 
 import "./MainApp.css";
 
 const MainApp = (args) => {
-    const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-    const handleShowListings = (listingsToShow) => {
-        /* Map through the "listings" array and display each item in a ListingCard */
-        console.log(listingsToShow);
-        if(listingsToShow.length > 0){
-            return <>
-                {args.listings.map((item, index) => (
-                    <Col key={index} md={3} sm={2}>
-                        <ListingCard item={item} />
-                    </Col>
-                ))}
-            </>
-        }else{
-            return<h1>Hmmm.. There's nothing here...</h1>
-        }
-    }
-
-    //axios.get(
-    //    'http://localhost:3001/new-listing'
-    //).then((response) => {
-    //    console.log(response);
-    //    setListings(response.data)
-    //});
-
-    const handleAddListing = (newListing) => {
-        args.update([...args.listings, newListing])
-    };
-
-    const handleShowModal = () => {
-        setShowModal(true);
-    };
-
-    const handleCloseModal = () => {
-        setShowModal(false);
-    };
-
-    return (
+  const handleShowListings = (listingsToShow) => {
+    /* Map through the "listings" array and display each item in a ListingCard */
+    console.log(listingsToShow);
+    if (listingsToShow.length > 0) {
+      return (
         <>
-        <Container className="mainContainer">
-            <Row className="mt-3">
-                <Col>
-                    <Button onClick={handleShowModal} variant="primary" className="btn-success">
-                        Add Listing
-                    </Button>
-                </Col>
-            </Row>
-            <Row className="mt-3">
-                {handleShowListings(args.listings)}
-            </Row>
-            <AddListingModal
-                show={showModal}
-                handleClose={handleCloseModal}
-                handleAddListing={handleAddListing}
-            />
-            <style>
-                {`
+          {args.listings.map((item, index) => (
+            <Col key={index} md={3} sm={2}>
+              <ListingCard item={item} />
+            </Col>
+          ))}
+        </>
+      );
+    } else {
+      return <h1>Hmmm.. There's nothing here...</h1>;
+    }
+  };
+
+  //axios.get(
+  //    'http://localhost:3001/new-listing'
+  //).then((response) => {
+  //    console.log(response);
+  //    setListings(response.data)
+  //});
+
+  const handleAddListing = (newListing) => {
+    args.update([...args.listings, newListing]);
+  };
+
+  const handleShowModal = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  return (
+    <>
+      <Container className="mainContainer">
+        <Row className="mt-3">
+          <Col>
+            <Button
+              onClick={handleShowModal}
+              variant="primary"
+              className="btn-success"
+            >
+              Add Listing
+            </Button>
+          </Col>
+        </Row>
+        <Row className="mt-3">{handleShowListings(args.listings)}</Row>
+        <AddListingModal
+          show={showModal}
+          handleClose={handleCloseModal}
+          handleAddListing={handleAddListing}
+        />
+        <style>
+          {`
           /* Custom style for the listing cards */
           .listing-card {
             border: 1px solid #ccc;
@@ -145,32 +148,43 @@ function FavoriteButton({ isFavorite, handleFavoriteClick }) {
 const ListingCard = ({ item, handleDelete }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const location = useLocation();
+
+  const isProfilePage = location.pathname === "/profilePage";
+  console.log(isProfilePage);
 
   useEffect(() => {
-    if (!window.user) return
-    if (window.user.favorites.find(element => element === item._id)) {
-      setIsFavorite(true)
+    if (!window.user) return;
+    if (window.user.favorites.find((element) => element === item._id)) {
+      setIsFavorite(true);
     }
-  }, [])
+  }, []);
 
   const handleFavoriteClick = () => {
     if (isFavorite) {
-      console.log("removing ", item._id)
+      console.log("removing ", item._id);
       //let itemIndex = window.user.favorites.findIndex(element => element === item._id)
-      window.user.favorites = window.user.favorites.filter(element => element !== item._id)
-      console.log("now ", window.user.favorites)
+      window.user.favorites = window.user.favorites.filter(
+        (element) => element !== item._id
+      );
+      console.log("now ", window.user.favorites);
     } else {
-      console.log("adding ", item._id)
-      window.user.favorites.push(item._id)
-      console.log("now ", window.user.favorites)
+      console.log("adding ", item._id);
+      window.user.favorites.push(item._id);
+      console.log("now ", window.user.favorites);
     }
-    axios.post('http://localhost:3001/update-favorites', {name: window.user.name, favorites: window.user.favorites})
-      .then(res => {
-          console.log("this is the status:", res.status)
-          if(res.status === 200) {
-            setIsFavorite((prevIsFavorite) => !prevIsFavorite);
-          }
-      }).catch(err => console.log(err))
+    axios
+      .post("http://localhost:3001/update-favorites", {
+        name: window.user.name,
+        favorites: window.user.favorites,
+      })
+      .then((res) => {
+        console.log("this is the status:", res.status);
+        if (res.status === 200) {
+          setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleHideClick = () => {
@@ -180,6 +194,26 @@ const ListingCard = ({ item, handleDelete }) => {
   if (isHidden) {
     return null;
   }
+  const handleDeleteClick = () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this listing?"
+    );
+
+    if (!isConfirmed) {
+      return;
+    }
+    axios
+      .delete(`http://localhost:3001/listing/${item._id}`)
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Listing deleted successfully");
+          handleHideClick(); // Hide the listing from the UI
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting the listing:", error);
+      });
+  };
 
   return (
     <Card className="listing-card">
@@ -191,10 +225,12 @@ const ListingCard = ({ item, handleDelete }) => {
         <Card.Text>Price: ${item.price}</Card.Text>
         <Row className="align-items-center">
           <Col xs={3}>
-            {window.user != null && <FavoriteButton
-              isFavorite={isFavorite}
-              handleFavoriteClick={handleFavoriteClick}
-            />}
+            {window.user != null && (
+              <FavoriteButton
+                isFavorite={isFavorite}
+                handleFavoriteClick={handleFavoriteClick}
+              />
+            )}
           </Col>
           <Col xs={6}>
             <MdLocationOn style={{ marginRight: "8px" }} />
@@ -208,6 +244,18 @@ const ListingCard = ({ item, handleDelete }) => {
             />
           </Col>
         </Row>
+        {isProfilePage && (
+          <Row>
+            <Col>
+              <Button variant="primary">Update</Button>
+            </Col>
+            <Col>
+              <Button variant="danger" onClick={handleDeleteClick}>
+                Delete
+              </Button>
+            </Col>
+          </Row>
+        )}
       </Card.Body>
     </Card>
   );
