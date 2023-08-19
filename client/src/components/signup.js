@@ -3,25 +3,43 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import axios from 'axios'
 import {Link, useNavigate} from 'react-router-dom'
 import CustomNavbar from "./CustomNavbar/CustomNavbar.js";
+import {Button, Modal} from 'react-bootstrap'
 
 function Signup() {
     const [userName, setName] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
     const navigate = useNavigate()
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     const handleSubmit = (e) => {
         e.preventDefault()
         axios.post('http://localhost:3001/register', {userName, email, password})
         .then(res => {
             navigate('/login')
-        }).catch(err => console.log(err))
+        }).catch((err) => {
+          handleShow();
+        })
     }
 
   return (
     <>
     <CustomNavbar/>
     <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
+      <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign up failed</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Something went wrong, try again at a later time!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="bg-white p-3 rounded w-25">
         <h2>Register</h2>
         <form onSubmit={handleSubmit}>

@@ -25,9 +25,9 @@ function Login() {
             if(res.status === 200) {
                 window.user = {favorites: res.data.favorites, name: res.data.userName}
                 if(res.data.role === "user") {
-                    navigate('/dashboard')
+                    navigate('/')
                 } else {
-                    navigate('/dashboard')
+                    navigate('/')
                 }
             }
             //does not work idk why

@@ -11,23 +11,24 @@ import { Link, useLocation } from "react-router-dom";
 import "./MainApp.css";
 
 const MainApp = (args) => {
-  const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
-  const handleShowListings = (listingsToShow) => {
-    /* Map through the "listings" array and display each item in a ListingCard */
-    console.log(listingsToShow);
-    if (listingsToShow.length > 0) {
-      return (
-        <>
-          {args.listings.map((item, index) => (
-            <Col key={index} md={3} sm={2}>
-              <ListingCard item={item} />
-            </Col>
-          ))}
-        </>
-      );
-    } else {
-      return <h1>Hmmm.. There's nothing here...</h1>;
+    const handleShowListings = (listingsToShow) => {
+        /* Map through the "listings" array and display each item in a ListingCard */
+        console.log(listingsToShow);
+        if(listingsToShow.length > 0){
+            return <>
+                {args.listings.map((item, index) => (
+                    <Col key={index} md={3} sm={2}>
+                        <ListingCard item={item} />
+                    </Col>
+                ))}
+            </>
+        }else{
+            return <>
+                    <h1>No Results</h1>
+                   </>
+        }
     }
   };
 
