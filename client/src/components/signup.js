@@ -30,16 +30,16 @@ function Signup() {
     <CustomNavbar/>
     <div className="d-flex justify-content-center align-items-center bg-secondary vh-100">
       <Modal show={show} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Sign up failed</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Something went wrong, try again at a later time!</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <Modal.Header closeButton>
+          <Modal.Title>Sign up failed</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Something went wrong, try again at a later time!</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <div className="bg-white p-3 rounded w-25">
         <h2>Register</h2>
         <form onSubmit={handleSubmit}>
