@@ -30,7 +30,7 @@ const MainApp = (args) => {
                    </>
         }
     }
-  };
+  
 
   //axios.get(
   //    'http://localhost:3001/new-listing'

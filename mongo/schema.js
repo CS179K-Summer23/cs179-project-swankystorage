@@ -5,12 +5,16 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const http = require("http")
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 const key = crypto.randomBytes(64).toString("hex");
+const server = http.createServer(app)
+const {Server} = require('socket.io')
+const io = new Server(server)
 
 //session details
 //cookie session false since we are only on localhost
@@ -33,6 +37,7 @@ const user = new Schema({
   userName: { type: String, required: true },
   password: { type: String, required: true },
   favorites: { type: Array, required: true },
+  rooms: {type: Array, required: true}
 });
 
 const userModel = mongoose.model("user", user);
@@ -54,23 +59,30 @@ const listing = new Schema(
 );
 
 const listingModel = mongoose.model("listing", listing);
-//remember to change to actual routes.
-app.post("/register", async (req, res) => {
-  try {
-    const newUser = new userModel({
-      email: req.body.email,
-      userName: req.body.userName,
-      password: req.body.password,
-    });
 
-    await newUser.save();
-    console.log("User Saved to Mongo");
-    res.status(200).json({ message: "User successfully registered" });
-  } catch (error) {
-    console.log("error saving data to MongoDB: ", error);
-    res.status(500).json({ error: "Error saving user information" });
+//message schema
+const messageSchema = new Schema({
+    message: {type: String, required: true},
+    sender: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
+    room: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true},
+  },
+  {
+    timestamps: true,
   }
-});
+);
+
+const messageModel = mongoose.model("message", messageSchema)
+
+//room schema
+const roomSchema = new Schema({
+  name: {type:String, required: true},
+  },
+  {
+    timestamps: true,
+  }
+)
+
+const roomModel = mongoose.model("rooms", roomSchema)
 
 //to create new user
 app.post("/register", async (req, res) => {
@@ -108,6 +120,9 @@ app.post("/login", async (req, res) => {
       req.session.save();
       currentSession = req.session;
       loggedIn = true;
+      session.authenticated = true;
+      session.username = existingUser.userName
+      session.userId = existingUser._id
       console.log(currentSession.user);
       res.status(200).json({
         status: "Success",
@@ -187,17 +202,6 @@ app.get("/logout", async (req, res) => {
   res.status(200).json({ message: "User has been logged out" });
 });
 
-//fetches all listings
-app.get("/new-listing", async (req, res) => {
-  try {
-    req.session.destroy();
-    console.log("user has been logged out");
-    res.status(200).json({ message: "User has been sucessfully logged out" });
-  } catch (error) {
-    console.log("something went wrong with logging out");
-    res.status(500).json({ error });
-  }
-});
 
 //for filter
 app.get("/filter-listings", async (req, res) => {
@@ -254,6 +258,34 @@ app.delete("/listing/:id", async (req, res) => {
   }
 });
 
+//retrieves all rooms from database(not specific to user id)
+app.get("/allRooms", async(req, res)=>{
+  try{
+    const rooms = await roomModel.find();
+    res.send(rooms)
+  }
+  catch(error){
+    console.log(error, "Failed to retrieve all rooms from the databse")
+    res.status(500).json({error: "Failed to retrieve rooms from database"})
+  }
+})
+
+//creates a new room. Should pass in the name of the owner of the listing 
+app.post("/createRoom", async(req, res)=>{
+  try {
+    const name = req.body.name
+    const newRoom = new roomModel({name})
+    await newRoom.save()
+    res.status(200).json({message: "The room has been succesfully created"})
+  } catch (error) {
+    console.log(error, "Error creating a new room")
+    res.status(500).json({error: "Failed to create the new room"})    
+  }
+})
+
+
+
+
 mongoose.connect(
   "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
   {
@@ -261,6 +293,6 @@ mongoose.connect(
     useUnifiedTopology: true,
   }
 );
-app.listen(3001, () => {
+server.listen(3001, () => {
   console.log("on port 3001");
 });
