@@ -122,7 +122,11 @@ function CustomNavbar(){
             </Modal>
             <Container fluid className="navBarMainContainer">
                 <Container fluid>
-                <Navbar.Brand onClick={() => navigate('/')}>
+                <Navbar.Brand onClick={() => {
+                            navigate('/');
+                            window.location.reload();
+                            }   
+                        }>
                     <img
                     alt=""
                     src="https://www.dropbox.com/s/58algfockihugwq/Logo_Gradient.png?raw=1"
