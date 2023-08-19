@@ -1,17 +1,17 @@
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav'
-import Container from 'react-bootstrap/Container';
-import { Modal } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button'
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios';
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
+import { Modal } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import './CustomNavbar.css'
+import "./CustomNavbar.css";
 
-function CustomNavbar(){
-    let[loggedIn, setLoggedIn] = useState(false);
-    const navigate = useNavigate();
+function CustomNavbar() {
+  let [loggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
     const [showLogoutButton, setShowLogoutButton] = useState(false);
     const handleCloseLogoutButton = () => setShowLogoutButton(false);
@@ -31,16 +31,17 @@ function CustomNavbar(){
     }
     const handleShowLogoutConfirmationFailure = () => setShowLogoutConfirmationFailure(true);
 
-    useEffect(() => {
-        axios.get('http://localhost:3001/profilePage')
-            .then(response => {
-                setLoggedIn(true);
-            })
-            .catch(error => {
-                setLoggedIn(false);
-                console.log("User not logged in")
-            });
-    }, []);
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setLoggedIn(true);
+      })
+      .catch((error) => {
+        setLoggedIn(false);
+        console.log("User not logged in");
+      });
+  }, []);
 
     const handleLogout = () => {
         axios.get('http://localhost:3001/logout')
