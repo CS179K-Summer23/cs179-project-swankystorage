@@ -14,6 +14,9 @@
     grid-row-gap: 10px;
   }
 }
+
+
+
 .div1 {
   grid-area: 1 / 1 / 2 / 4;
 }
@@ -28,13 +31,32 @@
 }
 .div5 {
   grid-area: 4 / 1 / 5 / 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
 }
 .div6 {
   grid-area: 4 / 2 / 5 / 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
 }
 .div7 {
   grid-area: 4 / 3 / 5 / 4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
 }
 .div8 {
   grid-area: 2 / 4 / 4 / 6;
+}
+.button-box {
+  padding: 10px;
+  border-radius: 5px;
+  color: black;
+  text-align: center;
+  cursor: pointer;
 }
