@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
+import CustomNavbar from "../CustomNavbar/CustomNavbar";
 import {
   EmailShareButton,
   EmailIcon,
@@ -56,6 +57,8 @@ const ProductLandingPage = ({ item }) => {
 
 
   return (
+    <>
+    <CustomNavbar />
     <div class="parent">
       <div className="div1">
         <h1>
@@ -101,6 +104,7 @@ const ProductLandingPage = ({ item }) => {
       </div>
 
     </div>
+    </>
   );
 };
 
