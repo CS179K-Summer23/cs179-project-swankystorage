@@ -89,7 +89,7 @@ const UpdateListingModal = ({ show, handleClose, handleUpdateListing, listing })
             categories: selectedCategories
         });
 
-        axios.put(`http://localhost:3001/update-listing/${listing.id}`, {
+        axios.put(`http://localhost:3001/listing/${listing.id}`, {
             nameOfItem: itemName,
             price: price,
             location: location,
