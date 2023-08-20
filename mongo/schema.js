@@ -290,9 +290,32 @@ app.post("/createRoom", async(req, res)=>{
   }
 })
 
-//too post a message to a new room. Need to pass in the room id 
-app.post("/newMessage", async(req, res) => {
-  const room = req.params.roomId
+//post new message to room, unsure if this works as intended
+app.post("/message", async (req, res)=> {
+  try {
+    const text = req.body.text;
+    const sender = req.body.user;
+    const room = req.body.room;
+    const message = new messageModel({message: text, sender: sender, room: room});
+    await message.save();
+    res.status(200).json({message:"Message saved to the room"});
+  } catch (error) {
+    console.log(error, " could not send the message");
+    res.status(500).json({error:"Error saving the message to the room"});
+  }
+})
+  
+
+//to get messages from a specific room
+app.get("/room/:id", async(req, res) => {
+  try {
+    const room = req.params.roomId
+    const messages = await messageModel.find({room: room}).populate("sender room")
+    res.json(messages)
+  } catch (error) {
+    console.log("error retrieving messages for this room")
+    res.status(500).json({error: "There was an error retrieving the messages for this room"})
+  }
   
 })
 
