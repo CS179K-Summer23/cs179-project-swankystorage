@@ -88,11 +88,9 @@ const ProductLandingPage = ({ item }) => {
           {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />}
       </div>
       <div className="div4">{data.description}</div>
-      <div className="div5">
-        <button onClick={handleReplyClick}>Reply</button>
-      </div>
-      <div className="div6">post id: {data._id}</div>
-      <div className="div7">posted: {formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</div>
+      <div className="div5"><div className="button-box"><b>Post id:</b> {data._id}</div></div>
+      <div className="div6"><div className="button-box"><b>Posted:</b> {formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</div></div>
+      <div className="div7"><div className="button-box"><b>Updated:</b> {formatDistanceToNow(new Date(data.updatedAt), { addSuffix: true })}</div></div>
       <div className="div8">
         <iframe
           title="California Map"
