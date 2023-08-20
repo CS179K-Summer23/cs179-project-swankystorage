@@ -34,10 +34,9 @@ const Schema = mongoose.Schema;
 
 const user = new Schema({
   email: { type: String, required: true },
-  userName: { type: String, required: true },
+  userName: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   favorites: { type: Array, required: true },
-  rooms: {type: Array, required: true}
 });
 
 const userModel = mongoose.model("user", user);
@@ -63,8 +62,8 @@ const listingModel = mongoose.model("listing", listing);
 //message schema
 const messageSchema = new Schema({
     message: {type: String, required: true},
-    sender: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true},
-    room: { type: mongoose.Schema.Types.ObjectId, ref: "Room", required: true},
+    sender: {type: mongoose.Schema.Types.ObjectId, ref: "user", required: true},
+    room: { type: mongoose.Schema.Types.ObjectId, ref: "rooms", required: true},
   },
   {
     timestamps: true,
@@ -75,7 +74,7 @@ const messageModel = mongoose.model("message", messageSchema)
 
 //room schema
 const roomSchema = new Schema({
-  name: {type:String, required: true},
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "user",}]
   },
   {
     timestamps: true,
@@ -185,8 +184,10 @@ app.get("/profilePage", async (req, res) => {
     const listings = await listingModel.find({
       owner: currentSession.user._id,
     });
-    //console.log(currentSession.user)
-    res.status(200).json({ listings, user });
+    const rooms = await roomModel.find({participants:currentSession.user._id})
+    
+    console.log(currentSession.user)
+    res.status(200).json({ listings, user,rooms });
   } else {
     res.status(401).json({ message: "User is not logged in" });
     //res.redirect('/login')
@@ -220,7 +221,8 @@ app.get("/filter-listings", async (req, res) => {
 app.get("/listing/:id", async (req, res) => {
   try {
     const listings = await listingModel.findOne({ _id: req.params.id });
-    res.json(listings);
+    const listingOwner = await userModel.findById(listings.owner)
+    res.json({listings, listingOwner});
   } catch (error) {
     console.log("error getting data to MongoDB: ", error);
     res.status(500).json({ error: "Error getting listing information" });
@@ -258,32 +260,41 @@ app.delete("/listing/:id", async (req, res) => {
   }
 });
 
-//retrieves all rooms from database(not specific to user id)
-app.get("/allRooms", async(req, res)=>{
-  try{
-    const rooms = await roomModel.find();
-    res.send(rooms)
-  }
-  catch(error){
-    console.log(error, "Failed to retrieve all rooms from the databse")
-    res.status(500).json({error: "Failed to retrieve rooms from database"})
-  }
-})
 
-//creates a new room. Should pass in the name of the owner of the listing 
+
+//creates a new room. Should pass in the name of listing's owner
 app.post("/createRoom", async(req, res)=>{
   try {
-    const name = req.body.name
-    const newRoom = new roomModel({name})
+    const receiverUsername = req.body.username
+    const receiver = await userModel.findOne({userName:receiverUsername})
+    const sender = await userModel.findOne({userName: currentSession.user.userName})
+    const newRoom = new roomModel({participants:[receiver._id, sender._id]})
     await newRoom.save()
-    res.status(200).json({message: "The room has been succesfully created"})
+    // console.log("A new room has been created", newRoom)
+    // console.log("this is the current user: ", currentSession)
+    // console.log("this is the sender: ", sender)
+    // if(sender){
+    //   console.log("room added for sender")
+    //   sender.rooms.push(newRoomForSender)
+    //   await sender.save()
+    // }
+    // if(receiver){
+    //   console.log("room added for receiver")
+    //   receiver.rooms.push(newRoomForReceiver)
+    //   await receiver.save()
+    // }
+    res.status(200).json({message: "The room has been successfully created"})
   } catch (error) {
     console.log(error, "Error creating a new room")
     res.status(500).json({error: "Failed to create the new room"})    
   }
 })
 
-
+//too post a message to a new room. Need to pass in the room id 
+app.post("/newMessage", async(req, res) => {
+  const room = req.params.roomId
+  
+})
 
 
 mongoose.connect(
