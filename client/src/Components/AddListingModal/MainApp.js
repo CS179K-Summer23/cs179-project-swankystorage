@@ -1,17 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { Button, Container, Row, Col, Card } from "react-bootstrap";
+import { Button, Container, Row, Col, Card, Modal } from "react-bootstrap";
 import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { MdLocationOn, MdDelete } from "react-icons/md";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import AddListingModal from "./AddListingModal";
+import FilterBar from "../Filter/FilterBar;
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useSession from "../useSession";
 
 import "./MainApp.css";
 
 const MainApp = (args) => {
+    const navigate = useNavigate();
+
     const [showModal, setShowModal] = useState(false);
+    let [loggedIn, setLoggedIn] = useState(false);
+
+    const [showNotLoggedInPrompt, setShowNotLoggedInPrompt] = useState(false);
+    const handleCloseShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(false);
+    const handleShowShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(true);
+
+    useEffect(() => {
+      axios
+        .get("http://localhost:3001/profilePage")
+        .then((response) => {
+          setLoggedIn(true);
+        })
+        .catch((error) => {
+          setLoggedIn(false);
+          console.log("User not logged in");
+        });
+    }, []);
 
     const handleShowListings = (listingsToShow) => {
         /* Map through the "listings" array and display each item in a ListingCard */
@@ -44,15 +64,38 @@ const MainApp = (args) => {
   };
 
   const handleShowModal = () => {
-    setShowModal(true);
+    if(loggedIn){
+      setShowModal(true);
+    }else{
+      setShowNotLoggedInPrompt(true);
+    }
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
   };
 
+  const handleGoToLogInButton = () => {
+    navigate("/login")
+  }
+
   return (
     <>
+      {/*Appears when user clicks "logout" button*/}
+      <Modal show={showNotLoggedInPrompt} onHide={handleCloseShowNotLoggedInPrompt}>
+          <Modal.Header closeButton>
+              <Modal.Title>Not logged in</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>You need to log in to add a listing!</Modal.Body>
+          <Modal.Footer>
+              <Button variant="success" onClick={handleGoToLogInButton}>
+                Log In
+              </Button>
+              <Button variant="secondary" onClick={handleCloseShowNotLoggedInPrompt}>
+                Back
+              </Button>
+          </Modal.Footer>
+      </Modal>
       <Container className="mainContainer">
         <Row className="mt-3">
           {!args.hideAddListing && <Col>
