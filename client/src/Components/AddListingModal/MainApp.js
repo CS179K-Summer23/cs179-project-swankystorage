@@ -271,9 +271,6 @@ const ListingCard = ({ item, handleDelete }) => {
           show={showUpdateModal}
           handleClose={() => setShowUpdateModal(false)}
           handleUpdateListing={(updatedListing) => {
-            // Handle updating the listing
-            // make an API call to update the listing details
-            console.log("Updating listing with new data:", updatedListing);
             setShowUpdateModal(false);
           }}
           listing={item}

@@ -65,7 +65,7 @@ const UpdateListingModal = ({
 
   useEffect(() => {
     if (listing) {
-      setItemName(listing.itemName);
+      setItemName(listing.nameOfItem);
       setPrice(listing.price);
       setLocation(listing.location);
       setDescription(listing.description);
@@ -97,7 +97,7 @@ const UpdateListingModal = ({
     });
 
     axios
-      .put(`http://localhost:3001/listing/${listing.id}`, {
+      .put(`http://localhost:3001/listing/${listing._id}`, {
         nameOfItem: itemName,
         price: price,
         location: location,
