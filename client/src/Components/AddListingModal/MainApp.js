@@ -7,30 +7,33 @@ import axios from "axios";
 import AddListingModal from "./AddListingModal";
 import FilterBar from "../Filter/FilterBar";
 import { Link, useLocation } from "react-router-dom";
-
 import "./MainApp.css";
+import UpdateListingModal from "../UpdateListingModal";
 
 const MainApp = (args) => {
-    const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-    const handleShowListings = (listingsToShow) => {
-        /* Map through the "listings" array and display each item in a ListingCard */
-        console.log(listingsToShow);
-        if(listingsToShow.length > 0){
-            return <>
-                {args.listings.map((item, index) => (
-                    <Col key={index} md={3} sm={2}>
-                        <ListingCard item={item} />
-                    </Col>
-                ))}
-            </>
-        }else{
-            return <>
-                    <h1>No Results</h1>
-                   </>
-        }
+  const handleShowListings = (listingsToShow) => {
+    /* Map through the "listings" array and display each item in a ListingCard */
+    console.log(listingsToShow);
+    if (listingsToShow.length > 0) {
+      return (
+        <>
+          {args.listings.map((item, index) => (
+            <Col key={index} md={3} sm={2}>
+              <ListingCard item={item} />
+            </Col>
+          ))}
+        </>
+      );
+    } else {
+      return (
+        <>
+          <h1>No Results</h1>
+        </>
+      );
     }
-  
+  };
 
   //axios.get(
   //    'http://localhost:3001/new-listing'
@@ -150,9 +153,14 @@ const ListingCard = ({ item, handleDelete }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const isProfilePage = location.pathname === "/profilePage";
   console.log(isProfilePage);
+
+  const handleUpdateClick = () => {
+    setShowUpdateModal(true);
+  };
 
   useEffect(() => {
     if (!window.user) return;
@@ -248,7 +256,9 @@ const ListingCard = ({ item, handleDelete }) => {
         {isProfilePage && (
           <Row>
             <Col>
-              <Button variant="primary">Update</Button>
+              <Button variant="primary" onClick={handleUpdateClick}>
+                Update
+              </Button>
             </Col>
             <Col>
               <Button variant="danger" onClick={handleDeleteClick}>
@@ -257,6 +267,17 @@ const ListingCard = ({ item, handleDelete }) => {
             </Col>
           </Row>
         )}
+        <UpdateListingModal
+          show={showUpdateModal}
+          handleClose={() => setShowUpdateModal(false)}
+          handleUpdateListing={(updatedListing) => {
+            // Handle updating the listing
+            // make an API call to update the listing details
+            console.log("Updating listing with new data:", updatedListing);
+            setShowUpdateModal(false);
+          }}
+          listing={item}
+        />
       </Card.Body>
     </Card>
   );

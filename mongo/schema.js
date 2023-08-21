@@ -259,17 +259,22 @@ app.put("/listing/:id", async (req, res) => {
     const listingId = req.params.id;
     const updatedData = req.body;
 
-    const updatedListing = await listingModel.findByIdAndUpdate(listingId, updatedData, {
-      new: true,
-      runValidators: true
-    });
+    const updatedListing = await listingModel.findByIdAndUpdate(
+      listingId,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!updatedListing) {
       return res.status(404).json({ message: "Listing not found" });
     }
 
-    res.status(200).json({ message: "Listing successfully updated", updatedListing });
-
+    res
+      .status(200)
+      .json({ message: "Listing successfully updated", updatedListing });
   } catch (error) {
     console.log("Error updating the listing: ", error);
     res.status(500).json({ error: "Error updating the listing" });
