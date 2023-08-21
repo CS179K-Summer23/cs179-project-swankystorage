@@ -21,6 +21,7 @@ function CustomNavbar() {
     const [showLogoutConfirmationSuccess, setShowLogoutConfirmationSuccess] = useState(false);
     const handleCloseLogoutConfirmationSuccess = () => {
         setShowLogoutConfirmationSuccess(false);
+        navigate("/");
         window.location.reload();
     }
     const handleShowLogoutConfirmationSuccess = () => setShowLogoutConfirmationSuccess(true);
@@ -48,7 +49,6 @@ function CustomNavbar() {
         .then(response => {
             setLoggedIn(false);
             handleShowLogoutConfirmationSuccess();
-            navigate("/");
         })
         .catch(error => {
             setLoggedIn(true);
