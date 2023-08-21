@@ -83,6 +83,7 @@ function CustomNavbar() {
         buttons = <>
                     <Nav className="ml-auto">
                         <Button variant="primary" className="btn customNavbarButton" onClick={handleProfilePageButtonClicked}>Profile</Button>
+                        <Button variant="primary" className="btn customNavbarButton" href="dashboard">Favorites</Button>
                     </Nav>
                     <Nav className="ml-auto">
                         <Button variant="danger" className="btn customNavbarButton" onClick={handleShowLogoutButton}>Logout</Button>

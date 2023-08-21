@@ -47,6 +47,8 @@ Craigslist style app where users can post listings of objects and find listings 
   - As a buyer I want to be able to search for the specific item that I want.
 - Removing listings
   - As a seller I want to remove my listings when my product has sold.
+- Update listings
+  - As a seller I want to update my listings to correct errors and/or update details about the posting.
 - Optional / Out of Scope
   - Account Recovery
     - As a user I want to reset my password over Email.

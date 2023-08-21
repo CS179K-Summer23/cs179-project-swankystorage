@@ -6,7 +6,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import AddListingModal from "./AddListingModal";
 import FilterBar from "../Filter/FilterBar";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import useSession from "../useSession";
 import "./MainApp.css";
 import UpdateListingModal from "../UpdateListingModal";
 
@@ -58,7 +59,7 @@ const MainApp = (args) => {
     <>
       <Container className="mainContainer">
         <Row className="mt-3">
-          <Col>
+          {!args.hideAddListing && <Col>
             <Button
               onClick={handleShowModal}
               variant="primary"
@@ -66,7 +67,7 @@ const MainApp = (args) => {
             >
               Add Listing
             </Button>
-          </Col>
+          </Col>}
         </Row>
         <Row className="mt-3">{handleShowListings(args.listings)}</Row>
         <AddListingModal
@@ -154,6 +155,8 @@ const ListingCard = ({ item, handleDelete }) => {
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const navigate = useNavigate()
+  let [session] = useSession()
 
   const isProfilePage = location.pathname === "/profilePage";
   console.log(isProfilePage);
@@ -163,37 +166,38 @@ const ListingCard = ({ item, handleDelete }) => {
   };
 
   useEffect(() => {
-    if (!window.user) return;
-    if (window.user.favorites.find((element) => element === item._id)) {
-      setIsFavorite(true);
+    if (!session) return
+    if (!session.favorites) return
+    if (session.favorites.find(element => element === item._id)) {
+      setIsFavorite(true)
     }
-  }, []);
+  }, [session])
 
   const handleFavoriteClick = () => {
-    if (isFavorite) {
-      console.log("removing ", item._id);
-      //let itemIndex = window.user.favorites.findIndex(element => element === item._id)
-      window.user.favorites = window.user.favorites.filter(
-        (element) => element !== item._id
-      );
-      console.log("now ", window.user.favorites);
-    } else {
-      console.log("adding ", item._id);
-      window.user.favorites.push(item._id);
-      console.log("now ", window.user.favorites);
+    if (!session) {
+      navigate('/login')
+      return
     }
-    axios
-      .post("http://localhost:3001/update-favorites", {
-        name: window.user.name,
-        favorites: window.user.favorites,
-      })
-      .then((res) => {
-        console.log("this is the status:", res.status);
-        if (res.status === 200) {
-          setIsFavorite((prevIsFavorite) => !prevIsFavorite);
-        }
-      })
-      .catch((err) => console.log(err));
+    let newFavorites = session.favorites
+    if (isFavorite) {
+      console.log("removing ", item._id)
+      //let itemIndex = session.favorites.findIndex(element => element === item._id)
+      newFavorites = newFavorites.filter(element => element !== item._id)
+      console.log("now ", session.favorites)
+    } else {
+      console.log("adding ", item._id)
+      newFavorites.push(item._id)
+      console.log("now ", session.favorites)
+    }
+    axios.post('http://localhost:3001/update-favorites', {name: session.userName, favorites: newFavorites})
+      .then(res => {
+          console.log("this is the status:", res.status)
+          if(res.status === 200) {
+            window.location.reload()
+            console.log("Favorites in session: ", session.favorites)
+            setIsFavorite((prevIsFavorite) => !prevIsFavorite);
+          }
+      }).catch(err => console.log(err))
   };
 
   const handleHideClick = () => {
@@ -232,29 +236,25 @@ const ListingCard = ({ item, handleDelete }) => {
           <Card.Title>{item.nameOfItem}</Card.Title>
         </Link>
         <Card.Text>Price: ${item.price}</Card.Text>
-        {!isProfilePage && (
-          <Row className="align-items-center">
-            <Col xs={3}>
-              {window.user != null && (
-                <FavoriteButton
-                  isFavorite={isFavorite}
-                  handleFavoriteClick={handleFavoriteClick}
-                />
-              )}
-            </Col>
-            <Col xs={6}>
-              <MdLocationOn style={{ marginRight: "8px" }} />
-              {item.location}
-            </Col>
-            <Col xs={3}>
-              <MdDelete
-                className="delete-icon"
-                onClick={handleHideClick}
-                alt="Hide Post"
-              />
-            </Col>
-          </Row>
-        )}
+        <Row className="align-items-center">
+          <Col xs={3}>
+            <FavoriteButton
+              isFavorite={isFavorite}
+              handleFavoriteClick={handleFavoriteClick}
+            />
+          </Col>
+          <Col xs={6}>
+            <MdLocationOn style={{ marginRight: "8px" }} />
+            {item.location}
+          </Col>
+          <Col xs={3}>
+            <MdDelete
+              className="delete-icon"
+              onClick={handleHideClick}
+              alt="Hide Post"
+            />
+          </Col>
+        </Row>
         {isProfilePage && (
           <Row>
             <Col>
