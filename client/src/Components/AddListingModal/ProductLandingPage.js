@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
+import CustomNavbar from "../CustomNavbar/CustomNavbar";
 import {
   EmailShareButton,
   EmailIcon,
@@ -18,6 +19,8 @@ const ProductLandingPage = ({ item }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+
 
   const { id } = useParams();
   console.log(id);
@@ -49,18 +52,20 @@ const ProductLandingPage = ({ item }) => {
     return <div>Error: {error}</div>;
   }
 
-  const handleReplyClick = () => {
-    // reply button's functionality here
-    console.log("Reply button clicked");
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
   };
 
-
   return (
+    <>
+    <CustomNavbar />
     <div class="parent">
       <div className="div1">
         <h1>
-          {data.nameOfItem} - ${data.price} ({data.location})
-        </h1>
+          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={togglePopup}>
+              <h2>Reply</h2>
+            </button>
+        </h1> 
       </div>
       <div className="div2">
         <FacebookShareButton url={window.location.href} quote={data.nameOfItem}>
@@ -88,11 +93,9 @@ const ProductLandingPage = ({ item }) => {
           {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />}
       </div>
       <div className="div4">{data.description}</div>
-      <div className="div5">
-        <button onClick={handleReplyClick}>Reply</button>
-      </div>
-      <div className="div6">post id: {data._id}</div>
-      <div className="div7">posted: {formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</div>
+      <div className="div5"><div className="button-box"><b>Post id:</b> {data._id}</div></div>
+      <div className="div6"><div className="button-box"><b>Posted:</b> {formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</div></div>
+      <div className="div7"><div className="button-box"><b>Updated:</b> {formatDistanceToNow(new Date(data.updatedAt), { addSuffix: true })}</div></div>
       <div className="div8">
         <iframe
           title="California Map"
@@ -101,8 +104,15 @@ const ProductLandingPage = ({ item }) => {
           allowfullscreen
         ></iframe>
       </div>
+      {showPopup && (
+        <div className="popup">
+          <p> 🛠️ We see your curiosity sparked by <b>{data.nameOfItem}</b>, and we're thrilled about your interest! At the moment, our chat feature is undergoing some enhancements to provide you with an even better experience.🛠️</p>
+          <button onClick={togglePopup}>Close</button>
+        </div>
+      )}
 
     </div>
+    </>
   );
 };
 

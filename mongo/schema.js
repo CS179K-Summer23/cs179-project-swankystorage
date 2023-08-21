@@ -153,6 +153,7 @@ app.post("/new-listing", async (req, res) => {
     newListing.updatedAt = new Date();
 
     await newListing.save();
+    console.log(req.body.categories);
     console.log("Listing Saved to Mongo");
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {
@@ -253,6 +254,33 @@ app.delete("/listing/:id", async (req, res) => {
   } catch (error) {
     console.log("Error deleting the listing: ", error);
     res.status(500).json({ error: "Error deleting the listing" });
+  }
+});
+
+app.put("/listing/:id", async (req, res) => {
+  try {
+    const listingId = req.params.id;
+    const updatedData = req.body;
+
+    const updatedListing = await listingModel.findByIdAndUpdate(
+      listingId,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Listing successfully updated", updatedListing });
+  } catch (error) {
+    console.log("Error updating the listing: ", error);
+    res.status(500).json({ error: "Error updating the listing" });
   }
 });
 

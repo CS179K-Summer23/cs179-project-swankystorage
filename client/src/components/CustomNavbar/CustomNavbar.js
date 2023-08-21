@@ -57,23 +57,33 @@ function CustomNavbar() {
         });
     }
 
+    const handleLoginButtonClicked = () => {
+        navigate("/login");
+    }
+
+    const handleProfilePageButtonClicked = () => {
+        navigate("/profilePage");
+    }
+
+    const handleRegisterButtonClicked = () => {
+        navigate("/register");
+    }
+
     let buttons;
     if(!loggedIn){
         buttons = <>
                     <Nav className="ml-auto">
-                        <Button variant="primary" className="btn customNavbarButton" href="login">Log In</Button>{' '}
+                        <Button variant="primary" className="btn customNavbarButton" onClick={handleLoginButtonClicked}>Log In</Button>{' '}
                     </Nav>
                     <Nav className="ml-auto">
-                        <Button variant="primary"className="btn customNavbarButton" href="register">Register</Button>{' '}
+                        <Button variant="primary"className="btn customNavbarButton" onClick={handleRegisterButtonClicked}>Register</Button>{' '}
                     </Nav>
         </>
     }else{
         buttons = <>
                     <Nav className="ml-auto">
+                        <Button variant="primary" className="btn customNavbarButton" onClick={handleProfilePageButtonClicked}>Profile</Button>
                         <Button variant="primary" className="btn customNavbarButton" href="dashboard">Favorites</Button>
-                    </Nav>
-                    <Nav className="ml-auto">
-                        <Button variant="primary" className="btn customNavbarButton" href="profilePage">Profile</Button>
                     </Nav>
                     <Nav className="ml-auto">
                         <Button variant="danger" className="btn customNavbarButton" onClick={handleShowLogoutButton}>Logout</Button>

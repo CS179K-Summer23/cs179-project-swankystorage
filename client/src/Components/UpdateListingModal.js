@@ -50,7 +50,12 @@ const categories = [
   "Wheels+Tires",
 ];
 
-const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
+const UpdateListingModal = ({
+  show,
+  handleClose,
+  handleUpdateListing,
+  listing,
+}) => {
   const [itemName, setItemName] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
@@ -81,9 +86,8 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validate and handle form submission
 
-    handleAddListing({
+    handleUpdateListing({
       itemName,
       price,
       location,
@@ -92,10 +96,8 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
       categories: selectedCategories,
     });
 
-    console.log(selectedCategories);
-
     axios
-      .post("http://localhost:3001/new-listing", {
+      .put(`http://localhost:3001/listing/${listing._id}`, {
         nameOfItem: itemName,
         price: price,
         location: location,
@@ -105,21 +107,14 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
       })
       .then((response) => {
         console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error updating the listing:", error);
       });
 
-    // Clear the form fields
-    setItemName("");
-    setPrice("");
-    setLocation("");
-    setDescription("");
-    setPictures(null);
-    setSelectedCategories([]);
-
-    // Close the modal
     handleClose();
   };
 
-  // Handle file input change
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     const base64 = await convertToBase64(file);
@@ -129,7 +124,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Listing</Modal.Title>
+        <Modal.Title>Update Listing</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -191,7 +186,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
             />
           </Form.Group>
           <Button variant="primary" type="submit" className="mt-4">
-            Add Listing
+            Update Listing
           </Button>
         </Form>
       </Modal.Body>
@@ -199,7 +194,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
   );
 };
 
-export default AddListingModal;
+export default UpdateListingModal;
 
 function convertToBase64(file) {
   return new Promise((resolve, reject) => {
