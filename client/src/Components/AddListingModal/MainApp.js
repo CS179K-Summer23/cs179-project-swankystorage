@@ -232,27 +232,29 @@ const ListingCard = ({ item, handleDelete }) => {
           <Card.Title>{item.nameOfItem}</Card.Title>
         </Link>
         <Card.Text>Price: ${item.price}</Card.Text>
-        <Row className="align-items-center">
-          <Col xs={3}>
-            {window.user != null && (
-              <FavoriteButton
-                isFavorite={isFavorite}
-                handleFavoriteClick={handleFavoriteClick}
+        {!isProfilePage && (
+          <Row className="align-items-center">
+            <Col xs={3}>
+              {window.user != null && (
+                <FavoriteButton
+                  isFavorite={isFavorite}
+                  handleFavoriteClick={handleFavoriteClick}
+                />
+              )}
+            </Col>
+            <Col xs={6}>
+              <MdLocationOn style={{ marginRight: "8px" }} />
+              {item.location}
+            </Col>
+            <Col xs={3}>
+              <MdDelete
+                className="delete-icon"
+                onClick={handleHideClick}
+                alt="Hide Post"
               />
-            )}
-          </Col>
-          <Col xs={6}>
-            <MdLocationOn style={{ marginRight: "8px" }} />
-            {item.location}
-          </Col>
-          <Col xs={3}>
-            <MdDelete
-              className="delete-icon"
-              onClick={handleHideClick}
-              alt="Hide Post"
-            />
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        )}
         {isProfilePage && (
           <Row>
             <Col>

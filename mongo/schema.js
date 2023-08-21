@@ -153,6 +153,7 @@ app.post("/new-listing", async (req, res) => {
     newListing.updatedAt = new Date();
 
     await newListing.save();
+    console.log(req.body.categories);
     console.log("Listing Saved to Mongo");
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {
