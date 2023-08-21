@@ -5,7 +5,7 @@ import { MdLocationOn, MdDelete } from "react-icons/md";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import AddListingModal from "./AddListingModal";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import useSession from "../useSession";
 
 import "./MainApp.css";
@@ -19,7 +19,7 @@ const MainApp = (args) => {
         if(listingsToShow.length > 0){
             return <>
                 {args.listings.map((item, index) => (
-                    <Col key={index} >
+                    <Col key={index} md={3} sm={2}>
                         <ListingCard item={item} />
                     </Col>
                 ))}
@@ -150,6 +150,7 @@ const ListingCard = ({ item, handleDelete }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate()
   let [session] = useSession()
 
   const isProfilePage = location.pathname === "/profilePage";
@@ -164,7 +165,11 @@ const ListingCard = ({ item, handleDelete }) => {
   }, [session])
 
   const handleFavoriteClick = () => {
-      let newFavorites = session.favorites
+    if (!session) {
+      navigate('/login')
+      return
+    }
+    let newFavorites = session.favorites
     if (isFavorite) {
       console.log("removing ", item._id)
       //let itemIndex = session.favorites.findIndex(element => element === item._id)
@@ -224,10 +229,10 @@ const ListingCard = ({ item, handleDelete }) => {
         <Card.Text>Price: ${item.price}</Card.Text>
         <Row className="align-items-center">
           <Col xs={3}>
-            {session != null && <FavoriteButton
+            <FavoriteButton
               isFavorite={isFavorite}
               handleFavoriteClick={handleFavoriteClick}
-            />}
+            />
           </Col>
           <Col xs={6}>
             <MdLocationOn style={{ marginRight: "8px" }} />

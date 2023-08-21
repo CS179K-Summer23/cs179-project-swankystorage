@@ -3,6 +3,7 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import useSession from "../useSession"
+import CustomNavbar from "../CustomNavbar/CustomNavbar"
 
 export function Dashboard() {
     let [listings, setListings] = useState()
@@ -50,7 +51,8 @@ export function Dashboard() {
 
     return (
         <>
-            { session && doneLoading && <MainApp hideAddListing={true} listings={listings} update={(data) => {setListings(data)}}/>}
+            <CustomNavbar />
+            { session && doneLoading && <MainApp listings={listings} update={(data) => {setListings(data)}}/>}
             { session && noFavorites && <h2>Explore the home page to add favorites!</h2>}
         </>
     )

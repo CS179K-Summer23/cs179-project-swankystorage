@@ -125,7 +125,6 @@ function ProfilePage(args) {
           </Card>
         </div>
         <Row>
-          <Col>
           <h1>My Listings</h1>
           <MainApp
             listings={listings}
@@ -133,11 +132,6 @@ function ProfilePage(args) {
               setListings(data);
             }}
           />
-          </Col>
-          <Col>
-          <h1>My Favorites</h1>
-          <Dashboard />
-          </Col>
         </Row>
       </Container>
     </>

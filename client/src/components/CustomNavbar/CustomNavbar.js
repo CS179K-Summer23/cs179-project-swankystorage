@@ -70,6 +70,9 @@ function CustomNavbar() {
     }else{
         buttons = <>
                     <Nav className="ml-auto">
+                        <Button variant="primary" className="btn customNavbarButton" href="dashboard">Favorites</Button>
+                    </Nav>
+                    <Nav className="ml-auto">
                         <Button variant="primary" className="btn customNavbarButton" href="profilePage">Profile</Button>
                     </Nav>
                     <Nav className="ml-auto">
