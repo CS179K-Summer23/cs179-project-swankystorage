@@ -277,6 +277,7 @@ const ListingCard = ({ item, handleDelete }) => {
           <Card.Title>{item.nameOfItem}</Card.Title>
         </Link>
         <Card.Text>Price: ${item.price}</Card.Text>
+        {!isProfilePage && (
         <Row className="align-items-center">
           <Col xs={3}>
             <FavoriteButton
@@ -296,6 +297,7 @@ const ListingCard = ({ item, handleDelete }) => {
             />
           </Col>
         </Row>
+        )}
         {isProfilePage && (
           <Row>
             <Col>
