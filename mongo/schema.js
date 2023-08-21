@@ -224,20 +224,22 @@ app.get("/listing/:id", async (req, res) => {
 });
 
 app.post("/update-favorites", async (req, res) => {
-  try {
-    console.log("Changing favorites to ", req.body.favorites);
-    console.log("For user ", req.body.name);
-    const response = await userModel.updateOne(
-      { userName: req.body.name },
-      { $set: { favorites: req.body.favorites } }
-    );
-    res.status(200).json({ message: "Success" });
-  } catch (error) {
-    console.log("error updating favorites: ", error);
-    res.status(500).json({ message: "error updating favorites" });
-  }
+    try {
+        console.log("Changing favorites to ", req.body.favorites)
+        console.log("For user ", req.body.name)
+        const response = await userModel.updateOne( 
+                {userName: req.body.name},
+                {$set: {favorites: req.body.favorites}}
+        )
+        currentSession.user.favorites = req.body.favorites
+        
+        res.status(200).json({ message: "Success", favorites: currentSession.user.favorites })
+    } catch (error) {
+        console.log("error updating favorites: ", error)
+        res.status(500).json({ message: "error updating favorites" })
+    }
 });
-
+    
 app.delete("/listing/:id", async (req, res) => {
   try {
     const listingId = req.params.id;
