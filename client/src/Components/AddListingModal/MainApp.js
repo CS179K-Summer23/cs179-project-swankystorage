@@ -7,7 +7,7 @@ import axios from "axios";
 import AddListingModal from "./AddListingModal";
 import FilterBar from "../Filter/FilterBar";
 import { Link } from "react-router-dom";
-
+import useSession from "../useSession";
 
 import "./MainApp.css";
 
@@ -138,29 +138,33 @@ function FavoriteButton({ isFavorite, handleFavoriteClick }) {
 const ListingCard = ({ item, handleDelete }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  let [session] = useSession()
 
   useEffect(() => {
-    if (!window.user) return
-    if (window.user.favorites.find(element => element === item._id)) {
+    if (!session) return
+    if (session.favorites.find(element => element === item._id)) {
       setIsFavorite(true)
     }
-  }, [])
+  }, [session])
 
   const handleFavoriteClick = () => {
+      let newFavorites = session.favorites
     if (isFavorite) {
       console.log("removing ", item._id)
-      //let itemIndex = window.user.favorites.findIndex(element => element === item._id)
-      window.user.favorites = window.user.favorites.filter(element => element !== item._id)
-      console.log("now ", window.user.favorites)
+      //let itemIndex = session.favorites.findIndex(element => element === item._id)
+      newFavorites = newFavorites.filter(element => element !== item._id)
+      console.log("now ", session.favorites)
     } else {
       console.log("adding ", item._id)
-      window.user.favorites.push(item._id)
-      console.log("now ", window.user.favorites)
+      newFavorites.push(item._id)
+      console.log("now ", session.favorites)
     }
-    axios.post('http://localhost:3001/update-favorites', {name: window.user.name, favorites: window.user.favorites})
+    axios.post('http://localhost:3001/update-favorites', {name: session.userName, favorites: newFavorites})
       .then(res => {
           console.log("this is the status:", res.status)
           if(res.status === 200) {
+            session.favorites = res.data.favorites
+            console.log("Favorites in session: ", session.favorites)
             setIsFavorite((prevIsFavorite) => !prevIsFavorite);
           }
       }).catch(err => console.log(err))
@@ -184,7 +188,7 @@ const ListingCard = ({ item, handleDelete }) => {
         <Card.Text>Price: ${item.price}</Card.Text>
         <Row className="align-items-center">
           <Col xs={3}>
-            {window.user != null && <FavoriteButton
+            {session != null && <FavoriteButton
               isFavorite={isFavorite}
               handleFavoriteClick={handleFavoriteClick}
             />}

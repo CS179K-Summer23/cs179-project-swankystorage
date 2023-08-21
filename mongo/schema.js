@@ -150,7 +150,7 @@ app.post("/new-listing", async (req, res) => {
 //redirect works properly
 app.get('/profilePage', async(req,res)=>{
     const user = currentSession;
-    console.log(user)
+    //console.log(user)
     if(user){
         res.status(200).json(user)
     }
@@ -229,7 +229,9 @@ app.post("/update-favorites", async (req, res) => {
                 {userName: req.body.name},
                 {$set: {favorites: req.body.favorites}}
         )
-        res.status(200).json({ message: "Success" })
+        currentSession.user.favorites = req.body.favorites
+        
+        res.status(200).json({ message: "Success", favorites: currentSession.user.favorites })
     } catch (error) {
         console.log("error updating favorites: ", error)
         res.status(500).json({ message: "error updating favorites" })

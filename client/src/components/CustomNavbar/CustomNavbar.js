@@ -3,11 +3,13 @@ import Nav from 'react-bootstrap/Nav'
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button'
 import { useNavigate } from 'react-router';
+import useSession from '../useSession';
 
 import './CustomNavbar.css'
 
 function CustomNavbar(){
     const navigate = useNavigate()
+    const [session] = useSession()
     return (
         <Navbar className="bg-body-tertiary navbar border-bottom" sticky="top">
             <Container fluid className="navBarMainContainer">
@@ -21,14 +23,17 @@ function CustomNavbar(){
                     Swanky Storage
                 </Navbar.Brand>
                 </Container>
-                    { !window.user && <Nav className="ml-auto">
+                    { !session && <Nav className="ml-auto">
                         <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate("/login")}>Log In</Button>{' '}
                     </Nav> }
-                    { !window.user && <Nav className="ml-auto">
+                    { !session && <Nav className="ml-auto">
                         <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/register")}>Register</Button>{' '}
                     </Nav> }
-                    { window.user && <Nav className="ml-auto">
+                    { session && <Nav className="ml-auto">
                         <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/dashboard")}>Dashboard</Button>{' '}
+                    </Nav> }
+                    { session && <Nav className="ml-auto">
+                        <Button variant="primary"className="btn customNavbarButton" onClick={() => navigate("/logout")}>Log Out</Button>{' '}
                     </Nav> }
             </Container>
         </Navbar>
