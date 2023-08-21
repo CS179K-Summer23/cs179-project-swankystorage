@@ -1,6 +1,4 @@
-import { useLocation } from "react-router"
 import MainApp from "../AddListingModal/MainApp"
-import CustomNavbar from "../CustomNavbar/CustomNavbar"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
@@ -18,6 +16,7 @@ export function Dashboard() {
         if (session === null) {navigate('/login')}
         else if (session === undefined) {return}
         else {getFavorites()}
+        //eslint-disable-next-line
     }, [session])
 
     function makeQuery(favorites) {
@@ -51,8 +50,7 @@ export function Dashboard() {
 
     return (
         <>
-            <CustomNavbar />
-            { session && doneLoading && <MainApp listings={listings} update={(data) => {setListings(data)}}/>}
+            { session && doneLoading && <MainApp hideAddListing={true} listings={listings} update={(data) => {setListings(data)}}/>}
             { session && noFavorites && <h2>Explore the home page to add favorites!</h2>}
         </>
     )

@@ -5,7 +5,6 @@ import { MdLocationOn, MdDelete } from "react-icons/md";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import AddListingModal from "./AddListingModal";
-import FilterBar from "../Filter/FilterBar";
 import { Link, useLocation } from "react-router-dom";
 import useSession from "../useSession";
 
@@ -20,7 +19,7 @@ const MainApp = (args) => {
         if(listingsToShow.length > 0){
             return <>
                 {args.listings.map((item, index) => (
-                    <Col key={index} md={3} sm={2}>
+                    <Col key={index} >
                         <ListingCard item={item} />
                     </Col>
                 ))}
@@ -56,7 +55,7 @@ const MainApp = (args) => {
     <>
       <Container className="mainContainer">
         <Row className="mt-3">
-          <Col>
+          {!args.hideAddListing && <Col>
             <Button
               onClick={handleShowModal}
               variant="primary"
@@ -64,7 +63,7 @@ const MainApp = (args) => {
             >
               Add Listing
             </Button>
-          </Col>
+          </Col>}
         </Row>
         <Row className="mt-3">{handleShowListings(args.listings)}</Row>
         <AddListingModal
@@ -151,13 +150,14 @@ const ListingCard = ({ item, handleDelete }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
-  const [session] = useSession()
+  let [session] = useSession()
 
   const isProfilePage = location.pathname === "/profilePage";
   console.log(isProfilePage);
 
   useEffect(() => {
     if (!session) return
+    if (!session.favorites) return
     if (session.favorites.find(element => element === item._id)) {
       setIsFavorite(true)
     }
@@ -179,7 +179,7 @@ const ListingCard = ({ item, handleDelete }) => {
       .then(res => {
           console.log("this is the status:", res.status)
           if(res.status === 200) {
-            session.favorites = res.data.favorites
+            window.location.reload()
             console.log("Favorites in session: ", session.favorites)
             setIsFavorite((prevIsFavorite) => !prevIsFavorite);
           }
