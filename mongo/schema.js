@@ -13,9 +13,13 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 const key = crypto.randomBytes(64).toString("hex");
 const server = http.createServer(app)
-const {Server} = require('socket.io')
-const io = new Server(server)
-
+const {Server} = require('socket.io');
+const { error } = require("console");
+const io = new Server(server,{
+  cors:{
+    origin:"*"
+  }
+});
 //session details
 //cookie session false since we are only on localhost
 app.use(
@@ -74,6 +78,7 @@ const messageModel = mongoose.model("message", messageSchema)
 
 //room schema
 const roomSchema = new Schema({
+  name: {type:String},
   participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "user",}]
   },
   {
@@ -319,6 +324,65 @@ app.get("/room/:id", async(req, res) => {
   
 })
 
+
+async function saveMessage({ text, sender, room }){
+  console.log("text, sender, room",text, sender, room)
+  const message = new messageModel({ message:text, sender:sender, room });
+  await message.save();
+  return message;
+}
+
+io.use((socket,next) => {
+  if(currentSession){
+    next();
+  }
+  else{
+    console.log("user is not logged in for sockets")
+    next(error("user is not logged in to use the socket"))
+  }
+})
+
+
+io.on('connection', (socket) => {
+  console.log('User connected');
+  const joinRoom = (room) => {
+    socket.join(room.room);
+    console.log("user has joined the room")
+  };
+
+  const leaveRoom = (room) => {
+    socket.leave(room.room);
+    console.log("user has left the room")
+  };
+
+  const sendMessageToRoom = (room, message) => {
+    console.log('Received message:', message);
+
+    io.to(room).emit('chat message', message);
+  };
+
+  socket.on('join room', (room) => {
+    joinRoom(room);
+  });
+
+  socket.on('leave room', (room) => {
+    leaveRoom(room);
+  });
+
+  socket.on('chat message', (data) => {
+    saveMessage({
+      text: data.msg,
+      sender: data.userId,
+      room: data.room,
+    })
+    sendMessageToRoom(data.room, data.msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('left the room');
+  });
+
+});
 
 mongoose.connect(
   "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
