@@ -52,7 +52,7 @@ const listing = new Schema(
     location: { type: String, required: true },
     picture: { type: String, required: true },
     description: { type: String, required: true },
-    categories: [{ type: Array, required: true }],
+    categories: { type: Array, required: true },
     owner: {
       type: Schema.Types.ObjectId,
       ref: "user",
@@ -172,6 +172,7 @@ app.post("/new-listing", async (req, res) => {
     newListing.updatedAt = new Date();
 
     await newListing.save();
+    console.log(req.body.categories);
     console.log("Listing Saved to Mongo");
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {
@@ -235,20 +236,22 @@ app.get("/listing/:id", async (req, res) => {
 });
 
 app.post("/update-favorites", async (req, res) => {
-  try {
-    console.log("Changing favorites to ", req.body.favorites);
-    console.log("For user ", req.body.name);
-    const response = await userModel.updateOne(
-      { userName: req.body.name },
-      { $set: { favorites: req.body.favorites } }
-    );
-    res.status(200).json({ message: "Success" });
-  } catch (error) {
-    console.log("error updating favorites: ", error);
-    res.status(500).json({ message: "error updating favorites" });
-  }
+    try {
+        console.log("Changing favorites to ", req.body.favorites)
+        console.log("For user ", req.body.name)
+        const response = await userModel.updateOne( 
+                {userName: req.body.name},
+                {$set: {favorites: req.body.favorites}}
+        )
+        currentSession.user.favorites = req.body.favorites
+        
+        res.status(200).json({ message: "Success", favorites: currentSession.user.favorites })
+    } catch (error) {
+        console.log("error updating favorites: ", error)
+        res.status(500).json({ message: "error updating favorites" })
+    }
 });
-
+    
 app.delete("/listing/:id", async (req, res) => {
   try {
     const listingId = req.params.id;
@@ -382,6 +385,33 @@ io.on('connection', (socket) => {
     console.log('left the room');
   });
 
+});
+
+app.put("/listing/:id", async (req, res) => {
+  try {
+    const listingId = req.params.id;
+    const updatedData = req.body;
+
+    const updatedListing = await listingModel.findByIdAndUpdate(
+      listingId,
+      updatedData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Listing successfully updated", updatedListing });
+  } catch (error) {
+    console.log("Error updating the listing: ", error);
+    res.status(500).json({ error: "Error updating the listing" });
+  }
 });
 
 mongoose.connect(
