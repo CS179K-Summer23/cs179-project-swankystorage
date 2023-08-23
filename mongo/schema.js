@@ -326,8 +326,15 @@ app.post("/createRoom", async(req, res)=>{
     const receiverUsername = req.body.id
     const receiver = await userModel.findById({_id:receiverUsername})
     const sender = await userModel.findById({_id: currentSession.user._id})
-    const newRoom = new roomModel({participants:[receiver, sender]})
-    await newRoom.save()
+    const roomExists = await roomModel.findOne({participants:[receiver,sender]})
+    if(roomExists){
+      res.status(200).json({message:"room already exists"})
+    }
+    else{
+      const newRoom = new roomModel({participants:[receiver, sender]})
+      await newRoom.save()
+      res.status(200).json({message: "The room has been successfully created"})
+    }
     // console.log("A new room has been created", newRoom)
     // console.log("this is the current user: ", currentSession)
     // console.log("this is the sender: ", sender)
@@ -341,7 +348,6 @@ app.post("/createRoom", async(req, res)=>{
     //   receiver.rooms.push(newRoomForReceiver)
     //   await receiver.save()
     // }
-    res.status(200).json({message: "The room has been successfully created"})
   } catch (error) {
     console.log(error, "Error creating a new room")
     res.status(500).json({error: "Failed to create the new room"})    
@@ -370,9 +376,10 @@ app.get("/room/:id", async(req, res) => {
   try {
     const receiver = req.params.id
     const receiver2 = await userModel.findById(receiver)
+    
     const sender = currentSession.user._id
-    console.log("this is the receiver: ", receiver2)
-    console.log("This is the sender: ", sender)
+    // console.log("this is the receiver: ", receiver2)
+    // console.log("This is the sender: ", sender)
     const room = await roomModel.findOne({participants:[receiver2,sender]})
     if(!room){
       console.log("room cannot be found")
@@ -393,7 +400,7 @@ app.get("/room/:id", async(req, res) => {
 
 async function saveMessage({ text, sender, room }){
   console.log("text, sender, room",text, sender, room)
-  const message = new messageModel({ message:text, sender:sender, room });
+  const message = new messageModel({ message:text, sender:sender, room:room });
   await message.save();
   return message;
 }
@@ -413,7 +420,7 @@ io.on('connection', (socket) => {
   console.log('User connected');
   const joinRoom = (room) => {
     socket.join(room.room);
-    console.log("user has joined the room")
+    console.log("user has joined the room, ", room.room._id)
   };
 
   const leaveRoom = (room) => {
@@ -438,7 +445,7 @@ io.on('connection', (socket) => {
   socket.on('chat message', (data) => {
     saveMessage({
       text: data.msg,
-      sender: data.userId,
+      sender: currentSession.user._id,
       room: data.room,
     })
     sendMessageToRoom(data.room, data.msg);

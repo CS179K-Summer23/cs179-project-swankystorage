@@ -59,13 +59,16 @@ const ProductLandingPage = ({ item }) => {
 
   
   const createNewChat = () => {
-    axios.post("http://localhost:3001/createRoom/",{
+    try {
+      axios.post("http://localhost:3001/createRoom/",{
       id: data.owner,
-    }).then(()=>{
+      }).then(()=>{
       console.log("room has been created")
       navigate("/chat", {state: {owner: data}})
-    })
-    
+     })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
