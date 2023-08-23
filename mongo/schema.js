@@ -5,13 +5,21 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const http = require("http")
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 const key = crypto.randomBytes(64).toString("hex");
-
+const server = http.createServer(app)
+const {Server} = require('socket.io');
+const { error } = require("console");
+const io = new Server(server,{
+  cors:{
+    origin:"*"
+  }
+});
 //session details
 //cookie session false since we are only on localhost
 app.use(
@@ -54,6 +62,34 @@ const listing = new Schema(
 );
 
 const listingModel = mongoose.model("listing", listing);
+
+//message schema
+const messageSchema = new Schema({
+  message: {type: String, required: true},
+  sender: {type: mongoose.Schema.Types.ObjectId, ref: "user", required: true},
+  room: { type: mongoose.Schema.Types.ObjectId, ref: "rooms", required: true},
+},
+{
+  timestamps: true,
+}
+);
+
+const messageModel = mongoose.model("message", messageSchema)
+
+//room schema
+const roomSchema = new Schema({
+  name: {type:String},
+  participants: [{ type: mongoose.Schema.Types.ObjectId, ref: "user",}]
+},
+{
+  timestamps: true,
+})
+
+const roomModel = mongoose.model("rooms", roomSchema)
+
+
+
+
 //remember to change to actual routes.
 app.post("/register", async (req, res) => {
   try {
@@ -284,6 +320,137 @@ app.put("/listing/:id", async (req, res) => {
   }
 });
 
+//creates a new room. Should pass in the name of listing's owner
+app.post("/createRoom", async(req, res)=>{
+  try {
+    const receiverUsername = req.body.id
+    const receiver = await userModel.findById({_id:receiverUsername})
+    const sender = await userModel.findById({_id: currentSession.user._id})
+    const newRoom = new roomModel({participants:[receiver, sender]})
+    await newRoom.save()
+    // console.log("A new room has been created", newRoom)
+    // console.log("this is the current user: ", currentSession)
+    // console.log("this is the sender: ", sender)
+    // if(sender){
+    //   console.log("room added for sender")
+    //   sender.rooms.push(newRoomForSender)
+    //   await sender.save()
+    // }
+    // if(receiver){
+    //   console.log("room added for receiver")
+    //   receiver.rooms.push(newRoomForReceiver)
+    //   await receiver.save()
+    // }
+    res.status(200).json({message: "The room has been successfully created"})
+  } catch (error) {
+    console.log(error, "Error creating a new room")
+    res.status(500).json({error: "Failed to create the new room"})    
+  }
+})
+
+//test this
+//post new message to room, unsure if this works as intended
+app.post("/message", async (req, res)=> {
+  try {
+    const text = req.body.text;
+    const sender = req.body.user;
+    const room = req.body.room;
+    const message = new messageModel({message: text, sender: sender, room: room});
+    await message.save();
+    res.status(200).json({message:"Message saved to the room"});
+  } catch (error) {
+    console.log(error, " could not send the message");
+    res.status(500).json({error:"Error saving the message to the room"});
+  }
+})
+  
+
+//to get messages from a specific room
+app.get("/room/:id", async(req, res) => {
+  try {
+    const receiver = req.params.id
+    const receiver2 = await userModel.findById(receiver)
+    const sender = currentSession.user._id
+    console.log("this is the receiver: ", receiver2)
+    console.log("This is the sender: ", sender)
+    const room = await roomModel.findOne({participants:[receiver2,sender]})
+    if(!room){
+      console.log("room cannot be found")
+      res.status(404).json({message:"Room cannot be found"})
+    }
+    else{
+      const messages = await messageModel.find({room: room._id}).populate("sender room")
+      console.log(messages)
+      res.json(messages)
+    }
+  } catch (error) {
+    console.log("error retrieving messages for this room")
+    res.status(500).json({message: "There was an error retrieving the messages for this room"})
+  }
+  
+})
+
+
+async function saveMessage({ text, sender, room }){
+  console.log("text, sender, room",text, sender, room)
+  const message = new messageModel({ message:text, sender:sender, room });
+  await message.save();
+  return message;
+}
+
+io.use((socket,next) => {
+  if(currentSession){
+    next();
+  }
+  else{
+    console.log("user is not logged in for sockets")
+    next(error("user is not logged in to use the socket"))
+  }
+})
+
+
+io.on('connection', (socket) => {
+  console.log('User connected');
+  const joinRoom = (room) => {
+    socket.join(room.room);
+    console.log("user has joined the room")
+  };
+
+  const leaveRoom = (room) => {
+    socket.leave(room.room);
+    console.log("user has left the room")
+  };
+
+  const sendMessageToRoom = (room, message) => {
+    console.log('Received message:', message);
+
+    io.to(room).emit('chat message', message);
+  };
+
+  socket.on('join room', (room) => {
+    joinRoom(room);
+  });
+
+  socket.on('leave room', (room) => {
+    leaveRoom(room);
+  });
+
+  socket.on('chat message', (data) => {
+    saveMessage({
+      text: data.msg,
+      sender: data.userId,
+      room: data.room,
+    })
+    sendMessageToRoom(data.room, data.msg);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('left the room');
+  });
+
+});
+
+
 mongoose.connect(
   "mongodb+srv://apate198:swankystorage@cluster0.z8xre3k.mongodb.net/?retryWrites=true&w=majority",
   {
@@ -291,6 +458,6 @@ mongoose.connect(
     useUnifiedTopology: true,
   }
 );
-app.listen(3001, () => {
+server.listen(3001, () => {
   console.log("on port 3001");
 });

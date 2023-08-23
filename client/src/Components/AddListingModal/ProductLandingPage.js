@@ -4,6 +4,7 @@ import axios from "axios";
 import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
+import { useNavigate } from "react-router-dom";
 import {
   EmailShareButton,
   EmailIcon,
@@ -21,7 +22,7 @@ const ProductLandingPage = ({ item }) => {
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
 
-
+  const navigate = useNavigate()
   const { id } = useParams();
   console.log(id);
 
@@ -56,13 +57,24 @@ const ProductLandingPage = ({ item }) => {
     setShowPopup(!showPopup);
   };
 
+  
+  const createNewChat = () => {
+    axios.post("http://localhost:3001/createRoom/",{
+      id: data.owner,
+    }).then(()=>{
+      console.log("room has been created")
+      navigate("/chat", {state: {owner: data}})
+    })
+    
+  }
+
   return (
     <>
     <CustomNavbar />
     <div class="parent">
       <div className="div1">
         <h1>
-          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={togglePopup}>
+          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={createNewChat}>
               <h2>Reply</h2>
             </button>
         </h1> 
