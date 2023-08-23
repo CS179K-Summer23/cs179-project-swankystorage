@@ -4,6 +4,7 @@ import axios from "axios";
 import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
+import { Row, Col } from "react-bootstrap";
 import {
   EmailShareButton,
   EmailIcon,
@@ -59,58 +60,25 @@ const ProductLandingPage = ({ item }) => {
   return (
     <>
     <CustomNavbar />
-    <div class="parent">
-      <div className="div1">
-        <h1>
-          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={togglePopup}>
-              <h2>Reply</h2>
-            </button>
-        </h1> 
-      </div>
-      <div className="div2">
-        <FacebookShareButton url={window.location.href} quote={data.nameOfItem}>
-          <FacebookIcon size={32} round={true} />
-        </FacebookShareButton>
-
-        <TwitterShareButton url={window.location.href} title={data.nameOfItem}>
-          <TwitterIcon size={32} round={true} />
-        </TwitterShareButton>
-
-        <WhatsappShareButton url={window.location.href} title={data.nameOfItem}>
-          <WhatsappIcon size={32} round={true} />
-        </WhatsappShareButton>
-
-        <EmailShareButton
-          url={window.location.href}
-          subject={data.nameOfItem}
-          body={`Check out this item: ${window.location.href}`}
-        >
-          <EmailIcon size={32} round={true} />
-        </EmailShareButton>
-      </div>
-
-      <div className="div3">
-          {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />}
-      </div>
-      <div className="div4">{data.description}</div>
-      <div className="div5"><div className="button-box"><b>Post id:</b> {data._id}</div></div>
-      <div className="div6"><div className="button-box"><b>Posted:</b> {formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</div></div>
-      <div className="div7"><div className="button-box"><b>Updated:</b> {formatDistanceToNow(new Date(data.updatedAt), { addSuffix: true })}</div></div>
-      <div className="div8">
-        <iframe
-          title="California Map"
-          id="map-iframe"
-          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d998917.166994401!2d-120.67364818456007!3d36.778261015833336!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ac6c3e38f3859%3A0x4e8e9992e03d3e0!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sus!4v1631168552723!5m2!1sen!2sus"
-          allowfullscreen
-        ></iframe>
-      </div>
-      {showPopup && (
-        <div className="popup">
-          <p> 🛠️ We see your curiosity sparked by <b>{data.nameOfItem}</b>, and we're thrilled about your interest! At the moment, our chat feature is undergoing some enhancements to provide you with an even better experience.🛠️</p>
-          <button onClick={togglePopup}>Close</button>
+    <div className="mainContainerListingPage">
+      <div className="listingContentsListingPage">
+        <div className="titleContainerListingPage">
+          <p className="titleListingPage">{data.nameOfItem} - <span className="listingPriceListingPage">${data.price}</span></p>
         </div>
-      )}
-
+        <div className="containerVisualInfoRowListingPage">
+          <Row>
+            <Col className="col-4">
+              {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />}
+            </Col>
+            <Col className="col-4">
+              <div className="googleMapsContainerListingPage"></div>
+            </Col>
+            <Col className="col-4">
+              <div className="sharingOptionsContainerListingPage"></div>
+            </Col>
+          </Row>
+        </div>
+      </div>
     </div>
     </>
   );
