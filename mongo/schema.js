@@ -5,12 +5,30 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const { Socket, Server } = require("socket.io");
 const app = express();
+const http = require('http')
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 const key = crypto.randomBytes(64).toString("hex");
+
+const server = http.createServer(app)
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  }
+})
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`)
+  socket.on("send_message", (data) => {
+    socket.broadcast.emit("receive_message", data)
+  });
+});
 
 //session details
 //cookie session false since we are only on localhost
@@ -291,6 +309,10 @@ mongoose.connect(
     useUnifiedTopology: true,
   }
 );
-app.listen(3001, () => {
+/*app.listen(3001, () => {
   console.log("on port 3001");
+});*/
+
+server.listen(3001, () => {
+  console.log("SERVER RUNNING")
 });
