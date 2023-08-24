@@ -37,11 +37,49 @@ const user = new Schema({
 
 const userModel = mongoose.model("user", user);
 
+const citySchema = new mongoose.Schema({
+  city: String,
+  latitude: Number,
+  longitude: Number,
+});
+
+const City = mongoose.model('City', citySchema);
+
+// API routes
+app.get('/cities', async (req, res) => {
+  try {
+    const cities = await City.find();
+    res.json(cities);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.get('/cities/city/:cityName', async (req, res) => {
+  try {
+    const cityName = req.params.cityName;
+    
+    const cities = await City.find({ city: { $regex: `^${cityName}`, $options: 'i' } });
+    
+    if (cities.length === 0) {
+      res.status(404).json({ error: 'No cities found with that name' });
+      return;
+    }
+    
+    res.json(cities);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 const listing = new Schema(
   {
     nameOfItem: { type: String, required: true },
     price: { type: Number, required: true },
     location: { type: String, required: true },
+    longitude: { type: Number, required: true },
+    latitude: { type: Number, required: true },
+    radius: { type: Number, required: true },
     picture: { type: String, required: true },
     description: { type: String, required: true },
     categories: { type: Array, required: true },
@@ -143,17 +181,20 @@ app.post("/new-listing", async (req, res) => {
       nameOfItem: req.body.nameOfItem,
       price: req.body.price,
       location: req.body.location,
+      latitude: req.body.latitude,
+      longitude: req.body.longitude,
+      radius: req.body.radius,
       picture: req.body.picture,
       description: req.body.description,
       categories: req.body.categories,
-      owner: currentSession.user._id,
+      owner: currentSession.user._id
     });
 
     newListing.createdAt = new Date();
     newListing.updatedAt = new Date();
 
     await newListing.save();
-    console.log(req.body.categories);
+    console.log(req.body.city);
     console.log("Listing Saved to Mongo");
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {

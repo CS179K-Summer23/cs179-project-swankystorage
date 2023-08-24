@@ -1,0 +1,24 @@
+.location-suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    z-index: 2;
+    background-color: #fff;
+    border: 0px solid #fff;
+    width: 90%;
+    max-height: 150px;
+    overflow-y: auto;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .location-suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .location-suggestions li:hover {
+    background-color: #f0f0f0;
+  }
+  
