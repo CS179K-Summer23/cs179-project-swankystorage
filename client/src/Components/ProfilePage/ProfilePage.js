@@ -3,7 +3,7 @@ import { Button, Container, Card, Row, Col } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import MainApp from "../AddListingModal/MainApp";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import "./ProfilePage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "../Dashboard/Dashboard";
@@ -42,7 +42,8 @@ function ProfilePage(args) {
   let [userName, setUserName] = useState("");
   let [password, setPassword] = useState("");
   let [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const [rooms, setRooms] = useState([])
+  const navigate = useNavigate()
   useEffect(() => {
     axios
       .get("http://localhost:3001/profilePage")
@@ -54,6 +55,7 @@ function ProfilePage(args) {
         setUserName(response.data.user.userName);
         setPassword(response.data.user.password);
         setListings(response.data.listings);
+        setRooms(response.data.rooms)
       })
       .catch((error) => {
         setError(error);
@@ -75,6 +77,16 @@ function ProfilePage(args) {
       return obfuscatedPassword;
     }
   };
+
+  const goToDm = async (roomId) =>{
+    try {
+      const response = await axios.get('http://localhost:3001/roomById/' + roomId)
+      console.log(response.data)
+      navigate("/dm", {state: {messages: response.data}})
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   //const getQueryResult = (query) => {
   //  console.log("query: ", query);
@@ -123,6 +135,12 @@ function ProfilePage(args) {
               Messages
             </Button>
           </Card>
+        </div>
+        <div>
+          {rooms.map((room,index)=>(
+            
+            <button key={index} onClick={() => goToDm(room._id)}>{room._id}</button>
+          ))}
         </div>
         <Row>
           <h1>My Listings</h1>

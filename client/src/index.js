@@ -12,6 +12,7 @@ import Login from "./Components/login";
 import ProductLandingPage from "./Components/AddListingModal/ProductLandingPage";
 import App from "./App";
 import ProfilePage from './Components/ProfilePage/ProfilePage.js'
+import Dm from "./Components/Chat/dm";
 import ChatRoom from './Components/Chat/Chat.js'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -25,7 +26,8 @@ root.render(
         <Route path="/profilePage" element={<ProfilePage/>}></Route>
         <Route path="/product/:id" element={<ProductLandingPage />}></Route>
         <Route path="/dashboard" element={<Dashboard />}></Route>
-        <Route path="chat" element={<ChatRoom />}></Route>
+        <Route path="/chat" element={<ChatRoom />}></Route>
+        <Route path="/dm" element={<Dm/>}></Route>
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

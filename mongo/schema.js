@@ -15,6 +15,7 @@ const key = crypto.randomBytes(64).toString("hex");
 const server = http.createServer(app)
 const {Server} = require('socket.io');
 const { error } = require("console");
+const e = require("express");
 const io = new Server(server,{
   cors:{
     origin:"*"
@@ -207,8 +208,8 @@ app.get("/profilePage", async (req, res) => {
     const listings = await listingModel.find({
       owner: currentSession.user._id,
     });
-    //console.log(currentSession.user)
-    res.status(200).json({ listings, user });
+    const rooms = await roomModel.find({participants:currentSession.user._id})
+    res.status(200).json({ listings, user, rooms  });
   } else {
     res.status(401).json({ message: "User is not logged in" });
     //res.redirect('/login')
@@ -320,6 +321,12 @@ app.put("/listing/:id", async (req, res) => {
   }
 });
 
+async function saveMessage({ text, sender, room }){
+  console.log("text, sender, room",text, sender, room)
+  const message = new messageModel({ message:text, sender:sender, room:room });
+  await message.save();
+  return message;
+}
 //creates a new room. Should pass in the name of listing's owner
 app.post("/createRoom", async(req, res)=>{
   try {
@@ -369,9 +376,24 @@ app.post("/message", async (req, res)=> {
     res.status(500).json({error:"Error saving the message to the room"});
   }
 })
-  
 
-//to get messages from a specific room
+//retrieves the room id 
+app.get("/dm/:id", async(req, res)=>{
+  try {
+    const receiver = req.params.id
+    const receiver2 = await userModel.findById(receiver)
+    const sender = currentSession.user._id
+    const room = await roomModel.findOne({participants:[receiver2,sender]})
+    if(room){
+      res.status(200).json(room)
+    } 
+  } catch (error) {
+    console.log(error, "Error getting the dm info")
+    res.status(500).json({message:"Could not retrieve room id"})
+  }
+})
+
+//to get messages from a specific room given the listing owners id
 app.get("/room/:id", async(req, res) => {
   try {
     const receiver = req.params.id
@@ -397,13 +419,24 @@ app.get("/room/:id", async(req, res) => {
   
 })
 
-
-async function saveMessage({ text, sender, room }){
-  console.log("text, sender, room",text, sender, room)
-  const message = new messageModel({ message:text, sender:sender, room:room });
-  await message.save();
-  return message;
-}
+//finds the room by the rooms id and then returns all the messages for that room
+app.get("/roomById/:id", async(req, res) => {
+  try {
+    const rid = req.params.id
+    const room = await roomModel.findById(rid)
+    if(!room){
+      res.status(200).json({message: "This room does not exist anymore"})
+    }
+    else{
+      const messages = await messageModel.find({room:room._id}).populate("sender room")
+      res.json(messages)
+    }
+  } catch (error) {
+    console.log("error retrieving messages for this room")
+    res.status(500).json({message: "There was an error retrieving the messages for this room"})
+  }
+  
+})
 
 io.use((socket,next) => {
   if(currentSession){

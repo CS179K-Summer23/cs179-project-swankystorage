@@ -1,9 +1,10 @@
-//this is for the that is made from the reply button on a listing
+//this is for getting the chats from the profile page
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
 import axios from "axios";
-const ChatRoom = () => {
+
+const Dm = () => {
   const [socket, setSocket] = useState(null);
   const [room, setRoom] = useState(''); 
   const [message, setMessage] = useState('');
@@ -11,8 +12,8 @@ const ChatRoom = () => {
   const location = useLocation()
   const [roomData, setRoomData] = useState('')
   const [roomId, setRoomId] = useState('')
-  const data = location.state.owner
-  console.log(data)
+  const data = location.state.messages
+  
   useEffect(() => {
     const newSocket = io('http://localhost:3001'); 
     setSocket(newSocket);
@@ -22,31 +23,37 @@ const ChatRoom = () => {
     };
   }, []);
 
+  //fix this
   useEffect(()=>{
-    const fetchRoomId = async() =>{
-      try {
-        const response = await axios.get("http://localhost:3001/dm/" + data.owner)
-        setRoomId(response.data._id)
-      } catch (error) {
-          console.log("Error fetching the room id: ", error)
-      }
+    try {
+        if(!setRoomId(data[0].room._id)){
+            const fetchRoomId = async() =>{
+                try {
+                  const response = await axios.get("http://localhost:3001/dm/" + data.owner)
+                  setRoomId(response.data._id)
+                } catch (error) {
+                    console.log("Error fetching the room id: ", error)
+                }
+              }
+              fetchRoomId()
+        }
+        
+    } catch (error) {
+        console.log(error, "There was an error setting the rooms id")
     }
-    fetchRoomId()
-  },[data.owner])
+  },[data])
 
   useEffect(() => {
     const fetchRoomData = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/room/" + data.owner);
-        setRoomData(response.data);
-        // console.log(roomData)
+        setRoomData(data);
       } catch (error) {
         console.error("Error fetching room data:", error);
       }
     };
     fetchRoomData(); 
     // console.log("this is the room id:", roomData[0].room._id)
-  }, [data.owner]);
+  }, [data]);
   
 
   useEffect(() => {
@@ -109,6 +116,6 @@ const ChatRoom = () => {
       </div>
     </div>
   );
-};
+}
 
-export default ChatRoom;
+export default Dm
