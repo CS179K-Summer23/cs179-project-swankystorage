@@ -80,6 +80,7 @@ function ProfilePage(args) {
 
   const goToDm = async (roomId) =>{
     try {
+      // console.log(roomId)
       const response = await axios.get('http://localhost:3001/roomById/' + roomId)
       console.log(response.data)
       navigate("/dm", {state: {messages: response.data}})
@@ -139,7 +140,7 @@ function ProfilePage(args) {
         <div>
           {rooms.map((room,index)=>(
             
-            <button key={index} onClick={() => goToDm(room._id)}>{room._id}</button>
+            <button key={index} onClick={() => goToDm(room._id)}>{room.name}</button>
           ))}
         </div>
         <Row>

@@ -331,6 +331,7 @@ async function saveMessage({ text, sender, room }){
 app.post("/createRoom", async(req, res)=>{
   try {
     const receiverUsername = req.body.id
+    const nameOfRoom = req.body.name
     const receiver = await userModel.findById({_id:receiverUsername})
     const sender = await userModel.findById({_id: currentSession.user._id})
     const roomExists = await roomModel.findOne({participants:[receiver,sender]})
@@ -338,7 +339,7 @@ app.post("/createRoom", async(req, res)=>{
       res.status(200).json({message:"room already exists"})
     }
     else{
-      const newRoom = new roomModel({participants:[receiver, sender]})
+      const newRoom = new roomModel({name:nameOfRoom, participants:[receiver, sender]})
       await newRoom.save()
       res.status(200).json({message: "The room has been successfully created"})
     }
@@ -453,7 +454,7 @@ io.on('connection', (socket) => {
   console.log('User connected');
   const joinRoom = (room) => {
     socket.join(room.room);
-    console.log("user has joined the room, ", room.room._id)
+    console.log("user has joined the room")
   };
 
   const leaveRoom = (room) => {

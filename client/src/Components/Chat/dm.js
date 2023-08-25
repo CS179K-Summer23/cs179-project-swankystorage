@@ -13,7 +13,7 @@ const Dm = () => {
   const [roomData, setRoomData] = useState('')
   const [roomId, setRoomId] = useState('')
   const data = location.state.messages
-  
+  console.log(data)
   useEffect(() => {
     const newSocket = io('http://localhost:3001'); 
     setSocket(newSocket);
@@ -23,13 +23,13 @@ const Dm = () => {
     };
   }, []);
 
-  //fix this
+
   useEffect(()=>{
     try {
-        if(!setRoomId(data[0].room._id)){
+        if(!(data[0].room._id)){
             const fetchRoomId = async() =>{
                 try {
-                  const response = await axios.get("http://localhost:3001/dm/" + data.owner)
+                  const response = await axios.get("http://localhost:3001/dm/" + data.rooms.participants[0])
                   setRoomId(response.data._id)
                 } catch (error) {
                     console.log("Error fetching the room id: ", error)
@@ -37,7 +37,9 @@ const Dm = () => {
               }
               fetchRoomId()
         }
-        
+        else{
+          setRoomId(data[0].room._id)
+        }
     } catch (error) {
         console.log(error, "There was an error setting the rooms id")
     }

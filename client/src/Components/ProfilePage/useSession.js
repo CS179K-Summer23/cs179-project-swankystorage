@@ -7,7 +7,7 @@ export function useSession() {
     useEffect(() => {
         axios.get('http://localhost:3001/profilePage').then(res => {
             if (res.status === 200) {
-                console.log("Logged in")
+                // console.log("Logged in")
                 setSession(res.data.user)
             } else {
                 console.log("Not logged in")
