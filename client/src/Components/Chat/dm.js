@@ -12,8 +12,10 @@ const Dm = () => {
   const location = useLocation()
   const [roomData, setRoomData] = useState('')
   const [roomId, setRoomId] = useState('')
+  const [name, setName] = useState([])
   const data = location.state.messages
-  console.log(data)
+  const user = location.state.user
+  // console.log(user)
   useEffect(() => {
     const newSocket = io('http://localhost:3001'); 
     setSocket(newSocket);
@@ -62,7 +64,8 @@ const Dm = () => {
     if (socket) {
       // Listen for incoming messages
       socket.on('chat message', (message) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
+        // setMessages((prevMessages) => [...prevMessages, message]);
+        // setName((prevNames)=> [...prevNames, user])
       });
     }
   }, [socket]);
@@ -70,20 +73,23 @@ const Dm = () => {
   useEffect(()=>{
     if(roomData && roomData.length > 0){
       const mes = roomData.map((entry) => entry.message)
+      const u = roomData.map((entry) => entry.sender.userName)
       setMessages(mes)
+      setName(u)
     }
   },[roomData])
 
-  const handleJoinRoom = () => {
+  useEffect(()=>{
     if (socket) {
-      socket.emit('join room', { room });
+      socket.emit('join room', { room: roomId });
     }
-  };
+  },[socket,roomId])
 
   const handleSendMessage = () => {
     if (socket && message) {
       socket.emit('chat message', { room:roomId, msg: message});
       setMessages((prevMessages) => [...prevMessages, message]);
+      setName((prevNames)=> [...prevNames, user])
       setMessage('');
     }
   };
@@ -91,7 +97,7 @@ const Dm = () => {
   return (
     <div>
       <h1>Chat Room</h1>
-      <div>
+      {/* <div>
         <input
           type="text"
           placeholder="Enter room name"
@@ -99,12 +105,15 @@ const Dm = () => {
           onChange={(e) => setRoom(e.target.value)}
         />
         <button onClick={handleJoinRoom}>Join Room</button>
-      </div>
+      </div> */}
       <div>
         <ul>
-          {messages.map((msg, index) => (
-            <li key={index}>{msg}</li>
-          ))}
+          {messages.map((msg, index) => {
+            const displayName = name[index]
+            return(
+              <li key={index}>{displayName}: {msg}</li>
+            )
+          })}
         </ul>
       </div>
       <div>

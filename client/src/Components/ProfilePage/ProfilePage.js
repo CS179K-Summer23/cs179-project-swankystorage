@@ -43,14 +43,18 @@ function ProfilePage(args) {
   let [password, setPassword] = useState("");
   let [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [rooms, setRooms] = useState([])
+  const [receiver, setReceivers] = useState([])
+  const [names, setNames] = useState([])
+  const [uid, setUid] = useState('')
   const navigate = useNavigate()
   useEffect(() => {
-    axios
+    const fetchProfile = async() =>{
+      axios
       .get("http://localhost:3001/profilePage")
       .then((response) => {
         setUser(response.data.user);
         console.log(response.data);
-
+        setUid(response.data.user._id)
         setEmail(response.data.user.email);
         setUserName(response.data.user.userName);
         setPassword(response.data.user.password);
@@ -60,8 +64,33 @@ function ProfilePage(args) {
       .catch((error) => {
         setError(error);
       });
+    }
+    fetchProfile()
   }, []);
 
+  useEffect(()=>{
+      try {
+        const roomReceivers = rooms.map((key) => (
+          uid === key.participants[1] ? key.participants[0] : key.participants[1]
+        ));
+        setReceivers(roomReceivers);
+      } catch (error) {
+        console.log(error)
+      }
+  },[uid,rooms])
+
+  useEffect(()=>{
+    try {
+      const fetchUserNames = async () =>{
+        const usernames = await Promise.all(receiver.map((key)=> axios.get("http://localhost:3001/userId/" + key)))
+        setNames(usernames) 
+      }
+      fetchUserNames()          
+    } catch (error) {
+      console.log(error)
+    }
+  }, [receiver])
+  
   const passWordVisibilityButtonClicked = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -82,8 +111,8 @@ function ProfilePage(args) {
     try {
       // console.log(roomId)
       const response = await axios.get('http://localhost:3001/roomById/' + roomId)
-      console.log(response.data)
-      navigate("/dm", {state: {messages: response.data}})
+      console.log(userName)
+      navigate("/dm", {state: {messages: response.data, user: userName}})
     } catch (error) {
       console.log(error)
     }
@@ -138,10 +167,13 @@ function ProfilePage(args) {
           </Card>
         </div>
         <div>
-          {rooms.map((room,index)=>(
-            
-            <button key={index} onClick={() => goToDm(room._id)}>{room.name}</button>
-          ))}
+          {rooms.map((room,index)=>{  
+            const usernameD = names[index]?.data?.name
+            const username = usernameD?.userName
+            return(
+              <button key={index} onClick={() => goToDm(room._id)}>{room.name}-{username}</button>
+            )
+            })}
         </div>
         <Row>
           <h1>My Listings</h1>

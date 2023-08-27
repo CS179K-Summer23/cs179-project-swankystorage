@@ -21,10 +21,24 @@ const ProductLandingPage = ({ item }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-
+  const [username, setUserName] = useState('')
   const navigate = useNavigate()
   const { id } = useParams();
   console.log(id);
+
+  useEffect(() => {
+    const fetchProfile = async() =>{
+      axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setUserName(response.data.user.userName);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+    }
+    fetchProfile()
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +79,7 @@ const ProductLandingPage = ({ item }) => {
         id: data.owner,
       }).then(()=>{
       // console.log("room has been created")
-      navigate("/chat", {state: {owner: data}})
+      navigate("/chat", {state: {owner: data, user: username}})
      })
     } catch (error) {
       console.log(error)

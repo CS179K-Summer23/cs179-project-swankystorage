@@ -439,6 +439,17 @@ app.get("/roomById/:id", async(req, res) => {
   
 })
 
+app.get("/userId/:id", async(req, res) => {
+  try {
+    const uid = req.params.id
+    const name = await userModel.findById(uid)
+    res.status(200).json({name})
+  } catch (error) {
+    console.log("error retrieving user id")
+    res.status(500).json({message: "There was an error retreiving the user id"})
+  }
+})
+
 io.use((socket,next) => {
   if(currentSession){
     next();
@@ -464,7 +475,6 @@ io.on('connection', (socket) => {
 
   const sendMessageToRoom = (room, message) => {
     console.log('Received message:', message);
-
     io.to(room).emit('chat message', message);
   };
 
