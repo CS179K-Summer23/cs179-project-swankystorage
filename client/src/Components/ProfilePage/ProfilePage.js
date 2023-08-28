@@ -1,9 +1,9 @@
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
-import { Button, Container, Card, Row, Col } from "react-bootstrap";
+import { Button, Container, Card, Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import MainApp from "../AddListingModal/MainApp";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import "./ProfilePage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "../Dashboard/Dashboard";
@@ -42,24 +42,55 @@ function ProfilePage(args) {
   let [userName, setUserName] = useState("");
   let [password, setPassword] = useState("");
   let [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const [rooms, setRooms] = useState([])
+  const [receiver, setReceivers] = useState([])
+  const [names, setNames] = useState([])
+  const [uid, setUid] = useState('')
+  const navigate = useNavigate()
   useEffect(() => {
-    axios
+    const fetchProfile = async() =>{
+      axios
       .get("http://localhost:3001/profilePage")
       .then((response) => {
         setUser(response.data.user);
         console.log(response.data);
-
+        setUid(response.data.user._id)
         setEmail(response.data.user.email);
         setUserName(response.data.user.userName);
         setPassword(response.data.user.password);
         setListings(response.data.listings);
+        setRooms(response.data.rooms)
       })
       .catch((error) => {
         setError(error);
       });
+    }
+    fetchProfile()
   }, []);
 
+  useEffect(()=>{
+      try {
+        const roomReceivers = rooms.map((key) => (
+          uid === key.participants[1] ? key.participants[0] : key.participants[1]
+        ));
+        setReceivers(roomReceivers);
+      } catch (error) {
+        console.log(error)
+      }
+  },[uid,rooms])
+
+  useEffect(()=>{
+    try {
+      const fetchUserNames = async () =>{
+        const usernames = await Promise.all(receiver.map((key)=> axios.get("http://localhost:3001/userId/" + key)))
+        setNames(usernames) 
+      }
+      fetchUserNames()          
+    } catch (error) {
+      console.log(error)
+    }
+  }, [receiver])
+  
   const passWordVisibilityButtonClicked = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
@@ -76,6 +107,17 @@ function ProfilePage(args) {
     }
   };
 
+  const goToDm = async (roomId, roomName, username) =>{
+    try {
+      // console.log(roomId)
+      const response = await axios.get('http://localhost:3001/roomById/' + roomId)
+      // console.log(userName)
+      navigate("/dm", {state: {messages: response.data, user: userName, nameOfRoom: roomName, otherUser: username}})
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   //const getQueryResult = (query) => {
   //  console.log("query: ", query);
   //  axios
@@ -90,8 +132,8 @@ function ProfilePage(args) {
     <>
       <CustomNavbar />
       <Container fluid className="mainContainer">
-        <div className="informationContainer">
-          <Card style={{ padding: "10px" }}>
+        <div className="informationContainer" style={{display:"flex", flexDirection:"row"}}>
+          <Card style={{ padding: "10px", width:'50%', height:'100%' }}>
             <p>
               <span className="userNameTitle">
                 <b>User Name: </b>
@@ -119,11 +161,43 @@ function ProfilePage(args) {
             >
               Show Password
             </Button>
-            <Button variant="primary" className="customProfilePageButton">
-              Messages
-            </Button>
+            
           </Card>
+          <div style={{padding:'10px', width:'50%', height:'100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            {/* <Button variant="primary" className="customProfilePageButton">
+              Messages
+            </Button> */}
+            <div style={{textAlign:'center'}}>
+              <span className="emailTitle" >Messages</span>
+            </div>
+            <ListGroup>
+              {rooms.map((room,index)=>{  
+                const usernameD = names[index]?.data?.name
+                const username = usernameD?.userName
+                return(
+                  <ListGroupItem action variant="light">
+                    <button key={index} 
+                      onClick={() => goToDm(room._id, room.name, username)} 
+                      style={{width:'100%', height:'100%', border:'none', background:'transparent', padding:'2px'}}
+                      >
+                      {room.name}-{username}
+                    </button>
+                  </ListGroupItem>
+                )
+                })}
+            </ListGroup>
+          </div>
+
         </div>
+        {/* <div>
+          {rooms.map((room,index)=>{  
+            const usernameD = names[index]?.data?.name
+            const username = usernameD?.userName
+            return(
+              <button key={index} onClick={() => goToDm(room._id)}>{room.name}-{username}</button>
+            )
+            })}
+        </div> */}
         <Row>
           <h1>My Listings</h1>
           <MainApp

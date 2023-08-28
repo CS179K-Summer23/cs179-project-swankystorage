@@ -4,6 +4,7 @@ import axios from "axios";
 import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
+import { useNavigate } from "react-router-dom";
 import {
   EmailShareButton,
   EmailIcon,
@@ -20,10 +21,24 @@ const ProductLandingPage = ({ item }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
-
-
+  const [username, setUserName] = useState('')
+  const navigate = useNavigate()
   const { id } = useParams();
   console.log(id);
+
+  useEffect(() => {
+    const fetchProfile = async() =>{
+      axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setUserName(response.data.user.userName);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+    }
+    fetchProfile()
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,13 +71,28 @@ const ProductLandingPage = ({ item }) => {
     setShowPopup(!showPopup);
   };
 
+  
+  const createNewChat = () => {
+    try {
+      axios.post("http://localhost:3001/createRoom/",{
+        name: data.nameOfItem,
+        id: data.owner,
+      }).then(()=>{
+      // console.log("room has been created")
+      navigate("/chat", {state: {owner: data, user: username}})
+     })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
     <CustomNavbar />
     <div class="parent">
       <div className="div1">
         <h1>
-          {data.nameOfItem} - ${(data.price / 100).toFixed(2)} ({data.location}) <button onClick={togglePopup}>
+          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={createNewChat}>
               <h2>Reply</h2>
             </button>
         </h1> 

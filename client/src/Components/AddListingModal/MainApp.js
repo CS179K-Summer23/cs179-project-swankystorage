@@ -34,7 +34,7 @@ const MainApp = (args) => {
 
   const handleShowListings = (listingsToShow) => {
     /* Map through the "listings" array and display each item in a ListingCard */
-    console.log(listingsToShow);
+    // console.log(listingsToShow);
     if (listingsToShow.length > 0) {
       return (
         <>
@@ -200,7 +200,7 @@ const ListingCard = ({ item, handleDelete }) => {
   let [session] = useSession()
 
   const isProfilePage = location.pathname === "/profilePage";
-  console.log(isProfilePage);
+  // console.log(isProfilePage);
 
   const handleUpdateClick = () => {
     setShowUpdateModal(true);
