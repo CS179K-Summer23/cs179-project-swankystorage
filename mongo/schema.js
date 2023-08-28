@@ -263,6 +263,16 @@ app.get("/listing/:id", async (req, res) => {
   }
 });
 
+app.get("/listing/user/:id", async (req, res) => {
+  try {
+    const users = await userModel.findOne({ _id: req.params.id });
+    res.json(users);
+  } catch(err) {
+    console.log("Error fetching data from MongoDB: ", err);
+    res.status(500).json({ error: "Error getting author of post" });
+  }
+});
+
 app.post("/update-favorites", async (req, res) => {
     try {
         console.log("Changing favorites to ", req.body.favorites)
