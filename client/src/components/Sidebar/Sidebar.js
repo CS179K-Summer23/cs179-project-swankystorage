@@ -13,13 +13,14 @@ const properties = [
   ]
   
   function requestToMongoQuery(request) {
-    let mongoQuery = {nameOfItem: request.name, price: {$gte: Number(request.minPrice * 100), $lte: Number(request.maxPrice * 100)}, location: request.location, description: request.description}
+    let mongoQuery = {nameOfItem: request.name, price: {$gte: Number(request.minPrice * 100), $lte: Number(request.maxPrice * 100)}, location: request.location, description: request.description, categories: request.categories}
     for (let key in mongoQuery) {
         if (!mongoQuery[key]) delete mongoQuery[key]
     }
     if (!mongoQuery.price.$gte) mongoQuery.price.$gte = 0
     if (!mongoQuery.price.$lte) mongoQuery.price.$lte = 2e10;
     if (mongoQuery.description) mongoQuery.description = {$regex: ".*" + request.description + ".*"}
+    if (mongoQuery.categories) mongoQuery.categories = { $all: mongoQuery.categories }
     return mongoQuery
   }
   
