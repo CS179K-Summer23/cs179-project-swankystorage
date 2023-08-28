@@ -62,7 +62,7 @@ const ProductLandingPage = ({ item }) => {
     <div class="parent">
       <div className="div1">
         <h1>
-          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={togglePopup}>
+          {data.nameOfItem} - ${(data.price / 100).toFixed(2)} ({data.location}) <button onClick={togglePopup}>
               <h2>Reply</h2>
             </button>
         </h1> 
