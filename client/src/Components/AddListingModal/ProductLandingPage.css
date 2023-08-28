@@ -164,9 +164,9 @@
   text-overflow: ellipsis;
 }
 
-.customMessageSellerButtonListingPage:hover {
-  background-color: rgb(136, 2, 136);
-  border-color: rgb(136, 2, 136);
+.customMessageSellerButtonListingPage:hover, .customMessageSellerButtonListingPage:active{
+    background-color: rgb(136, 2, 136) !important;
+    border-color: rgb(136, 2, 136) !important;
 }
 
 .vwDivListingPage{
