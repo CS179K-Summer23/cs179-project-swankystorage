@@ -199,6 +199,11 @@ const ListingCard = ({ item, handleDelete }) => {
   const navigate = useNavigate()
   let [session] = useSession()
 
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const isProfilePage = location.pathname === "/profilePage";
   // console.log(isProfilePage);
 
@@ -249,13 +254,6 @@ const ListingCard = ({ item, handleDelete }) => {
     return null;
   }
   const handleDeleteClick = () => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this listing?"
-    );
-
-    if (!isConfirmed) {
-      return;
-    }
     axios
       .delete(`http://localhost:3001/listing/${item._id}`)
       .then((response) => {
@@ -267,9 +265,27 @@ const ListingCard = ({ item, handleDelete }) => {
       .catch((error) => {
         console.error("Error deleting the listing:", error);
       });
+
+      handleClose();
+      window.location.reload();
   };
 
   return (
+    <>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Delete item?</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={handleDeleteClick}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
     <Card className="listing-card">
       <Card.Img variant="top" src={item.picture} alt={item.itemName} />
       <Card.Body>
@@ -306,7 +322,7 @@ const ListingCard = ({ item, handleDelete }) => {
               </Button>
             </Col>
             <Col>
-              <Button variant="danger" onClick={handleDeleteClick}>
+              <Button variant="danger" onClick={handleShow}>
                 Delete
               </Button>
             </Col>
@@ -322,6 +338,7 @@ const ListingCard = ({ item, handleDelete }) => {
         />
       </Card.Body>
     </Card>
+    </>
   );
 };
 
