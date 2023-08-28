@@ -1,5 +1,5 @@
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
-import { Button, Container, Card, Row, Col } from "react-bootstrap";
+import { Button, Container, Card, Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import MainApp from "../AddListingModal/MainApp";
 import axios from "axios";
@@ -107,12 +107,12 @@ function ProfilePage(args) {
     }
   };
 
-  const goToDm = async (roomId) =>{
+  const goToDm = async (roomId, roomName, username) =>{
     try {
       // console.log(roomId)
       const response = await axios.get('http://localhost:3001/roomById/' + roomId)
-      console.log(userName)
-      navigate("/dm", {state: {messages: response.data, user: userName}})
+      // console.log(userName)
+      navigate("/dm", {state: {messages: response.data, user: userName, nameOfRoom: roomName, otherUser: username}})
     } catch (error) {
       console.log(error)
     }
@@ -132,8 +132,8 @@ function ProfilePage(args) {
     <>
       <CustomNavbar />
       <Container fluid className="mainContainer">
-        <div className="informationContainer">
-          <Card style={{ padding: "10px" }}>
+        <div className="informationContainer" style={{display:"flex", flexDirection:"row"}}>
+          <Card style={{ padding: "10px", width:'50%', height:'100%' }}>
             <p>
               <span className="userNameTitle">
                 <b>User Name: </b>
@@ -161,12 +161,35 @@ function ProfilePage(args) {
             >
               Show Password
             </Button>
-            <Button variant="primary" className="customProfilePageButton">
-              Messages
-            </Button>
+            
           </Card>
+          <div style={{padding:'10px', width:'50%', height:'100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            {/* <Button variant="primary" className="customProfilePageButton">
+              Messages
+            </Button> */}
+            <div style={{textAlign:'center'}}>
+              <span className="emailTitle" >Messages</span>
+            </div>
+            <ListGroup>
+              {rooms.map((room,index)=>{  
+                const usernameD = names[index]?.data?.name
+                const username = usernameD?.userName
+                return(
+                  <ListGroupItem action variant="light">
+                    <button key={index} 
+                      onClick={() => goToDm(room._id, room.name, username)} 
+                      style={{width:'100%', height:'100%', border:'none', background:'transparent', padding:'2px'}}
+                      >
+                      {room.name}-{username}
+                    </button>
+                  </ListGroupItem>
+                )
+                })}
+            </ListGroup>
+          </div>
+
         </div>
-        <div>
+        {/* <div>
           {rooms.map((room,index)=>{  
             const usernameD = names[index]?.data?.name
             const username = usernameD?.userName
@@ -174,7 +197,7 @@ function ProfilePage(args) {
               <button key={index} onClick={() => goToDm(room._id)}>{room.name}-{username}</button>
             )
             })}
-        </div>
+        </div> */}
         <Row>
           <h1>My Listings</h1>
           <MainApp
