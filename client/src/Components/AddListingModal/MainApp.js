@@ -276,7 +276,7 @@ const ListingCard = ({ item, handleDelete }) => {
         <Link to={`/product/${encodeURIComponent(item._id)}`}>
           <Card.Title>{item.nameOfItem}</Card.Title>
         </Link>
-        <Card.Text>Price: ${item.price}</Card.Text>
+        <Card.Text>Price: ${(item.price/100).toFixed(2)}</Card.Text>
         {!isProfilePage && (
         <Row className="align-items-center">
           <Col xs={3}>

@@ -1,54 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
-
-const categories = [
-  "Antiques",
-  "Appliances",
-  "Arts+Crafts",
-  "ATV/UTV/SNO",
-  "Auto parts",
-  "Aviation",
-  "Baby+Kid",
-  "Barter",
-  "Beauty+Hlth",
-  "Bike parts",
-  "Bikes",
-  "Boat parts",
-  "Boats",
-  "Books",
-  "Business",
-  "Cars+Trucks",
-  "CDs/DVD/VHS",
-  "Cell phones",
-  "Clothes+Acc",
-  "Collectibles",
-  "Computer parts",
-  "Computers",
-  "Electronics",
-  "Farm+Garden",
-  "Free",
-  "Furniture",
-  "Garage sale",
-  "General",
-  "Heavy equip",
-  "Household",
-  "Jewelry",
-  "Materials",
-  "Motorcycle parts",
-  "Motorcycles",
-  "Music instr",
-  "Photo+Video",
-  "RVs+Camp",
-  "Sporting",
-  "Tickets",
-  "Tools",
-  "Toys+Games",
-  "Trailers",
-  "Video gaming",
-  "Wanted",
-  "Wheels+Tires",
-];
+const {categories} = require('../../categories.json')
 
 const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
   const [itemName, setItemName] = useState("");
@@ -85,7 +38,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
 
     handleAddListing({
       itemName,
-      price,
+      price: (price * 100).toFixed(0),
       location,
       description,
       pictures,
@@ -97,7 +50,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
     axios
       .post("http://localhost:3001/new-listing", {
         nameOfItem: itemName,
-        price: price,
+        price: (price * 100).toFixed(0),
         location: location,
         picture: pictures,
         description: description,
@@ -147,7 +100,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
             <Form.Control
               type="number"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => setPrice(Math.abs(Math.floor(e.target.value * 100) / 100))}
               required
             />
           </Form.Group>
