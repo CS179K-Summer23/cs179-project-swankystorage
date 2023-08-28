@@ -112,7 +112,7 @@ const Dm = () => {
         />
         <button onClick={handleJoinRoom}>Join Room</button>
       </div> */}
-      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'30%', marginRight:'30%', borderRadius:'2%'}}>
+      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'30%', marginRight:'30%',}}>
         {messages.map((msg, index) => {
           const displayName = name[index];
           const isUserMessage = displayName === user;
@@ -120,10 +120,10 @@ const Dm = () => {
               <p
                 key={index}
                 style={{
-                  textAlign: isUserMessage ? 'left' : 'right',
+                  textAlign: isUserMessage ? 'right' : 'left',
                   padding: '8px',
-                  marginLeft: isUserMessage ? '10%' : 'auto',
-                  marginRight: isUserMessage ? 'auto' : '10%',
+                  marginLeft: isUserMessage ? 'auto' : '10%',
+                  marginRight: isUserMessage ? '10%' : 'auto',
                   maxWidth: '25%', 
                   backgroundColor: isUserMessage ? 'lightblue' : 'lightgray',
                   borderRadius: '8px',
@@ -136,7 +136,7 @@ const Dm = () => {
               </p>
             );
           })}
-      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'10%', marginRight:'10%', borderRadius:'5%'}}>
+      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'10%', marginRight:'10%'}}>
         <input
           type="text"
           placeholder="Enter your message"
