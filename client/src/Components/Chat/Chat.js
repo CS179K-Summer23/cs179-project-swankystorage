@@ -125,10 +125,10 @@ const ChatRoom = () => {
               <p
                 key={index}
                 style={{
-                  textAlign: isUserMessage ? 'left' : 'right',
+                  textAlign: isUserMessage ? 'right' : 'left',
                   padding: '8px',
-                  marginLeft: isUserMessage ? '10%' : 'auto',
-                  marginRight: isUserMessage ? 'auto' : '10%',
+                  marginLeft: isUserMessage ? 'auto' : '10%',
+                  marginRight: isUserMessage ? '10%' : 'auto',
                   maxWidth: '25%', 
                   backgroundColor: isUserMessage ? 'lightblue' : 'lightgray',
                   borderRadius: '8px',

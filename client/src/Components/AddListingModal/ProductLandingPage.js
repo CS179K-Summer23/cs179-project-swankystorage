@@ -40,18 +40,14 @@ const ProductLandingPage = ({ item }) => {
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [authorOfPost, setAuthorOfPost] = useState("Unknown");
+  const [username, setUserName] = useState('');
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const navigate = useNavigate();
 
-
-  /*useEffect(() => {
-  const [username, setUserName] = useState('')
-  const navigate = useNavigate()
-  const { id } = useParams();
-  console.log(id);
 
   useEffect(() => {
     const fetchProfile = async() =>{
@@ -67,20 +63,20 @@ const ProductLandingPage = ({ item }) => {
     fetchProfile()
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:3001/listing/" + id);
-        setData(response.data);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get("http://localhost:3001/listing/" + id);
+  //       setData(response.data);
+  //     } catch (error) {
+  //       setError(error.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);*/
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     if(!data) return
