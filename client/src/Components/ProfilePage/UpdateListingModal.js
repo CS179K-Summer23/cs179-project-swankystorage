@@ -1,9 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
-const {categories} = require('../../categories.json')
 
-const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
+const categories = [
+  "Antiques",
+  "Appliances",
+  "Arts+Crafts",
+  "ATV/UTV/SNO",
+  "Auto parts",
+  "Aviation",
+  "Baby+Kid",
+  "Barter",
+  "Beauty+Hlth",
+  "Bike parts",
+  "Bikes",
+  "Boat parts",
+  "Boats",
+  "Books",
+  "Business",
+  "Cars+Trucks",
+  "CDs/DVD/VHS",
+  "Cell phones",
+  "Clothes+Acc",
+  "Collectibles",
+  "Computer parts",
+  "Computers",
+  "Electronics",
+  "Farm+Garden",
+  "Free",
+  "Furniture",
+  "Garage sale",
+  "General",
+  "Heavy equip",
+  "Household",
+  "Jewelry",
+  "Materials",
+  "Motorcycle parts",
+  "Motorcycles",
+  "Music instr",
+  "Photo+Video",
+  "RVs+Camp",
+  "Sporting",
+  "Tickets",
+  "Tools",
+  "Toys+Games",
+  "Trailers",
+  "Video gaming",
+  "Wanted",
+  "Wheels+Tires",
+];
+
+const UpdateListingModal = ({
+  show,
+  handleClose,
+  handleUpdateListing,
+  listing,
+}) => {
   const [itemName, setItemName] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
@@ -34,23 +86,20 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Validate and handle form submission
 
-    handleAddListing({
+    handleUpdateListing({
       itemName,
-      price: (price * 100).toFixed(0),
+      price,
       location,
       description,
       pictures,
       categories: selectedCategories,
     });
 
-    console.log(selectedCategories);
-
     axios
-      .post("http://localhost:3001/new-listing", {
+      .put(`http://localhost:3001/listing/${listing._id}`, {
         nameOfItem: itemName,
-        price: (price * 100).toFixed(0),
+        price: price,
         location: location,
         picture: pictures,
         description: description,
@@ -58,21 +107,14 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
       })
       .then((response) => {
         console.log(response);
+      })
+      .catch((error) => {
+        console.error("Error updating the listing:", error);
       });
 
-    // Clear the form fields
-    setItemName("");
-    setPrice("");
-    setLocation("");
-    setDescription("");
-    setPictures(null);
-    setSelectedCategories([]);
-
-    // Close the modal
     handleClose();
   };
 
-  // Handle file input change
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     const base64 = await convertToBase64(file);
@@ -82,7 +124,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Listing</Modal.Title>
+        <Modal.Title>Update Listing</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
@@ -100,7 +142,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
             <Form.Control
               type="number"
               value={price}
-              onChange={(e) => setPrice(Math.abs(Math.floor(e.target.value * 100) / 100))}
+              onChange={(e) => setPrice(e.target.value)}
               required
             />
           </Form.Group>
@@ -144,7 +186,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
             />
           </Form.Group>
           <Button variant="primary" type="submit" className="mt-4">
-            Add Listing
+            Update Listing
           </Button>
         </Form>
       </Modal.Body>
@@ -152,7 +194,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
   );
 };
 
-export default AddListingModal;
+export default UpdateListingModal;
 
 function convertToBase64(file) {
   return new Promise((resolve, reject) => {

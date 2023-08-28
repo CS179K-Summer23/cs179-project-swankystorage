@@ -66,7 +66,7 @@ const UpdateListingModal = ({
   useEffect(() => {
     if (listing) {
       setItemName(listing.nameOfItem);
-      setPrice(listing.price);
+      setPrice((listing.price / 100).toFixed(2));
       setLocation(listing.location);
       setDescription(listing.description);
       setPictures(listing.pictures);
@@ -99,7 +99,7 @@ const UpdateListingModal = ({
     axios
       .put(`http://localhost:3001/listing/${listing._id}`, {
         nameOfItem: itemName,
-        price: price,
+        price: (price * 100).toFixed(0),
         location: location,
         picture: pictures,
         description: description,
@@ -142,7 +142,7 @@ const UpdateListingModal = ({
             <Form.Control
               type="number"
               value={price}
-              onChange={(e) => setPrice(e.target.value)}
+              onChange={(e) => setPrice(Math.abs(Math.floor(e.target.value * 100) / 100))}
               required
             />
           </Form.Group>

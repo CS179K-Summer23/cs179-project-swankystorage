@@ -5,6 +5,7 @@ import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
 import { Row, Col, Button, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import {
   EmailShareButton,
   EmailIcon,
@@ -46,6 +47,26 @@ const ProductLandingPage = ({ item }) => {
 
 
   /*useEffect(() => {
+  const [username, setUserName] = useState('')
+  const navigate = useNavigate()
+  const { id } = useParams();
+  console.log(id);
+
+  useEffect(() => {
+    const fetchProfile = async() =>{
+      axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setUserName(response.data.user.userName);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+    }
+    fetchProfile()
+  }, []);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get("http://localhost:3001/listing/" + id);
@@ -92,6 +113,21 @@ const ProductLandingPage = ({ item }) => {
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
+
+  
+  const createNewChat = () => {
+    try {
+      axios.post("http://localhost:3001/createRoom/",{
+        name: data.nameOfItem,
+        id: data.owner,
+      }).then(()=>{
+      // console.log("room has been created")
+      navigate("/chat", {state: {owner: data, user: username}})
+     })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   return (
     <>
@@ -144,7 +180,7 @@ const ProductLandingPage = ({ item }) => {
                   </p>
                 </div>
                 <div className="sharingOptionsBottomPanelListingPage">
-                  <Button variant="primary" className="customMessageSellerButtonListingPage" onClick={handleShow}>
+                  <Button variant="primary" className="customMessageSellerButtonListingPage" onClick={createNewChat}>
                     <span className="customMessageSellerButtonTextListingPage">Message Seller</span>
                   </Button>
                 </div>
@@ -160,17 +196,6 @@ const ProductLandingPage = ({ item }) => {
         </div>
       </div>
     </div>
-    <Modal show={show} onHide={handleClose}>
-      <Modal.Header closeButton>
-        <Modal.Title>🛠️ Coming soon... 🛠️</Modal.Title>
-      </Modal.Header>
-      <Modal.Body>We see your curiosity sparked by <b>{data.nameOfItem}</b>, and we're thrilled about your interest! At the moment, our chat feature is undergoing some enhancements to provide you with an even better experience.</Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-      </Modal.Footer>
-    </Modal>
     </>
   );
 };
