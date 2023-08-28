@@ -26,11 +26,11 @@ const properties = [
   
 
 function Sidebar(args){
-    const getQueryResult = (query) => {
-        console.log("query: ", query)
+    const getQueryResult = (query, sort) => {
+        console.log("query: ", query, " sort: ", sort)
         axios.get(
             'http://localhost:3001/filter-listings',
-            {params: {query}}
+            {params: {query, sort}}
         ).then((response) => {
             //console.log("Filtered: ", response)
             args.load(response.data)
@@ -43,7 +43,7 @@ function Sidebar(args){
             >
                 <div className="sidebar-sticky"></div>
                 <Nav.Item>
-                    <FilterBar properties={properties} getQuery={(query) => getQueryResult(requestToMongoQuery(query))} />
+                    <FilterBar properties={properties} getQuery={(query, sort) => getQueryResult(requestToMongoQuery(query), sort)} />
                 </Nav.Item>
             </Nav>
     )

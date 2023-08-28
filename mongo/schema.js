@@ -204,8 +204,10 @@ app.get("/new-listing", async (req, res) => {
 app.get("/filter-listings", async (req, res) => {
   try {
     const filterCriteria = req.query.query;
-    const listings = await listingModel.find(filterCriteria);
-    console.log("Filtered by ", JSON.stringify(req.query.query));
+    let sortCriteria = req.query.sort;
+    if (!sortCriteria) sortCriteria = {nameOfItem:1}
+    console.log("Filtered by ", JSON.stringify(req.query.query), " Sorted by ", JSON.stringify(sortCriteria));
+    const listings = await listingModel.find(filterCriteria).sort(sortCriteria);
     //console.log(listings)
     res.status(200).json(listings);
   } catch (error) {
