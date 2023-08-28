@@ -5,8 +5,10 @@ import Accordion from 'react-bootstrap/Accordion'
 import Card from 'react-bootstrap/Card'
 import Form from "react-bootstrap/Form"
 import Button from "react-bootstrap/Button"
-
 import './FilterBar.css'
+import CategoryModal from "./CategoryModal"
+
+
 
 function SortButtons(args) {
     return (
@@ -61,6 +63,7 @@ export function FilterBar(args) {
             <Accordion>
                 <Form>
                 <SortButtons sort={{sort, updateSort}}/>
+                <CategoryModal chosenCategories={request.categories} submit={(value) => changeRequest({categories: value})} />
                 { args.properties.map((item) => 
                     <Accordion.Item eventKey={item.key} key={item.key}>
                         <TextField key={item.key} defaultText={item.label} type={item.type} submit={(value) => changeRequest({[item.prop]: value})}/>
