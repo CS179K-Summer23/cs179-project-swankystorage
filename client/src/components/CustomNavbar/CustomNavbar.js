@@ -70,17 +70,10 @@ function CustomNavbar() {
     }else{
         buttons = <>
                     <Nav className="ml-auto">
-                        <Dropdown>
-                            <Dropdown.Toggle variant="primary btn customNavbarButtonAccount" id="dropdown-basic">
-                                Account
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                                <Dropdown.Item href="/profilePage">Profile</Dropdown.Item>
-                                <Dropdown.Item href="/dashboard">Favorites</Dropdown.Item>
-                                <Dropdown.Item href="/messages">Messages</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
+                        <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate('/profilePage')}>Profile</Button>
+                    </Nav>
+                    <Nav className="ml-auto">
+                        <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate('/dashboard')}>Favorites</Button>
                     </Nav>
                     <Nav className="ml-auto">
                         <Button variant="danger" className="btn customNavbarButton" onClick={handleShowLogoutButton}>Logout</Button>
