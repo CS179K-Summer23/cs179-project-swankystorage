@@ -80,7 +80,7 @@
 
   align-items: center;
   margin-top: 1%;
-  width: 75vw;
+  width: 90vw;
 }
 
 .titleListingPage{
@@ -120,7 +120,7 @@
   justify-content: space-between;
 
   width: 25vw;
-  height: 450px;
+  height: 44vh;
 }
 
 .sharingOptionsTitleListingPage{
@@ -143,21 +143,58 @@
   margin: 0px;
 
   font-size: 18px;
+}
+
+.updatedCreatedTitleListingPage{
   font-style: italic;
 }
 
 .customMessageSellerButtonListingPage{
-  width: 250px;
-  height: 75px;
+  width: 20vw;
+  height: 10vh;
   margin: 5px;
   background-color: rgb(168, 1, 168);
   border-color: rgb(168, 1, 168);
+}
 
-  font-size: 32px;
+.customMessageSellerButtonTextListingPage{
+  font-size: 30px;
   font-weight: 500;
+
+  text-overflow: ellipsis;
 }
 
 .customMessageSellerButtonListingPage:hover {
   background-color: rgb(136, 2, 136);
   border-color: rgb(136, 2, 136);
+}
+
+.vwDivListingPage{
+  padding: 10px;
+  width: 25vw;
+}
+
+.descriptionTitleListingPage{
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.descriptionTitleContainerListingPage{
+  display: flex;
+  justify-content: center;
+}
+
+.descriptionContainerListingPage{
+  margin-top: 10px;
+  margin-bottom: 10vh;
+  width: 75vw;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.descriptionContentsListingPage{
+  font-size: 24px;
+  text-align: center
 }
