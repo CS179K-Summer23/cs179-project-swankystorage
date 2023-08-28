@@ -132,7 +132,7 @@ const ProductLandingPage = ({ item }) => {
     <div className="mainContainerListingPage">
       <div className="listingContentsListingPage">
         <div className="titleContainerListingPage">
-          <p className="titleListingPage">{data.nameOfItem} - <span className="listingPriceListingPage">${data.price}</span></p>
+          <p className="titleListingPage">{data.nameOfItem} - <span className="listingPriceListingPage">${(data.price/100).toFixed(2)}</span></p>
         </div>
         <div className="containerVisualInfoRowListingPage">
           <Row>
