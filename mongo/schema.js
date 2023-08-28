@@ -42,7 +42,7 @@ const listing = new Schema(
     nameOfItem: { type: String, required: true },
     price: { type: Number, required: true },
     location: { type: String, required: true },
-    picture: { type: String, required: true },
+    picture: [{ type: String, required: false }],
     description: { type: String, required: true },
     categories: [{ type: Array, required: true }],
     owner: {
@@ -155,6 +155,7 @@ app.post("/new-listing", async (req, res) => {
     await newListing.save();
     console.log(req.body.categories);
     console.log("Listing Saved to Mongo");
+    console.log("Number of pictures: ", newListing.picture.length)
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {
     console.log("error saving data to MongoDB: ", error);

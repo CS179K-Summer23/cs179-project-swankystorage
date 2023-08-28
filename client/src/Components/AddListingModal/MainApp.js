@@ -271,7 +271,7 @@ const ListingCard = ({ item, handleDelete }) => {
 
   return (
     <Card className="listing-card">
-      <Card.Img variant="top" src={item.picture} alt={item.itemName} />
+      <Card.Img variant="top" src={item.picture[0]} alt={item.itemName} />
       <Card.Body>
         <Link to={`/product/${encodeURIComponent(item._id)}`}>
           <Card.Title>{item.nameOfItem}</Card.Title>

@@ -90,7 +90,9 @@ const ProductLandingPage = ({ item }) => {
       </div>
 
       <div className="div3">
-          {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />}
+        {data.picture.map(picture => 
+          <img src={picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />
+        )}
       </div>
       <div className="div4">{data.description}</div>
       <div className="div5"><div className="button-box"><b>Post id:</b> {data._id}</div></div>
