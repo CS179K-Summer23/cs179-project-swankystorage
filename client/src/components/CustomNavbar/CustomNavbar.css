@@ -2,3 +2,16 @@
     width: 100px;
     margin: 5px;
 }
+
+.customNavbarButtonAccount{
+    width: 100px;
+    margin: 5px;
+
+    background-color: rgb(168, 1, 168);
+    border-color: rgb(168, 1, 168);
+}
+
+.customNavbarButtonAccount:hover, .customNavbarButtonAccount:active, .customNavbarButtonAccount:focus{
+    background-color: rgb(136, 2, 136) !important;
+    border-color: rgb(136, 2, 136) !important;
+}

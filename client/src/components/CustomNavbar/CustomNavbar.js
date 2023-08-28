@@ -2,7 +2,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 import { Modal } from "react-bootstrap";
-import Button from "react-bootstrap/Button";
+import { Button, Dropdown } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -71,6 +71,8 @@ function CustomNavbar() {
         buttons = <>
                     <Nav className="ml-auto">
                         <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate('/profilePage')}>Profile</Button>
+                    </Nav>
+                    <Nav className="ml-auto">
                         <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate('/dashboard')}>Favorites</Button>
                     </Nav>
                     <Nav className="ml-auto">

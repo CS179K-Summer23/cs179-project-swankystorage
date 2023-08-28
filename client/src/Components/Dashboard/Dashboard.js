@@ -52,6 +52,7 @@ export function Dashboard() {
     return (
         <>
             <CustomNavbar />
+            <h1 style={{marginLeft: "1vw", marginTop: "1vw"}}>Your Favorites</h1>
             { session && doneLoading && <MainApp listings={listings} update={(data) => {setListings(data)}}/>}
             { session && noFavorites && <h2>Explore the home page to add favorites!</h2>}
         </>
