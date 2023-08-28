@@ -5,6 +5,8 @@ import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
 import MapComponent from "../Maps";
+import { Row, Col, Button, Modal } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import {
   EmailShareButton,
   EmailIcon,
@@ -16,15 +18,54 @@ import {
   WhatsappIcon,
 } from "react-share";
 
-const ProductLandingPage = ({ item }) => {
+
+function useData() {
   const [data, setData] = useState(null);
+  const { id } = useParams()
+
+  useEffect(() => {
+    axios.get("http://localhost:3001/listing/" + id).then(res => {
+      console.log(res.data)  
+      setData(res.data)
+    }).catch(err => console.log(err))
+}, [])
+
+  return [data]
+}
+
+
+const ProductLandingPage = ({ item }) => {
+  const [data] = useData();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [authorOfPost, setAuthorOfPost] = useState("Unknown");
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
 
+  /*useEffect(() => {
+  const [username, setUserName] = useState('')
+  const navigate = useNavigate()
   const { id } = useParams();
   console.log(id);
+
+  useEffect(() => {
+    const fetchProfile = async() =>{
+      axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setUserName(response.data.user.userName);
+      })
+      .catch((error) => {
+        setError(error);
+      });
+    }
+    fetchProfile()
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,7 +80,24 @@ const ProductLandingPage = ({ item }) => {
     };
 
     fetchData();
-  }, [id]);
+  }, []);*/
+
+  useEffect(() => {
+    if(!data) return
+    const fetchAuthor = async () =>{
+      try{
+        const auth = await axios.get("http://localhost:3001/listing/user/" + data.owner);
+        setAuthorOfPost(auth);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAuthor();
+  }, [data])
+  
 
   if (loading) {
     return <div className="d-flex justify-content-center align-items-center vh-100">
@@ -57,54 +115,81 @@ const ProductLandingPage = ({ item }) => {
     setShowPopup(!showPopup);
   };
 
+  
+  const createNewChat = () => {
+    try {
+      axios.post("http://localhost:3001/createRoom/",{
+        name: data.nameOfItem,
+        id: data.owner,
+      }).then(()=>{
+      // console.log("room has been created")
+      navigate("/chat", {state: {owner: data, user: username}})
+     })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <>
     <CustomNavbar />
-    <div class="parent">
-      <div className="div1">
-        <h1>
-          {data.nameOfItem} - ${data.price} ({data.location}) <button onClick={togglePopup}>
-              <h2>Reply</h2>
-            </button>
-        </h1> 
-      </div>
-      <div className="div2">
-        <FacebookShareButton url={window.location.href} quote={data.nameOfItem}>
-          <FacebookIcon size={32} round={true} />
-        </FacebookShareButton>
-
-        <TwitterShareButton url={window.location.href} title={data.nameOfItem}>
-          <TwitterIcon size={32} round={true} />
-        </TwitterShareButton>
-
-        <WhatsappShareButton url={window.location.href} title={data.nameOfItem}>
-          <WhatsappIcon size={32} round={true} />
-        </WhatsappShareButton>
-
-        <EmailShareButton
-          url={window.location.href}
-          subject={data.nameOfItem}
-          body={`Check out this item: ${window.location.href}`}
-        >
-          <EmailIcon size={32} round={true} />
-        </EmailShareButton>
-      </div>
-
-      <div className="div3">
-          {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '350px', width: '100%' }} />}
-      </div>
-      <div className="div4">{data.description}</div>
-      <div className="div5"><div className="button-box"><b>Post id:</b> {data._id}</div></div>
-      <div className="div6"><div className="button-box"><b>Posted:</b> {formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</div></div>
-      <div className="div7"><div className="button-box"><b>Updated:</b> {formatDistanceToNow(new Date(data.updatedAt), { addSuffix: true })}</div></div>
-      <div className="div8"> <MapComponent lat={data.latitude} lng={data.longitude} rad={data.radius}/>  </div>
-      {showPopup && (
-        <div className="popup">
-          <p> 🛠️ We see your curiosity sparked by <b>{data.nameOfItem}</b>, and we're thrilled about your interest! At the moment, our chat feature is undergoing some enhancements to provide you with an even better experience.🛠️</p>
-          <button onClick={togglePopup}>Close</button>
+    <div className="mainContainerListingPage">
+      <div className="listingContentsListingPage">
+        <div className="titleContainerListingPage">
+          <p className="titleListingPage">{data.nameOfItem} - <span className="listingPriceListingPage">${data.price}</span></p>
         </div>
-      )}
+        <div className="containerVisualInfoRowListingPage">
+          <Row>
+            <div className="vwDivListingPage">
+              {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '450px', width: '100%' }} />}
+            </div>
+            <div className="vwDivListingPage">
+              <MapComponent lat={data.latitude} lng={data.longitude} rad={data.radius}/>
+            </div>
+            <div className="vwDivListingPage">
+              <div className="sharingOptionsContainerListingPage">
+                <div className="sharingOptionsTopPanelListingPage">
+                  <p className="sellerTitleListingPage"><span className="sellerTitleListingPageSpan">Posted by: {authorOfPost.data.userName}</span></p>
+                  <p className="createdUpdateOptionsListingPage"><span className="updatedCreatedTitleListingPage">Created: </span>{formatDistanceToNow(new Date(data.createdAt), { addSuffix: true })}</p>
+                  <p className="createdUpdateOptionsListingPage"><span className="updatedCreatedTitleListingPage">Last Updated: </span>{formatDistanceToNow(new Date(data.updatedAt), { addSuffix: true })}</p>
+                  <p className="sharingOptionsTitleListingPage">Share this listing: &nbsp;
+                    <FacebookShareButton url={window.location.href} quote={`Check out this item: ${data.nameOfItem}`}>
+                      <FacebookIcon size={32} round={true} />
+                    </FacebookShareButton>
 
+                    <TwitterShareButton url={window.location.href} title={`Check out this item! \n${data.nameOfItem}`}>
+                      <TwitterIcon size={32} round={true} />
+                    </TwitterShareButton>
+
+                    <WhatsappShareButton url={window.location.href} title={data.nameOfItem}>
+                      <WhatsappIcon size={32} round={true} />
+                    </WhatsappShareButton>
+
+                    <EmailShareButton
+                      url={window.location.href}
+                      subject={data.nameOfItem + " on Swanky Storage"}
+                      body={`Check out this item! \n${data.nameOfItem}\n`}
+                    >
+                      <EmailIcon size={32} round={true} />
+                    </EmailShareButton>
+                  </p>
+                </div>
+                <div className="sharingOptionsBottomPanelListingPage">
+                  <Button variant="primary" className="customMessageSellerButtonListingPage" onClick={createNewChat}>
+                    <span className="customMessageSellerButtonTextListingPage">Message Seller</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Row>
+        </div>
+        <div className="descriptionContainerListingPage">
+          <div className="descriptionTitleContainerListingPage">
+            <p className="descriptionTitleListingPage">Description</p> 
+          </div>
+          <p className="descriptionContentsListingPage">{data.description}</p>
+        </div>
+      </div>
     </div>
     </>
   );
