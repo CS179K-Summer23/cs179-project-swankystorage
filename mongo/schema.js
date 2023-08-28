@@ -88,8 +88,8 @@ const listing = new Schema(
     location: { type: String, required: true },
     longitude: { type: Number, required: true },
     latitude: { type: Number, required: true },
+    picture: [{ type: String, required: false }],
     radius: { type: Number, required: true },
-    picture: { type: String, required: true },
     description: { type: String, required: true },
     categories: { type: Array, required: true },
     owner: {
@@ -233,6 +233,7 @@ app.post("/new-listing", async (req, res) => {
     await newListing.save();
     console.log(req.body.city);
     console.log("Listing Saved to Mongo");
+    console.log("Number of pictures: ", newListing.picture.length)
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {
     console.log("error saving data to MongoDB: ", error);

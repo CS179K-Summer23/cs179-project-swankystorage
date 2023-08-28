@@ -60,7 +60,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
       categories: selectedCategories,
     });
 
-    console.log(selectedCategories);
+    console.log(pictures);
 
     axios
       .post("http://localhost:3001/new-listing", {
@@ -95,8 +95,15 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
 
   // Handle file input change
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    const base64 = await convertToBase64(file);
+    const file = e.target.files;
+    console.log(file);
+    let base64 = []
+    for (let i = 0; i < file.length; i++) {
+      const picture = await convertToBase64(file[i])
+      base64.push(picture)
+    }
+    //const base64 = await convertToBase64(file);
+    //const base64 = file.map(item => convertToBase64(item))
     setPictures(base64);
   };
   const fetchLocationSuggestions = async (input) => {
@@ -171,6 +178,8 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
               type="file"
               onChange={handleFileChange}
               accept="image/*"
+              required
+              multiple
             />
           </Form.Group>
           <Form.Group controlId="formCategories">
