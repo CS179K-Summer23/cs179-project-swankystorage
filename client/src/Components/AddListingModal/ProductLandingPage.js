@@ -4,6 +4,7 @@ import axios from "axios";
 import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
+import MapComponent from "../Maps";
 import { Row, Col, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
@@ -143,13 +144,7 @@ const ProductLandingPage = ({ item }) => {
               {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '450px', width: '100%' }} />}
             </div>
             <div className="vwDivListingPage">
-              <iframe
-                style={{height: "44vh", width: "24vw"}}
-                title="California Map"
-                id="map-iframe"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d998917.166994401!2d-120.67364818456007!3d36.778261015833336!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x809ac6c3e38f3859%3A0x4e8e9992e03d3e0!2sCalifornia%2C%20USA!5e0!3m2!1sen!2sus!4v1631168552723!5m2!1sen!2sus"
-                allowfullscreen
-              ></iframe>
+              <MapComponent lat={data.latitude} lng={data.longitude} rad={data.radius}/>
             </div>
             <div className="vwDivListingPage">
               <div className="sharingOptionsContainerListingPage">

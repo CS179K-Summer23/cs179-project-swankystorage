@@ -1,21 +1,35 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import axios from "axios";
+import "./AddListingModal.css"
 const {categories} = require('../../categories.json')
 
 const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
   const [itemName, setItemName] = useState("");
   const [price, setPrice] = useState("");
   const [location, setLocation] = useState("");
+  const [radius, setRadius] = useState("");
   const [description, setDescription] = useState("");
   const [pictures, setPictures] = useState(null);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [locationSuggestions, setLocationSuggestions] = useState([]);
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  const handleLocationSuggestionClick = (suggestion) => {
+    setLocation(suggestion.city);
+    setLatitude(suggestion.latitude);
+    setLongitude(suggestion.longitude);
+    setLocationSuggestions([]); // Clear suggestions
+  };
+  
 
   useEffect(() => {
     if (listing) {
       setItemName(listing.nameOfItem);
       setPrice(listing.price);
       setLocation(listing.location);
+      setRadius(listing.radius);
       setDescription(listing.description);
       setPictures(listing.pictures);
       setSelectedCategories(listing.categories);
@@ -40,6 +54,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
       itemName,
       price: (price * 100).toFixed(0),
       location,
+      radius,
       description,
       pictures,
       categories: selectedCategories,
@@ -52,6 +67,9 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
         nameOfItem: itemName,
         price: (price * 100).toFixed(0),
         location: location,
+        latitude: latitude,  // Include latitude
+        longitude: longitude,  // Include longitude
+        radius: radius,
         picture: pictures,
         description: description,
         categories: selectedCategories,
@@ -64,6 +82,9 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
     setItemName("");
     setPrice("");
     setLocation("");
+    setLatitude(null);  // Reset latitude
+    setLongitude(null);  // Reset longitude
+    setRadius("");
     setDescription("");
     setPictures(null);
     setSelectedCategories([]);
@@ -78,6 +99,15 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
     const base64 = await convertToBase64(file);
     setPictures(base64);
   };
+  const fetchLocationSuggestions = async (input) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/cities/city/${input}`);
+      setLocationSuggestions(response.data);
+    } catch (error) {
+      console.error("Error fetching location suggestions:", error);
+    }
+  };
+  
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -109,7 +139,29 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
             <Form.Control
               type="text"
               value={location}
-              onChange={(e) => setLocation(e.target.value)}
+              onChange={(e) => {
+                setLocation(e.target.value);
+                fetchLocationSuggestions(e.target.value);
+              }}
+              required
+            />
+            <ul className="location-suggestions">
+            {locationSuggestions.map((suggestion) => (
+              <li
+                key={suggestion._id}
+                onClick={() => handleLocationSuggestionClick(suggestion)}
+              >
+                {suggestion.city}
+              </li>
+            ))}
+          </ul>
+          </Form.Group>
+          <Form.Group controlId="formradius">
+            <Form.Label>Radius</Form.Label>
+            <Form.Control
+              type="text"
+              value={radius}
+              onChange={(e) => setRadius(e.target.value)}
               required
             />
           </Form.Group>
