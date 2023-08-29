@@ -1,3 +1,7 @@
 .filterBarTitle{
     text-align: center;
 }
+
+.sortButton{
+    padding: 1px;
+}

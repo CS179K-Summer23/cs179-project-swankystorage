@@ -163,14 +163,14 @@ function ProfilePage(args) {
             </Button>
             
           </Card>
-          <Card className="messagesContainerProfilePage d-flex" style={{ padding: "10px", width:'50%', maxHeight: '100%' }}>
+          <Card className="messagesContainerProfilePage" style={{ padding: "10px", width:'50%', maxHeight: '100%'}}>
             <p className="messagesTitleProfilePage">Messages</p>
-            <div style={{width: "100%", maxHeight: "100%", display: "flex", flexDirection: "column", flexWrap: "wrap"}}>
+            <div className="messageContainerProfilePage">
               {rooms.map((room,index)=>{  
                 const usernameD = names[index]?.data?.name
                 const username = usernameD?.userName
                 return(
-                    <button className="messagesButtonToDMProfilePage"key={index} 
+                    <button style={{width: "22%"}} className="messagesButtonToDMProfilePage"key={index} 
                       onClick={() => goToDm(room._id, room.name, username)} 
                       >
                       {room.name}-<span className="userNameMessagesProfilePage">{username}</span>
