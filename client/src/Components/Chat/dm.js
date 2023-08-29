@@ -98,6 +98,14 @@ const Dm = () => {
     }
   };
 
+  const userTitle = () => {
+    return <p style={{ fontStyle: "italic", marginBottom: "0px" }}>You</p>
+  }
+
+  const otherUserTitle = () => {
+    return <p style={{ fontWeight: "bold", marginBottom: "0px" }}>{otherUser}</p>
+  }
+
   return (
     <>
     <CustomNavbar />
@@ -117,6 +125,27 @@ const Dm = () => {
           const displayName = name[index];
           const isUserMessage = displayName === user;
           return (
+              <>
+              <p style={{
+                  textAlign: isUserMessage ? 'right' : 'left',
+                  marginLeft: isUserMessage ? 'auto' : '10%',
+                  marginRight: isUserMessage ? '10%' : 'auto',
+                  maxWidth: '25%', 
+                  marginBottom:'1px',
+                  overflowWrap:'break-word',
+              }}>
+                {isUserMessage && userTitle()}
+              </p>
+              <p style={{
+                  textAlign: isUserMessage ? 'right' : 'left',
+                  marginLeft: isUserMessage ? 'auto' : '10%',
+                  marginRight: isUserMessage ? '10%' : 'auto',
+                  maxWidth: '25%', 
+                  marginBottom:'1px',
+                  overflowWrap:'break-word',
+              }}>
+                {!isUserMessage && otherUserTitle()}
+              </p>
               <p
                 key={index}
                 style={{
@@ -127,16 +156,17 @@ const Dm = () => {
                   maxWidth: '25%', 
                   backgroundColor: isUserMessage ? 'lightblue' : 'lightgray',
                   borderRadius: '8px',
-                  marginBottom:'4px',
+                  marginBottom:'8px',
                   overflowWrap:'break-word',
                   marginTop:'4px'
                 }}
               >
                  {msg}
               </p>
+              </>
             );
           })}
-      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'10%', marginRight:'10%'}}>
+      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'10%', marginRight:'10%', display: 'flex', flexFlow: 'row'}}>
         <input
           type="text"
           placeholder="Enter your message"
