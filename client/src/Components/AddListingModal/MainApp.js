@@ -196,13 +196,17 @@ const ListingCard = ({ item, handleDelete }) => {
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate()
   let [session] = useSession()
 
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
+  const [showNotLoggedIn, setShowNotLoggedIn] = useState(false);
+  const handleCloseLoggedIn= () => setShowNotLoggedIn(false);
+  const handleShowNotLoggedIn = () => setShowNotLoggedIn(true);
 
   const isProfilePage = location.pathname === "/profilePage";
   // console.log(isProfilePage);
@@ -210,6 +214,18 @@ const ListingCard = ({ item, handleDelete }) => {
   const handleUpdateClick = () => {
     setShowUpdateModal(true);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setLoggedIn(true);
+      })
+      .catch((error) => {
+        setLoggedIn(false);
+        console.log("User not logged in");
+      });
+  }, []);
 
   useEffect(() => {
     if (!session) return
@@ -270,6 +286,23 @@ const ListingCard = ({ item, handleDelete }) => {
       window.location.reload();
   };
 
+  const handleGoToLogInButton = () => {
+    navigate("/login")
+  }
+
+  var link;
+  if(loggedIn){
+    link = <>
+            <Link to={`/product/${encodeURIComponent(item._id)}`}>
+              <Card.Title>{item.nameOfItem}</Card.Title>
+            </Link>
+            </>
+  }else{
+    link = <Link onClick={handleShowNotLoggedIn}>
+            <Card.Title>{item.nameOfItem}</Card.Title>
+          </Link>
+  }
+
   return (
     <>
     <Modal show={show} onHide={handleClose}>
@@ -286,12 +319,24 @@ const ListingCard = ({ item, handleDelete }) => {
         </Button>
       </Modal.Footer>
     </Modal>
+    <Modal show={showNotLoggedIn} onHide={handleCloseLoggedIn}>
+        <Modal.Header closeButton>
+            <Modal.Title>Not logged in</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You need to log in view this listing!</Modal.Body>
+        <Modal.Footer>
+            <Button variant="success" onClick={handleGoToLogInButton}>
+              Log In
+            </Button>
+            <Button variant="secondary" onClick={handleCloseLoggedIn}>
+              Back
+            </Button>
+        </Modal.Footer>
+    </Modal>
     <Card className="listing-card">
       <Card.Img variant="top" src={item.picture} alt={item.itemName} />
       <Card.Body>
-        <Link to={`/product/${encodeURIComponent(item._id)}`}>
-          <Card.Title>{item.nameOfItem}</Card.Title>
-        </Link>
+        {link}
         <Card.Text>Price: ${(item.price/100).toFixed(2)}</Card.Text>
         {!isProfilePage && (
         <Row className="align-items-center">
