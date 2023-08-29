@@ -45,7 +45,7 @@ function SortButtons(args) {
 }
 
 export function FilterBar(args) {
-    let [request, updateRequest] = useState({});
+    let [request, updateRequest] = useState({categories: []});
     let [sort, updateSort] = useState({nameOfItem:1});
     useEffect(() => {args.getQuery(request, sort);}, [request, sort])
     function changeRequest(newProps) {
