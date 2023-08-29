@@ -138,7 +138,6 @@ function ProfilePage(args) {
     if (rtd) {
       try {
         await axios.delete('http://localhost:3001/deleteChat/' + rtd);
-        // Update the UI by removing the deleted room from the rooms state
         setRooms((prevRooms) => prevRooms.filter(room => room._id !== rtd));
         setShowModal(false);
         setRtd(null);
