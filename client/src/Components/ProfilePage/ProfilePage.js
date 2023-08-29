@@ -132,8 +132,8 @@ function ProfilePage(args) {
     <>
       <CustomNavbar />
       <Container fluid className="mainContainer">
-        <div className="informationContainer" style={{display:"flex", flexDirection:"row"}}>
-          <Card style={{ padding: "10px", width:'50%', height:'100%' }}>
+        <div className="informationContainer d-flex" style={{display:"flex", flexDirection:"row"}}>
+          <Card style={{ padding: "10px", width:'50%', height:'100%', maxHeight: "100%"}}>
             <p>
               <span className="userNameTitle">
                 <b>User Name: </b>
@@ -163,31 +163,22 @@ function ProfilePage(args) {
             </Button>
             
           </Card>
-          <div style={{padding:'10px', width:'50%', height:'100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            {/* <Button variant="primary" className="customProfilePageButton">
-              Messages
-            </Button> */}
-            <div style={{textAlign:'center'}}>
-              <span className="emailTitle" >Messages</span>
-            </div>
-            <ListGroup>
+          <Card className="messagesContainerProfilePage d-flex" style={{ padding: "10px", width:'50%', maxHeight: '100%' }}>
+            <p className="messagesTitleProfilePage">Messages</p>
+            <div style={{width: "100%", maxHeight: "100%", display: "flex", flexDirection: "column", flexWrap: "wrap"}}>
               {rooms.map((room,index)=>{  
                 const usernameD = names[index]?.data?.name
                 const username = usernameD?.userName
                 return(
-                  <ListGroupItem action variant="light">
-                    <button key={index} 
+                    <button className="messagesButtonToDMProfilePage"key={index} 
                       onClick={() => goToDm(room._id, room.name, username)} 
-                      style={{width:'100%', height:'100%', border:'none', background:'transparent', padding:'2px'}}
                       >
-                      {room.name}-{username}
+                      {room.name}-<span className="userNameMessagesProfilePage">{username}</span>
                     </button>
-                  </ListGroupItem>
                 )
                 })}
-            </ListGroup>
-          </div>
-
+            </div>
+          </Card>
         </div>
         {/* <div>
           {rooms.map((room,index)=>{  
