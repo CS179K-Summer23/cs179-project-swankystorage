@@ -199,16 +199,18 @@ function ProfilePage(args) {
                 const usernameD = names[index]?.data?.name
                 const username = usernameD?.userName
                 return(
-                    <button style={{width: "22%"}} className="messagesButtonToDMProfilePage"key={index} 
+                  <>
+                  <button style={{width: "22%"}} className="messagesButtonToDMProfilePage"key={index} 
                       onClick={() => goToDm(room._id, room.name, username)} 
                       >
                       {room.name}-<span className="userNameMessagesProfilePage">{username}</span>
                     </button>
+                    <Button style={{marginRight: "50px"}}variant="danger" onClick={()=> handleDelete(room._id)}>Del</Button>
+                  </>
                 )
                 })}
             </div>
           </Card>
-            <Button variant="danger" onClick={()=> handleDelete(room._id)}>Del</Button>
             <Modal show={showModal} onHide={() => setShowModal(false)}>
               <Modal.Header closeButton>
                 <Modal.Title>Confirm Deletion</Modal.Title>
@@ -226,7 +228,6 @@ function ProfilePage(args) {
               </Modal.Footer>
             </Modal>
           </div>
-        </div>
         {/* <div>
           {rooms.map((room,index)=>{  
             const usernameD = names[index]?.data?.name
