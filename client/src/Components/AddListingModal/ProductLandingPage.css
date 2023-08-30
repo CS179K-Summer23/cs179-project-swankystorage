@@ -84,14 +84,15 @@
 }
 
 .titleListingPage{
-  font-size: 48px;
+  font-size: 54px;
+  font-weight: bold;
 
   margin-bottom: 0px;
 }
 
 .listingPriceListingPage{
   font-size: 48px;
-  font-weight: bold;
+  font-weight: 400;
 
   margin-bottom: 0px;
 }
@@ -125,6 +126,7 @@
 
 .sharingOptionsTitleListingPage{
   margin-top: 12px;
+  font-weight: bold;
 
   font-size: 20px;
 }

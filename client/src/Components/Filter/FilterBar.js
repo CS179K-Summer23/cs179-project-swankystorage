@@ -12,30 +12,30 @@ import CategoryModal from "./CategoryModal"
 
 function SortButtons(args) {
     return (
-        <Accordion.Item>
+        <Accordion.Item eventKey="0">
             <Accordion.Header>
-                Sort By
+                Sort By: 
             </Accordion.Header>
             <Accordion.Body>
-                <div><Button 
+                <div className="sortButton"><Button 
                     onClick={() => args.sort.updateSort({nameOfItem:1})}
                 >Name: A-Z</Button></div>
-                <div><Button 
+                <div className="sortButton"><Button 
                     onClick={() => args.sort.updateSort({nameOfItem:-1})}
                 >Name: Z-A</Button></div>
-                <div><Button 
+                <div className="sortButton"><Button 
                     onClick={() => args.sort.updateSort({price: -1})}
                 
                 >Price: High-Low</Button></div>
-                <div><Button 
+                <div className="sortButton"><Button 
                     onClick={() => args.sort.updateSort({price: 1})}
                 
                 >Price: Low-High</Button></div>
-                <div><Button 
+                <div className="sortButton"><Button 
                     onClick={() => args.sort.updateSort({createdAt: -1})}
                 
                 >Date: Newest-Oldest</Button></div>
-                <div><Button 
+                <div className="sortButton"><Button 
                     onClick={() => args.sort.updateSort({createdAt: 1})}
                 
                 >Date: Oldest-Newest</Button></div>
@@ -53,6 +53,12 @@ export function FilterBar(args) {
     }
     return (
         <>
+            <h1 className="filterBarTitle">Sort</h1>
+            <Accordion>
+                <Form>
+                <SortButtons sort={{sort, updateSort}}/>
+                </Form>
+            </Accordion>
             <h1 className="filterBarTitle">Filter Results</h1>
             { args.properties.map((item) => 
                 request[item.prop] && (<Card onClick={() => changeRequest({[item.prop]: undefined})} key={item.key}>
@@ -60,10 +66,9 @@ export function FilterBar(args) {
                     <Card.Text>{request[item.prop]}</Card.Text>
                 </Card>)
             ) }
+            <CategoryModal chosenCategories={request.categories} submit={(value) => changeRequest({categories: value})} />
             <Accordion>
                 <Form>
-                <SortButtons sort={{sort, updateSort}}/>
-                <CategoryModal chosenCategories={request.categories} submit={(value) => changeRequest({categories: value})} />
                 { args.properties.map((item) => 
                     <Accordion.Item eventKey={item.key} key={item.key}>
                         <TextField key={item.key} defaultText={item.label} type={item.type} submit={(value) => changeRequest({[item.prop]: value})}/>

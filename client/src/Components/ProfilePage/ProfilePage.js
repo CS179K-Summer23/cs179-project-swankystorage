@@ -1,5 +1,5 @@
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
-import { Button, Container, Card, Row, Col, ListGroup, ListGroupItem } from "react-bootstrap";
+import { Button, Container, Card, Row, Col, ListGroup, ListGroupItem, Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import MainApp from "../AddListingModal/MainApp";
 import axios from "axios";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import "./ProfilePage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Dashboard from "../Dashboard/Dashboard";
+
 
 //const properties = [
 //  { key: 0, label: "Product Name", prop: "name", type: "text" },
@@ -47,6 +48,9 @@ function ProfilePage(args) {
   const [names, setNames] = useState([])
   const [uid, setUid] = useState('')
   const navigate = useNavigate()
+  const [isHidden, setIsHidden] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  const [rtd, setRtd] = useState(null)
   useEffect(() => {
     const fetchProfile = async() =>{
       axios
@@ -95,6 +99,18 @@ function ProfilePage(args) {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
+  const handleHideClick = () =>{
+    setIsHidden(true)
+  }
+  if(isHidden){
+    return null
+  }
+  
+  const handleDelete = (roomId) =>{
+    setRtd(roomId)
+    setShowModal(true)
+  }
+
   const passwordToDisplay = (display) => {
     if (display) {
       return password;
@@ -118,6 +134,19 @@ function ProfilePage(args) {
     }
   }
 
+  const handleConfirmDelete = async () => {
+    if (rtd) {
+      try {
+        await axios.delete('http://localhost:3001/deleteChat/' + rtd);
+        setRooms((prevRooms) => prevRooms.filter(room => room._id !== rtd));
+        setShowModal(false);
+        setRtd(null);
+      } catch (error) {
+        console.log("Error deleting chat: ", error);
+      }
+    }
+  }
+  
   //const getQueryResult = (query) => {
   //  console.log("query: ", query);
   //  axios
@@ -132,8 +161,8 @@ function ProfilePage(args) {
     <>
       <CustomNavbar />
       <Container fluid className="mainContainer">
-        <div className="informationContainer" style={{display:"flex", flexDirection:"row"}}>
-          <Card style={{ padding: "10px", width:'50%', height:'100%' }}>
+        <div className="informationContainer d-flex" style={{display:"flex", flexDirection:"row"}}>
+          <Card style={{ padding: "10px", width:'50%', height:'100%', maxHeight: "100%"}}>
             <p>
               <span className="userNameTitle">
                 <b>User Name: </b>
@@ -163,32 +192,42 @@ function ProfilePage(args) {
             </Button>
             
           </Card>
-          <div style={{padding:'10px', width:'50%', height:'100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-            {/* <Button variant="primary" className="customProfilePageButton">
-              Messages
-            </Button> */}
-            <div style={{textAlign:'center'}}>
-              <span className="emailTitle" >Messages</span>
-            </div>
-            <ListGroup>
+          <Card className="messagesContainerProfilePage" style={{ padding: "10px", width:'50%', maxHeight: '100%'}}>
+            <p className="messagesTitleProfilePage">Messages</p>
+            <div className="messageContainerProfilePage">
               {rooms.map((room,index)=>{  
                 const usernameD = names[index]?.data?.name
                 const username = usernameD?.userName
                 return(
-                  <ListGroupItem action variant="light">
-                    <button key={index} 
+                  <>
+                  <button style={{width: "22%"}} className="messagesButtonToDMProfilePage"key={index} 
                       onClick={() => goToDm(room._id, room.name, username)} 
-                      style={{width:'100%', height:'100%', border:'none', background:'transparent', padding:'2px'}}
                       >
-                      {room.name}-{username}
+                      {room.name}-<span className="userNameMessagesProfilePage">{username}</span>
                     </button>
-                  </ListGroupItem>
+                    <Button style={{marginRight: "50px"}}variant="danger" onClick={()=> handleDelete(room._id)}>Del</Button>
+                  </>
                 )
                 })}
-            </ListGroup>
+            </div>
+          </Card>
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirm Deletion</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Are you sure you want to delete this chat?
+              </Modal.Body>
+             <Modal.Footer>
+                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                  Cancel
+                </Button>
+                  <Button variant="danger" onClick={handleConfirmDelete}>
+                      Delete
+                  </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
-
-        </div>
         {/* <div>
           {rooms.map((room,index)=>{  
             const usernameD = names[index]?.data?.name

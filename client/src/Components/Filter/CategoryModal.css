@@ -1,0 +1,9 @@
+.customButtonSideBar{
+    background-color: rgb(168, 1, 168);
+    border-color: rgb(168, 1, 168);
+}
+
+.customButtonSideBar:hover, .customButtonSideBar:active{
+    background-color: rgb(136, 2, 136) !important;
+    border-color: rgb(136, 2, 136) !important;
+}

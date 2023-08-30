@@ -15,7 +15,7 @@ const key = crypto.randomBytes(64).toString("hex");
 const server = http.createServer(app)
 const {Server} = require('socket.io');
 const { error } = require("console");
-const e = require("express");
+
 const io = new Server(server,{
   cors:{
     origin:"*"
@@ -246,12 +246,17 @@ app.post("/new-listing", async (req, res) => {
 //redirect works properly
 app.get("/profilePage", async (req, res) => {
   if (loggedIn) {
-    const user = currentSession.user;
-    const listings = await listingModel.find({
+    try{
+      const user = currentSession.user;
+      const listings = await listingModel.find({
       owner: currentSession.user._id,
     });
-    const rooms = await roomModel.find({participants:currentSession.user._id})
-    res.status(200).json({ listings, user, rooms  });
+      const rooms = await roomModel.find({participants:currentSession.user._id})
+      res.status(200).json({ listings, user, rooms  });
+    }catch (err){
+      console.log("Something went wrong...");
+      res.status(500).json({message: "User is not logged in ahhhh"})
+    }
   } else {
     res.status(401).json({ message: "User is not logged in" });
     //res.redirect('/login')
@@ -501,6 +506,23 @@ app.get("/userId/:id", async(req, res) => {
   } catch (error) {
     console.log("error retrieving user id")
     res.status(500).json({message: "There was an error retreiving the user id"})
+  }
+})
+
+app.delete("/deleteChat/:rid", async(req, res)=>{
+  try {
+    const room = req.params.rid
+    const messages = await messageModel.deleteMany({room:room})
+    const roomToDelete = await roomModel.findByIdAndDelete(room)
+    if(!messages || !roomToDelete){
+      res.status(500).json({message: "There was an error deleting the information associated with this room"})
+    }
+    else{
+      res.status(200).json({message:"Room has been deleted"})
+    }
+  } catch (error) {
+    console.log(error, "There was an error deleting the messages/room")
+    res.status(500).json({error: "There was an error deleting the information associated with this room"})
   }
 })
 

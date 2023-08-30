@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Button, Modal, Form, Container, Col, Row } from 'react-bootstrap';
+import "./CategoryModal.css"
 
 const {categories} = require('../../categories.json')
 
@@ -16,8 +17,8 @@ function CategoryModal(args) {
         //console.log(chosenCategories)
     }
     return (
-        <>
-            <Button onClick={() => setShowModal(true)}>Categories</Button>
+        <div style={{display: "flex", width: "100%", justifyContent: "center"}}>
+            <Button className="customButtonSideBar" style={{width: "100%", height: "5vh"}} onClick={() => setShowModal(true)}>By Category</Button>
             
             <Modal show={showModal}>
                 <Modal.Header>
@@ -26,7 +27,7 @@ function CategoryModal(args) {
                 <Modal.Body>
                     <Container>
                         <Row>
-                            <Button onClick={() => setChosenCategories([])}>Clear All</Button>
+                            <Button variant="danger" style={{marginBottom: "1vh"}}onClick={() => setChosenCategories([])}>Clear All</Button>
                         </Row>
                         <Row>
                         {[0,1,2].map((col) => 
@@ -46,11 +47,11 @@ function CategoryModal(args) {
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {args.submit(chosenCategories); setShowModal(false)}}>Confirm</Button>
-                    <Button onClick={() => {setChosenCategories(args.chosenCategories); setShowModal(false)}}>Cancel</Button>
+                    <Button variant="secondary" onClick={() => {setChosenCategories(args.chosenCategories); setShowModal(false)}}>Cancel</Button>
+                    <Button variant="success" onClick={() => {args.submit(chosenCategories); setShowModal(false)}}>Confirm</Button>
                 </Modal.Footer>
             </Modal>
-        </>
+        </div>
     )
 }
 
