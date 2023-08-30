@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { TextField } from "./FilterFields"
+import { TextField, LocationField } from "./FilterFields"
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Accordion from 'react-bootstrap/Accordion'
 import Card from 'react-bootstrap/Card'
@@ -39,6 +39,10 @@ function SortButtons(args) {
                     onClick={() => args.sort.updateSort({createdAt: 1})}
                 
                 >Date: Oldest-Newest</Button></div>
+                <div><Button 
+                    onClick={() => args.sort.updateSort({distance: 1})}
+                
+                >Distance: Closest</Button></div>
             </Accordion.Body>
         </Accordion.Item>
     )
@@ -47,7 +51,9 @@ function SortButtons(args) {
 export function FilterBar(args) {
     let [request, updateRequest] = useState({categories: []});
     let [sort, updateSort] = useState({nameOfItem:1});
-    useEffect(() => {args.getQuery(request, sort);}, [request, sort])
+    let [location, updateLocation] = useState({latitude: 0, longitude: 0, radius: 0});
+    let [city, updateCity] = useState("")
+    useEffect(() => {args.getQuery(request, sort, location);}, [request, sort, location])
     function changeRequest(newProps) {
         updateRequest({...request, ...newProps})
     }
@@ -57,9 +63,19 @@ export function FilterBar(args) {
             { args.properties.map((item) => 
                 request[item.prop] && (<Card onClick={() => changeRequest({[item.prop]: undefined})} key={item.key}>
                     <Card.Title>{item.label}</Card.Title>
-                    <Card.Text>{request[item.prop]}</Card.Text>
+                    <Card.Text>
+                        {request[item.prop]}
+                    </Card.Text>
                 </Card>)
             ) }
+            { city !== "" && <Card onClick={() => {updateCity(""); updateLocation({latitude: 0, longitude: 0, distance: 0})}}>
+                <Card.Title>Location</Card.Title> 
+                <Card.Text>
+                    <p>{city}</p>
+                    <p>Radius: {location.radius}</p>
+                </Card.Text>
+            </Card> }
+
             <Accordion>
                 <Form>
                 <CategoryModal chosenCategories={request.categories} submit={(value) => changeRequest({categories: value})} />
@@ -69,6 +85,9 @@ export function FilterBar(args) {
                         <TextField key={item.key} defaultText={item.label} type={item.type} submit={(value) => changeRequest({[item.prop]: value})}/>
                     </Accordion.Item>
                 ) }
+                <Accordion.Item>
+                    <LocationField submit={(location, city) => {updateLocation(location); updateCity(city)}} />
+                </Accordion.Item>
                 </Form>
             </Accordion>
         </>

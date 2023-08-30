@@ -8,8 +8,7 @@ const properties = [
     {key: 0, label: "Product Name", prop: "name", type: "text"},
     {key: 1, label: "Product Description", prop: "description", type: "text"},
     {key: 2, label: "Minimum Price", prop: "minPrice", type: "price"},
-    {key: 3, label: "Maximum Price", prop: "maxPrice", type: "price"},
-    {key: 4, label: "Location", prop: "location", type: "text"}
+    {key: 3, label: "Maximum Price", prop: "maxPrice", type: "price"}
   ]
   
   function requestToMongoQuery(request) {
@@ -26,11 +25,11 @@ const properties = [
   
 
 function Sidebar(args){
-    const getQueryResult = (query, sort) => {
-        console.log("query: ", query, " sort: ", sort)
+    const getQueryResult = (query, sort, location) => {
+        console.log("query: ", query, " sort: ", sort, " location: ", location)
         axios.get(
             'http://localhost:3001/filter-listings',
-            {params: {query, sort}}
+            {params: {query, sort, location}}
         ).then((response) => {
             //console.log("Filtered: ", response)
             args.load(response.data)
@@ -43,7 +42,7 @@ function Sidebar(args){
             >
                 <div className="sidebar-sticky"></div>
                 <Nav.Item>
-                    <FilterBar properties={properties} getQuery={(query, sort) => getQueryResult(requestToMongoQuery(query), sort)} />
+                    <FilterBar properties={properties} getQuery={(query, sort, location) => getQueryResult(requestToMongoQuery(query), sort, location)} />
                 </Nav.Item>
             </Nav>
     )
