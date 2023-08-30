@@ -1,0 +1,9 @@
+ChatRoom
+
+-A user presses "Message Seller" to create a chatroom with the seller
+    -Displays textbox and listing name and Seller
+-Profile page should display all the existing chatrooms the user has and should have a delete button to delete the chat
+-A user presses a listing name in profile page to go to an existing chat room
+    -It should show the same chat room layout
+    -Should display all the previous chat messages
+-User inputs message in text box and can press enter to send message to other user
