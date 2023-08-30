@@ -245,12 +245,17 @@ app.post("/new-listing", async (req, res) => {
 //redirect works properly
 app.get("/profilePage", async (req, res) => {
   if (loggedIn) {
-    const user = currentSession.user;
-    const listings = await listingModel.find({
+    try{
+      const user = currentSession.user;
+      const listings = await listingModel.find({
       owner: currentSession.user._id,
     });
-    const rooms = await roomModel.find({participants:currentSession.user._id})
-    res.status(200).json({ listings, user, rooms  });
+      const rooms = await roomModel.find({participants:currentSession.user._id})
+      res.status(200).json({ listings, user, rooms  });
+    }catch (err){
+      console.log("Something went wrong...");
+      res.status(500).json({message: "User is not logged in ahhhh"})
+    }
   } else {
     res.status(401).json({ message: "User is not logged in" });
     //res.redirect('/login')
