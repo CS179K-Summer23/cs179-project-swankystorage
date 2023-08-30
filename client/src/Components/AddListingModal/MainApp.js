@@ -14,12 +14,17 @@ import UpdateListingModal from "../UpdateListingModal";
 const MainApp = (args) => {
   const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+    const [listings, setListings] = useState(args.listings)
     let [loggedIn, setLoggedIn] = useState(false);
-    const [session] = useSession()
+    let [session] = useSession();
 
     const [showNotLoggedInPrompt, setShowNotLoggedInPrompt] = useState(false);
     const handleCloseShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(false);
     const handleShowShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(true);
+
+    useEffect(() => {
+      setListings(args.listings)
+    }, [args.listings])
 
     useEffect(() => {
       axios
@@ -32,14 +37,14 @@ const MainApp = (args) => {
           console.log("User not logged in");
         });
     }, []);
-
+  
   const handleShowListings = (listingsToShow) => {
     /* Map through the "listings" array and display each item in a ListingCard */
     // console.log(listingsToShow);
     if (listingsToShow.length > 0) {
       return (
         <>
-          {args.listings.map((item, index) => (
+          {listings.map((item, index) => (
             <Col key={index} md={3} sm={2}>
               <ListingCard item={item} session={session} />
             </Col>
@@ -63,11 +68,11 @@ const MainApp = (args) => {
   //});
 
   const handleAddListing = (newListing) => {
-    args.update([...args.listings, newListing]);
+    setListings([...listings, newListing]);
   };
 
   const handleShowModal = () => {
-    if(loggedIn){
+    if(session){
       setShowModal(true);
     }else{
       setShowNotLoggedInPrompt(true);
@@ -111,7 +116,7 @@ const MainApp = (args) => {
             </Button>
           </Col>}
         </Row>
-        <Row className="mt-3">{handleShowListings(args.listings)}</Row>
+        <Row className="mt-3">{handleShowListings(listings)}</Row>
         <AddListingModal
           show={showModal}
           handleClose={handleCloseModal}
@@ -197,7 +202,16 @@ const ListingCard = ({ item, session }) => {
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate()
+
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const [showNotLoggedIn, setShowNotLoggedIn] = useState(false);
+  const handleCloseLoggedIn= () => setShowNotLoggedIn(false);
+  const handleShowNotLoggedIn = () => setShowNotLoggedIn(true);
 
   const isProfilePage = location.pathname === "/profilePage";
   // console.log(isProfilePage);
@@ -205,6 +219,18 @@ const ListingCard = ({ item, session }) => {
   const handleUpdateClick = () => {
     setShowUpdateModal(true);
   };
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/profilePage")
+      .then((response) => {
+        setLoggedIn(true);
+      })
+      .catch((error) => {
+        setLoggedIn(false);
+        console.log("User not logged in");
+      });
+  }, []);
 
   useEffect(() => {
     if (!session) return
@@ -249,13 +275,6 @@ const ListingCard = ({ item, session }) => {
     return null;
   }
   const handleDeleteClick = () => {
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this listing?"
-    );
-
-    if (!isConfirmed) {
-      return;
-    }
     axios
       .delete(`http://localhost:3001/listing/${item._id}`)
       .then((response) => {
@@ -267,15 +286,62 @@ const ListingCard = ({ item, session }) => {
       .catch((error) => {
         console.error("Error deleting the listing:", error);
       });
+
+      handleClose();
+      window.location.reload();
   };
 
+  const handleGoToLogInButton = () => {
+    navigate("/login")
+  }
+
+  var link;
+  if(loggedIn){
+    link = <>
+            <Link to={`/product/${encodeURIComponent(item._id)}`}>
+              <Card.Title>{item.nameOfItem}</Card.Title>
+            </Link>
+            </>
+  }else{
+    link = <Link onClick={handleShowNotLoggedIn}>
+            <Card.Title>{item.nameOfItem}</Card.Title>
+          </Link>
+  }
+
   return (
+    <>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Delete item?</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>Are you sure you want to delete this item?</Modal.Body>
+      <Modal.Footer>
+        <Button variant="secondary" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button variant="danger" onClick={handleDeleteClick}>
+          Delete
+        </Button>
+      </Modal.Footer>
+    </Modal>
+    <Modal show={showNotLoggedIn} onHide={handleCloseLoggedIn}>
+        <Modal.Header closeButton>
+            <Modal.Title>Not logged in</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>You need to log in view this listing!</Modal.Body>
+        <Modal.Footer>
+            <Button variant="success" onClick={handleGoToLogInButton}>
+              Log In
+            </Button>
+            <Button variant="secondary" onClick={handleCloseLoggedIn}>
+              Back
+            </Button>
+        </Modal.Footer>
+    </Modal>
     <Card className="listing-card">
       <Card.Img variant="top" src={item.picture[0]} alt={item.itemName} />
       <Card.Body>
-        <Link to={`/product/${encodeURIComponent(item._id)}`}>
-          <Card.Title>{item.nameOfItem}</Card.Title>
-        </Link>
+        {link}
         <Card.Text>Price: ${(item.price/100).toFixed(2)}</Card.Text>
         {!isProfilePage && (
         <Row className="align-items-center">
@@ -306,7 +372,7 @@ const ListingCard = ({ item, session }) => {
               </Button>
             </Col>
             <Col>
-              <Button variant="danger" onClick={handleDeleteClick}>
+              <Button variant="danger" onClick={handleShow}>
                 Delete
               </Button>
             </Col>
@@ -322,6 +388,7 @@ const ListingCard = ({ item, session }) => {
         />
       </Card.Body>
     </Card>
+    </>
   );
 };
 

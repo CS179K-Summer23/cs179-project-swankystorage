@@ -48,3 +48,38 @@
     background-color: #4f2756;
     border-color: #4f2756; 
 }
+
+.messagesContainerProfilePage{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.messagesTitleProfilePage{
+    font-size: 40px;
+    font-weight: bold;
+}
+
+.userNameMessagesProfilePage{
+    font-weight: bold;
+}
+
+.messagesButtonToDMProfilePage{
+    width: 50%;
+    border: 2px solid black;
+    height: 5vh;
+    background-color: transparent;
+    border-radius: 5px;
+    margin: 0.1%
+}
+
+.messagesButtonToDMProfilePage:hover{
+    background-color: aliceblue;
+}
+
+.messageContainerProfilePage{
+    display: "flex"; 
+    width: "100%";
+    max-height: "100%"; 
+    flex-direction: "column"; 
+    flex-wrap: "wrap"; 
+}

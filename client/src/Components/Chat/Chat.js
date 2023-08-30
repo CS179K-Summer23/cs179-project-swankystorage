@@ -94,6 +94,12 @@ const ChatRoom = () => {
     }
   },[roomId,socket])
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
   const handleSendMessage = () => {
     if (socket && message) {
       socket.emit('chat message', { room:roomId, msg: message});
@@ -103,10 +109,18 @@ const ChatRoom = () => {
     }
   };
 
+  const userTitle = () => {
+    return <p style={{ fontStyle: "italic", marginBottom: "0px" }}>You</p>
+  }
+
+  const otherUserTitle = () => {
+    return <p style={{ fontWeight: "bold", marginBottom: "0px" }}>{otherPerson}</p>
+  }
+
   return (
     <>
     <CustomNavbar/>
-    <div style={{backgroundColor:'white'}}>
+    <div style={{backgroundColor:'white', justifyContent: "center"}}>
       <h1 style={{textAlign:'center'}}>{nameOfItem}-{otherPerson}</h1>
       {/* <div>
         <input
@@ -117,11 +131,32 @@ const ChatRoom = () => {
         />
         <button onClick={handleJoinRoom}>Join Room</button>
       </div> */}
-      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'30%', marginRight:'30%', borderRadius:'2%'}}>
+      <div style={{maxWidth:'100vw', overflow:'hidden', backgroundColor:'white', marginLeft:'25vw', marginRight:'25vw', borderRadius:'2%'}}>
         {messages.map((msg, index) => {
           const displayName = name[index];
           const isUserMessage = displayName === user;
           return (
+              <>
+              <p style={{
+                  textAlign: isUserMessage ? 'right' : 'left',
+                  marginLeft: isUserMessage ? 'auto' : '10%',
+                  marginRight: isUserMessage ? '10%' : 'auto',
+                  maxWidth: '25%', 
+                  marginBottom:'1px',
+                  overflowWrap:'break-word',
+              }}>
+                {isUserMessage && userTitle()}
+              </p>
+              <p style={{
+                  textAlign: isUserMessage ? 'right' : 'left',
+                  marginLeft: isUserMessage ? 'auto' : '10%',
+                  marginRight: isUserMessage ? '10%' : 'auto',
+                  maxWidth: '25%', 
+                  marginBottom:'1px',
+                  overflowWrap:'break-word',
+              }}>
+                {!isUserMessage && otherUserTitle()}
+              </p>
               <p
                 key={index}
                 style={{
@@ -132,21 +167,23 @@ const ChatRoom = () => {
                   maxWidth: '25%', 
                   backgroundColor: isUserMessage ? 'lightblue' : 'lightgray',
                   borderRadius: '8px',
-                  marginBottom:'4px',
+                  marginBottom:'8px',
                   overflowWrap:'break-word',
                   marginTop:'4px'
                 }}
               >
                  {msg}
               </p>
+              </>
             );
           })}
-      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'10%', marginRight:'10%', borderRadius:'5%'}}>
+      <div style={{maxWidth:'100%', overflow:'hidden', backgroundColor:'white', marginLeft:'10%', marginRight:'10%', display: 'flex', flexFlow: 'row'}}>
         <input
           type="text"
           placeholder="Enter your message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           style={{ flex: 1, padding: '5px', borderRadius: '2%', marginRight: '10px', width:'87%' }}
         />
         <Button variant='success' onClick={handleSendMessage}>Send</Button>

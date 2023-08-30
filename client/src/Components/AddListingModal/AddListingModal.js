@@ -51,12 +51,12 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
     // Validate and handle form submission
 
     handleAddListing({
-      itemName,
+      nameOfItem: itemName,
       price: (price * 100).toFixed(0),
       location,
       radius,
       description,
-      pictures,
+      picture: pictures,
       categories: selectedCategories,
     });
 
@@ -91,6 +91,7 @@ const AddListingModal = ({ show, handleClose, handleAddListing, listing }) => {
 
     // Close the modal
     handleClose();
+    //window.location.reload()
   };
 
   // Handle file input change

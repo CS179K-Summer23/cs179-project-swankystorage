@@ -5,12 +5,13 @@ import { Modal } from "react-bootstrap";
 import { Button, Dropdown } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useSession from "../useSession";
 import axios from "axios";
 
 import "./CustomNavbar.css";
 
 function CustomNavbar() {
-  let [loggedIn, setLoggedIn] = useState(false);
+  let [session] = useSession();
   const navigate = useNavigate();
 
     const [showLogoutButton, setShowLogoutButton] = useState(false);
@@ -32,33 +33,19 @@ function CustomNavbar() {
     }
     const handleShowLogoutConfirmationFailure = () => setShowLogoutConfirmationFailure(true);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001/profilePage")
-      .then((response) => {
-        setLoggedIn(true);
-      })
-      .catch((error) => {
-        setLoggedIn(false);
-        console.log("User not logged in");
-      });
-  }, []);
-
     const handleLogout = () => {
         axios.get('http://localhost:3001/logout')
         .then(response => {
-            setLoggedIn(false);
             handleShowLogoutConfirmationSuccess();
         })
         .catch(error => {
-            setLoggedIn(true);
             handleShowLogoutConfirmationFailure();
             console.log("Something went wrong")
         });
     }
 
     let buttons;
-    if(!loggedIn){
+    if(!session){
         buttons = <>
                     <Nav className="ml-auto">
                         <Button variant="primary" className="btn customNavbarButton" onClick={() => navigate('/login')}>Log In</Button>{' '}
