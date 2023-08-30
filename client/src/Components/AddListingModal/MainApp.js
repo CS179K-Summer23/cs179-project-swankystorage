@@ -46,7 +46,7 @@ const MainApp = (args) => {
         <>
           {listings.map((item, index) => (
             <Col key={index} md={3} sm={2}>
-              <ListingCard item={item} />
+              <ListingCard item={item} session={session} />
             </Col>
           ))}
         </>
@@ -197,14 +197,13 @@ function FavoriteButton({ isFavorite, handleFavoriteClick }) {
   );
 }
 
-const ListingCard = ({ item, handleDelete }) => {
+const ListingCard = ({ item, session }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
   const navigate = useNavigate()
-  let [session] = useSession()
 
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);

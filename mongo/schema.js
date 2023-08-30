@@ -284,16 +284,60 @@ app.get("/new-listing", async (req, res) => {
   }
 });
 
+// Calculate the radius of the Earth in miles
+const earthRadiusMiles = 3958.8; // Earth's radius in miles
+// Function to calculate Haversine distance
+function haversineDistance(lat1, lon1, lat2, lon2) {
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(lat1 * (Math.PI / 180)) *
+      Math.cos(lat2 * (Math.PI / 180)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = earthRadiusMiles * c;
+  return distance;
+}
+
+
 //for filter
 app.get("/filter-listings", async (req, res) => {
   try {
     const filterCriteria = req.query.query;
     let sortCriteria = req.query.sort;
+    const locationCriteria = req.query.location;
     if (!sortCriteria) sortCriteria = {nameOfItem:1}
     console.log("Filtered by ", JSON.stringify(req.query.query), " Sorted by ", JSON.stringify(sortCriteria));
-    const listings = await listingModel.find(filterCriteria).sort(sortCriteria);
-    //console.log(listings)
-    res.status(200).json(listings);
+    if (sortCriteria.distance === undefined) {
+      var result = await listingModel.find(filterCriteria).sort(sortCriteria);
+    } else {
+      console.log("Sorting by ", JSON.stringify(locationCriteria))
+      const listings = await listingModel.find(filterCriteria);
+      var result = [];
+      
+      for (const listing of listings) {
+        const distance = haversineDistance(
+          locationCriteria.latitude,
+          locationCriteria.longitude,
+          listing.latitude,
+          listing.longitude
+        );
+        console.log(listing.nameOfItem, ": ", distance)
+  
+        if (distance <= locationCriteria.radius) {
+          result.push({ listing, distance });
+        }
+
+      }
+      result.sort((a, b) => a.distance - b.distance);
+      result = result.map(item => item.listing)
+    }
+    
+    res.status(200).json(result);
+    console.log(result.map(item => item.nameOfItem))
+    
   } catch (error) {
     console.log("error getting filtered listings: ", error);
     res.status(500).json({ error: "Error getting filtered listings" });
