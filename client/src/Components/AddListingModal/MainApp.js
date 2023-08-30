@@ -14,19 +14,37 @@ import UpdateListingModal from "../UpdateListingModal";
 const MainApp = (args) => {
   const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
+    const [listings, setListings] = useState(args.listings)
+    let [loggedIn, setLoggedIn] = useState(false);
     let [session] = useSession();
 
     const [showNotLoggedInPrompt, setShowNotLoggedInPrompt] = useState(false);
     const handleCloseShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(false);
     const handleShowShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(true);
 
+    useEffect(() => {
+      setListings(args.listings)
+    }, [args.listings])
+
+    useEffect(() => {
+      axios
+        .get("http://localhost:3001/profilePage")
+        .then((response) => {
+          setLoggedIn(true);
+        })
+        .catch((error) => {
+          setLoggedIn(false);
+          console.log("User not logged in");
+        });
+    }, []);
+  
   const handleShowListings = (listingsToShow) => {
     /* Map through the "listings" array and display each item in a ListingCard */
     // console.log(listingsToShow);
     if (listingsToShow.length > 0) {
       return (
         <>
-          {args.listings.map((item, index) => (
+          {listings.map((item, index) => (
             <Col key={index} md={3} sm={2}>
               <ListingCard item={item} />
             </Col>
@@ -50,7 +68,7 @@ const MainApp = (args) => {
   //});
 
   const handleAddListing = (newListing) => {
-    args.update([...args.listings, newListing]);
+    setListings([...listings, newListing]);
   };
 
   const handleShowModal = () => {
@@ -98,7 +116,7 @@ const MainApp = (args) => {
             </Button>
           </Col>}
         </Row>
-        <Row className="mt-3">{handleShowListings(args.listings)}</Row>
+        <Row className="mt-3">{handleShowListings(listings)}</Row>
         <AddListingModal
           show={showModal}
           handleClose={handleCloseModal}
