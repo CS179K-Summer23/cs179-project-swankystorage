@@ -15,6 +15,7 @@ const MainApp = (args) => {
   const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
     let [loggedIn, setLoggedIn] = useState(false);
+    const [session] = useSession()
 
     const [showNotLoggedInPrompt, setShowNotLoggedInPrompt] = useState(false);
     const handleCloseShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(false);
@@ -40,7 +41,7 @@ const MainApp = (args) => {
         <>
           {args.listings.map((item, index) => (
             <Col key={index} md={3} sm={2}>
-              <ListingCard item={item} />
+              <ListingCard item={item} session={session} />
             </Col>
           ))}
         </>
@@ -191,13 +192,12 @@ function FavoriteButton({ isFavorite, handleFavoriteClick }) {
   );
 }
 
-const ListingCard = ({ item, handleDelete }) => {
+const ListingCard = ({ item, session }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
   const location = useLocation();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const navigate = useNavigate()
-  let [session] = useSession()
 
   const isProfilePage = location.pathname === "/profilePage";
   // console.log(isProfilePage);
