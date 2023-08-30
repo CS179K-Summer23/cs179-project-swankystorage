@@ -89,6 +89,12 @@ const Dm = () => {
     }
   },[socket,roomId])
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSendMessage();
+    }
+  };
+
   const handleSendMessage = () => {
     if (socket && message) {
       socket.emit('chat message', { room:roomId, msg: message});
@@ -172,6 +178,7 @@ const Dm = () => {
           placeholder="Enter your message"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           style={{ flex: 1, padding: '5px', borderRadius: '2%', marginRight: '10px', width:'87%' }}
         />
         <Button variant='success' onClick={handleSendMessage}>Send</Button>
