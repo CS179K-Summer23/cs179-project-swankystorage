@@ -5,7 +5,7 @@ import "./ProductLandingPage.css";
 import { formatDistanceToNow } from "date-fns";
 import CustomNavbar from "../CustomNavbar/CustomNavbar";
 import MapComponent from "../Maps";
-import { Row, Col, Button, Modal } from "react-bootstrap";
+import { Row, Col, Button, Modal, Carousel } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import {
   EmailShareButton,
@@ -137,7 +137,13 @@ const ProductLandingPage = ({ item }) => {
         <div className="containerVisualInfoRowListingPage">
           <Row>
             <div className="vwDivListingPage">
-              {data.picture && <img src={data.picture[0]} alt={data.nameOfItem} style={{ maxWidth: '450px', width: '100%' }} />}
+              <Carousel>
+                {data.picture.map(picture => 
+                  <Carousel.Item>
+                    <img src={picture} alt={data.nameOfItem} style={{ maxWidth: '450px', width: '100%' }} />
+                  </Carousel.Item>  
+                )}
+              </Carousel>
             </div>
             <div className="vwDivListingPage">
               <MapComponent lat={data.latitude} lng={data.longitude} rad={data.radius}/>
