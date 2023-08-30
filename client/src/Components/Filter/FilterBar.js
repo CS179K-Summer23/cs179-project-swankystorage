@@ -12,7 +12,7 @@ import CategoryModal from "./CategoryModal"
 
 function SortButtons(args) {
     return (
-        <Accordion.Item>
+        <Accordion.Item eventKey="0">
             <Accordion.Header>
                 Sort By: 
             </Accordion.Header>
