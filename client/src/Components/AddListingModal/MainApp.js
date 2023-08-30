@@ -14,23 +14,11 @@ import UpdateListingModal from "../UpdateListingModal";
 const MainApp = (args) => {
   const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
-    let [loggedIn, setLoggedIn] = useState(false);
+    let [session] = useSession();
 
     const [showNotLoggedInPrompt, setShowNotLoggedInPrompt] = useState(false);
     const handleCloseShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(false);
     const handleShowShowNotLoggedInPrompt = () => setShowNotLoggedInPrompt(true);
-
-    useEffect(() => {
-      axios
-        .get("http://localhost:3001/profilePage")
-        .then((response) => {
-          setLoggedIn(true);
-        })
-        .catch((error) => {
-          setLoggedIn(false);
-          console.log("User not logged in");
-        });
-    }, []);
 
   const handleShowListings = (listingsToShow) => {
     /* Map through the "listings" array and display each item in a ListingCard */
@@ -66,7 +54,7 @@ const MainApp = (args) => {
   };
 
   const handleShowModal = () => {
-    if(loggedIn){
+    if(session){
       setShowModal(true);
     }else{
       setShowNotLoggedInPrompt(true);
