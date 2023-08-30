@@ -15,7 +15,7 @@ const key = crypto.randomBytes(64).toString("hex");
 const server = http.createServer(app)
 const {Server} = require('socket.io');
 const { error } = require("console");
-const e = require("express");
+
 const io = new Server(server,{
   cors:{
     origin:"*"
@@ -88,8 +88,8 @@ const listing = new Schema(
     location: { type: String, required: true },
     longitude: { type: Number, required: true },
     latitude: { type: Number, required: true },
+    picture: [{ type: String, required: false }],
     radius: { type: Number, required: true },
-    picture: { type: String, required: true },
     description: { type: String, required: true },
     categories: { type: Array, required: true },
     owner: {
@@ -233,6 +233,7 @@ app.post("/new-listing", async (req, res) => {
     await newListing.save();
     console.log(req.body.city);
     console.log("Listing Saved to Mongo");
+    console.log("Number of pictures: ", newListing.picture.length)
     res.status(200).json({ message: "Listing successfully created" });
   } catch (error) {
     console.log("error saving data to MongoDB: ", error);
@@ -505,6 +506,23 @@ app.get("/userId/:id", async(req, res) => {
   } catch (error) {
     console.log("error retrieving user id")
     res.status(500).json({message: "There was an error retreiving the user id"})
+  }
+})
+
+app.delete("/deleteChat/:rid", async(req, res)=>{
+  try {
+    const room = req.params.rid
+    const messages = await messageModel.deleteMany({room:room})
+    const roomToDelete = await roomModel.findByIdAndDelete(room)
+    if(!messages || !roomToDelete){
+      res.status(500).json({message: "There was an error deleting the information associated with this room"})
+    }
+    else{
+      res.status(200).json({message:"Room has been deleted"})
+    }
+  } catch (error) {
+    console.log(error, "There was an error deleting the messages/room")
+    res.status(500).json({error: "There was an error deleting the information associated with this room"})
   }
 })
 

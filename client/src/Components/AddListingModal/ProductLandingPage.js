@@ -137,7 +137,7 @@ const ProductLandingPage = ({ item }) => {
         <div className="containerVisualInfoRowListingPage">
           <Row>
             <div className="vwDivListingPage">
-              {data.picture && <img src={data.picture} alt={data.nameOfItem} style={{ maxWidth: '450px', width: '100%' }} />}
+              {data.picture && <img src={data.picture[0]} alt={data.nameOfItem} style={{ maxWidth: '450px', width: '100%' }} />}
             </div>
             <div className="vwDivListingPage">
               <MapComponent lat={data.latitude} lng={data.longitude} rad={data.radius}/>

@@ -322,7 +322,7 @@ const ListingCard = ({ item, handleDelete }) => {
         </Modal.Footer>
     </Modal>
     <Card className="listing-card">
-      <Card.Img variant="top" src={item.picture} alt={item.itemName} />
+      <Card.Img variant="top" src={item.picture[0]} alt={item.itemName} />
       <Card.Body>
         {link}
         <Card.Text>Price: ${(item.price/100).toFixed(2)}</Card.Text>
