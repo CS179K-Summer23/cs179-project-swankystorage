@@ -12,7 +12,7 @@ import CategoryModal from "./CategoryModal"
 
 function SortButtons(args) {
     return (
-        <Accordion.Item>
+        <Accordion.Item eventKey="sort">
             <Accordion.Header>
                 Sort By
             </Accordion.Header>
@@ -62,8 +62,8 @@ export function FilterBar(args) {
             ) }
             <Accordion>
                 <Form>
-                <SortButtons sort={{sort, updateSort}}/>
                 <CategoryModal chosenCategories={request.categories} submit={(value) => changeRequest({categories: value})} />
+                <SortButtons sort={{sort, updateSort}}/>
                 { args.properties.map((item) => 
                     <Accordion.Item eventKey={item.key} key={item.key}>
                         <TextField key={item.key} defaultText={item.label} type={item.type} submit={(value) => changeRequest({[item.prop]: value})}/>
