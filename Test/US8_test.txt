@@ -17,11 +17,6 @@ Test Steps:
     - Verify that the listing is added to the user's favorited/liked/saved listings section.
     - Check that the button's state changes to reflect the listing's saved status.
 
-- Check the favorited/liked/saved listings count:
-    - Note down the number of listings currently present in the favorited/liked/saved listings section.
-    - Add one or more additional listings to the favorited/liked/saved listings.
-    - Verify that the count of favorited/liked/saved listings increases accordingly.
-
 -Remove a listing from the Favorited/Liked/Saved Listings:
     -Go to the user's profile or dashboard.
     -Locate the favorited/liked/saved listings section.

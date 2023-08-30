@@ -1,4 +1,4 @@
-Removing Listings
+Modify Listings
 
 -User removes a listing from their account
 
@@ -11,6 +11,10 @@ Test Case:
     -User navigates to the "My Listings" or "Manage Listings" section of their account.
     -User locates the listing they want to remove.
     -User clicks on the "Remove" button for that listing.
+        -Listing is removed
+    -User clicks on the "Update" button for that listing.
+        -Modal prompts user for new data
+        -Listing is modified
 
 -Verify persistence of data:
     -Log out of the user's account.
